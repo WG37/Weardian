@@ -42,12 +42,12 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
 
         public async Task<SymmetricKeyResponseDto> GetKeyById(Guid publicId)
         {
-            // db call
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<SymmetricKeyResponseDto>> GetKeys()
         {
-            
+            throw new NotImplementedException();
         }
 
         public async Task<bool> RemoveKeyById(Guid publicId)
