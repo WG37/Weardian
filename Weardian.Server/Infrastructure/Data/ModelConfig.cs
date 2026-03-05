@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using Weardian.Server.Domain.Keys.SymmetricKeys;
 
 namespace Weardian.Server.Infrastructure.Data
@@ -27,8 +26,12 @@ namespace Weardian.Server.Infrastructure.Data
                 e.Property(k => k.KeyStatus).IsRequired();
                 e.Property(k => k.CreatedOn).IsRequired();
 
-                e.Property(k => k.KeyBytes).IsRequired();
-                e.Property(k => k.KeyLength).IsRequired();
+                e.Property(k => k.KeyBytes).IsRequired()
+                    .HasConversion(
+                    b => b.ToArray(),
+                    b => new ReadOnlyMemory<byte>(b));
+
+                e.Ignore(k => k.KeyLength);
 
                 e.Property(k => k.EnvelopeVersion).IsRequired();
                 e.Property(k => k.WrapAlgorithm).IsRequired();
