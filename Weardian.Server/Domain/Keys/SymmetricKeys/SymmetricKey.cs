@@ -7,7 +7,7 @@
 
         public int EnvelopeVersion { get; init; } = 1;
         public required string WrapAlgorithm { get; init; }
-        public required string WrappingKeyId { get; init; }
+        public required Guid WrappingKeyId { get; init; }
         public required byte[] Tag { get; init; }
         public required byte[] Nonce { get; init; }
         public required byte[] Ciphertext { get; init; }
