@@ -1,4 +1,6 @@
-﻿namespace Weardian.Server.Domain.Keys
+﻿using Weardian.Server.Domain.Users;
+
+namespace Weardian.Server.Domain.Keys
 {
     public abstract class KeyBase
     {
@@ -7,6 +9,10 @@
         public required string Name { get; set; }
         public required KeyType KeyType { get; init; }
         public KeyStatus KeyStatus { get; protected set; }
+
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
+
         public DateTime CreatedOn { get; protected set; }
 
         protected KeyBase()

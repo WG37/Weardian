@@ -1,3 +1,13 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Weardian.Server.Application.Interfaces;
+using Weardian.Server.Application.Services.SymmetricKeyServices;
+using Weardian.Server.Domain.Users;
+using Weardian.Server.Infrastructure.Data;
+using Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository;
 
 namespace Weardian.Server
 {
@@ -8,6 +18,36 @@ namespace Weardian.Server
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDbContext<AppDbContext>(o =>
+                o.UseSqlServer(builder.Configuration.GetConnectionString("WeardianDb")));
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
+            var jwt = builder.Configuration.GetSection("Jwt");
+            var keyBytes = Encoding.UTF8.GetBytes(jwt["Key"]!);
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(o =>
+                {
+                    o.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwt["Issuer"],
+                        ValidAudience = jwt["Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+                        ClockSkew = TimeSpan.FromSeconds(30)
+                    };
+                });
+
+
+            builder.Services.AddScoped<ISymmetricKeyRepository, SymmetricKeyRepository>();
+            builder.Services.AddScoped<ISymmetricKeyService, SymmetricKeyService>();
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,13 +1,21 @@
-﻿using Weardian.Server.Application.DTOs.RequestDtos;
+﻿using Weardian.Server.Application.DTOs.CryptographyDto;
+using Weardian.Server.Application.DTOs.RequestDtos;
 using Weardian.Server.Application.DTOs.ResponseDtos;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Domain.Keys;
-using Weardian.Server.Domain.Keys.SymmetricKeys;
+using Weardian.Server.Domain.Keys.Symmetric;
 
 namespace Weardian.Server.Application.Services.SymmetricKeyServices
 {
     public class SymmetricKeyService : ISymmetricKeyService
     {
+        private readonly ISymmetricKeyRepository _keyRepository;
+
+        public SymmetricKeyService(ISymmetricKeyRepository keyRepository)
+        {
+            _keyRepository = keyRepository;
+        }
+
         public async Task<SymmetricKeyResponseDto> CreateKey(CreateSymmetricKeyRequestDto req)
         {
             if (req.KeyType != KeyType.Encryption &&
@@ -16,48 +24,78 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
 
                 throw new ArgumentException("Invalid KeyType", nameof(req.KeyType));
 
-            var entity = new SymmetricKey(req.EncryptedKeyBytes)
+            var key = new SymmetricKey(req.Envelope.Ciphertext)
             {
                 Name = req.Name,
                 KeyType = req.KeyType,
                 WrapAlgorithm = req.Envelope.WrapAlgorithm,
                 WrappingKeyId = req.Envelope.WrappingKeyId,
                 Tag = req.Envelope.Tag,
-                Nonce = req.Envelope.Nonce,
-                Ciphertext = req.Envelope.Nonce
+                Nonce = req.Envelope.Nonce
             };
 
-            // db call
+            await _keyRepository.AddAsync(key);
 
             return new SymmetricKeyResponseDto(
-                entity.PublicId,
-                entity.Name,
-                entity.KeyType,
-                entity.KeyStatus,
-                entity.KeyLength,
-                entity.CreatedOn
-            );
-
+                key.PublicId,
+                key.Name,
+                key.KeyType,
+                key.KeyStatus,
+                key.KeyLength,
+                new EncryptedEvelopeResponseDto(
+                    key.EnvelopeVersion,
+                    key.WrapAlgorithm,
+                    key.WrappingKeyId,
+                    key.Ciphertext.ToArray(),
+                    key.Tag,
+                    key.Nonce
+            ),
+                key.CreatedOn);
         }
 
         public async Task<SymmetricKeyResponseDto> GetKeyById(Guid publicId)
         {
-            throw new NotImplementedException();
+            var key = await _keyRepository.GetByIdAsync(publicId);
+
+            return new SymmetricKeyResponseDto(
+                key.PublicId,
+                key.Name,
+                key.KeyType,
+                key.KeyStatus,
+                key.KeyLength,
+                new EncryptedEvelopeResponseDto(
+                    key.EnvelopeVersion,
+                    key.WrapAlgorithm,
+                    key.WrappingKeyId,
+                    key.Ciphertext.ToArray(),
+                    key.Tag,
+                    key.Nonce),
+                key.CreatedOn);
         }
 
-        public async Task<IEnumerable<SymmetricKeyResponseDto>> GetKeys()
+        public async Task<List<SymmetricKeyResponseDto>> GetKeys()
         {
-            throw new NotImplementedException();
+            var keys = await _keyRepository.GetAllAsync();
+
+            return keys.Select(k => new SymmetricKeyResponseDto(
+                PublicId: k.PublicId,
+                Name: k.Name,
+                KeyType: k.KeyType,
+                KeyStatus: k.KeyStatus,
+                KeyLength: k.KeyLength,
+                new EncryptedEvelopeResponseDto(
+                    k.EnvelopeVersion,
+                    k.WrapAlgorithm,
+                    k.WrappingKeyId,
+                    k.Ciphertext.ToArray(),
+                    k.Tag,
+                    k.Nonce),
+                CreatedOn: k.CreatedOn)).ToList();
         }
 
-        public async Task<bool> RemoveKeyById(Guid publicId)
+        public Task<bool> RemoveKeyById(Guid publicId)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> RemoveKeys()
-        {
-            throw new NotImplementedException();
+            return _keyRepository.RemoveByIdAsync(publicId);
         }
     }
 }
