@@ -20,27 +20,29 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
             await _db.SaveChangesAsync();
         }
 
-        public async Task<SymmetricKey> GetByIdAsync(Guid publicId)
+        public async Task<SymmetricKey> GetByIdAsync(string userId, Guid publicId)
         {
-            var key = await _db.SymmetricKeys.SingleOrDefaultAsync(k => k.PublicId == publicId);
+            var key = await _db.SymmetricKeys
+                .SingleOrDefaultAsync(k => k.UserId == userId && k.PublicId == publicId);
+
             if (key == null)
                 throw new KeyNotFoundException("publicId does not exist on database");
 
             return key;    
         }
 
-        public async Task<IEnumerable<SymmetricKey>> GetAllAsync()
+        public async Task<IEnumerable<SymmetricKey>> GetAllAsync(string userId)
         {
-            var keys = await _db.SymmetricKeys.ToListAsync();
-            if (keys == null)
-                throw new KeyNotFoundException("No keys exist on the database");
+            var keys = await _db.SymmetricKeys.Where(k => k.UserId == userId).ToListAsync();
 
             return keys;
         }
 
-        public async Task<bool> RemoveByIdAsync(Guid publicId)
+        public async Task<bool> RemoveByIdAsync(string userId, Guid publicId)
         {
-            var key = await _db.SymmetricKeys.SingleOrDefaultAsync(k => k.PublicId == publicId);
+            var key = await _db.SymmetricKeys
+                .SingleOrDefaultAsync(k => k.UserId == userId && k.PublicId == publicId);
+
             if (key == null)
                 return false;
 
@@ -49,6 +51,5 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
 
             return true;
         }
-
     }
 }

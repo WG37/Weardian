@@ -8,5 +8,5 @@ namespace Weardian.Server.Application.DTOs.RequestDtos
         [Required, MaxLength(16)]
         string Name,
         [Required] KeyType KeyType,
-        [Required] EncryptedEvelopeRequestDto Envelope);
+        [Required] EncryptedEnvelopeRequestDto Envelope);
 }

@@ -16,7 +16,7 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
             _keyRepository = keyRepository;
         }
 
-        public async Task<SymmetricKeyResponseDto> CreateKey(CreateSymmetricKeyRequestDto req)
+        public async Task<SymmetricKeyResponseDto> CreateKey(CreateSymmetricKeyRequestDto req, string userId)
         {
             if (req.KeyType != KeyType.Encryption &&
                 req.KeyType != KeyType.Verification &&
@@ -31,7 +31,8 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 WrapAlgorithm = req.Envelope.WrapAlgorithm,
                 WrappingKeyId = req.Envelope.WrappingKeyId,
                 Tag = req.Envelope.Tag,
-                Nonce = req.Envelope.Nonce
+                Nonce = req.Envelope.Nonce,
+                UserId = userId
             };
 
             await _keyRepository.AddAsync(key);
@@ -53,9 +54,9 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 key.CreatedOn);
         }
 
-        public async Task<SymmetricKeyResponseDto> GetKeyById(Guid publicId)
+        public async Task<SymmetricKeyResponseDto> GetKeyById(string userId, Guid publicId)
         {
-            var key = await _keyRepository.GetByIdAsync(publicId);
+            var key = await _keyRepository.GetByIdAsync(userId, publicId);
 
             return new SymmetricKeyResponseDto(
                 key.PublicId,
@@ -73,9 +74,9 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 key.CreatedOn);
         }
 
-        public async Task<List<SymmetricKeyResponseDto>> GetKeys()
+        public async Task<List<SymmetricKeyResponseDto>> GetKeys(string userId)
         {
-            var keys = await _keyRepository.GetAllAsync();
+            var keys = await _keyRepository.GetAllAsync(userId);
 
             return keys.Select(k => new SymmetricKeyResponseDto(
                 PublicId: k.PublicId,
@@ -93,9 +94,9 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 CreatedOn: k.CreatedOn)).ToList();
         }
 
-        public Task<bool> RemoveKeyById(Guid publicId)
+        public Task<bool> RemoveKeyById(string userId, Guid publicId)
         {
-            return _keyRepository.RemoveByIdAsync(publicId);
+            return _keyRepository.RemoveByIdAsync(userId, publicId);
         }
     }
 }
