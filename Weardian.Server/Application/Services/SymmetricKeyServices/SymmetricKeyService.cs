@@ -1,4 +1,4 @@
-﻿using Weardian.Server.Application.DTOs.CryptographyDto;
+﻿using Weardian.Server.Application.DTOs.CryptographyDtos;
 using Weardian.Server.Application.DTOs.RequestDtos;
 using Weardian.Server.Application.DTOs.ResponseDtos;
 using Weardian.Server.Application.Interfaces;

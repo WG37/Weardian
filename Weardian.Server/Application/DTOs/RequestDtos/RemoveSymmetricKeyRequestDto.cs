@@ -2,7 +2,7 @@
 
 namespace Weardian.Server.Application.DTOs.RequestDtos
 {
-    public record RemoveSymmetricKeyRequestDto(
+    public sealed record RemoveSymmetricKeyRequestDto(
         [Required]
         Guid PublicId);
 }

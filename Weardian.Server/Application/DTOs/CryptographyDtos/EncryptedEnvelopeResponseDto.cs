@@ -1,5 +1,4 @@
-﻿
-namespace Weardian.Server.Application.DTOs.CryptographyDto
+﻿namespace Weardian.Server.Application.DTOs.CryptographyDtos
 {
     public sealed record EncryptedEvelopeResponseDto(
         int Version,

@@ -5,7 +5,7 @@ using System.Text;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Domain.Users;
 
-namespace Weardian.Server.Application.Services.TokenServices
+namespace Weardian.Server.Infrastructure.Authentication.TokenServices
 {
     public class TokenService : ITokenService
     {

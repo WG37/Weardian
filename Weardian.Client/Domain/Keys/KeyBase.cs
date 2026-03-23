@@ -1,24 +1,19 @@
-﻿using Weardian.Server.Domain.Users;
-
-namespace Weardian.Server.Domain.Keys
+﻿namespace Weardian.Client.Domain.Keys
 {
-    public abstract class KeyBase
+    internal abstract class KeyBase
     {
-        public Guid Id { get; private set; } 
+        public Guid LocalId { get; }
         public Guid PublicId { get; protected set; }
         public required string Name { get; set; }
         public required KeyType KeyType { get; init; }
         public KeyStatus KeyStatus { get; protected set; }
 
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
 
         public DateTime CreatedOn { get; protected set; }
 
         protected KeyBase()
         {
-            Id = Guid.NewGuid();
-            PublicId = Guid.NewGuid();
+            LocalId = Guid.NewGuid();
             KeyStatus = KeyStatus.Active;
             CreatedOn = DateTime.UtcNow;
         }

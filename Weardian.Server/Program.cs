@@ -6,8 +6,8 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Application.Services.SymmetricKeyServices;
-using Weardian.Server.Application.Services.TokenServices;
 using Weardian.Server.Domain.Users;
+using Weardian.Server.Infrastructure.Authentication.TokenServices;
 using Weardian.Server.Infrastructure.Data;
 using Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository;
 

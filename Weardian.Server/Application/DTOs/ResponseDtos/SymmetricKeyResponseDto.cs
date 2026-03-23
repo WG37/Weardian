@@ -1,4 +1,4 @@
-﻿using Weardian.Server.Application.DTOs.CryptographyDto;
+﻿using Weardian.Server.Application.DTOs.CryptographyDtos;
 using Weardian.Server.Domain.Keys;
 
 namespace Weardian.Server.Application.DTOs.ResponseDtos
