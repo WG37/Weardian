@@ -23,5 +23,25 @@ namespace Weardian.Client.Infrastructure.Cryptography.Encryption
                 Tag: tag,
                 Ciphertext: ciphertext);
         }
+
+        public byte[] Decrypt(byte[] ciphertext, byte[] key)
+        {
+            var nonce = new byte[12];
+            var encryptedData = new byte[ciphertext.Length - 28];
+            var tag = new byte[16];
+
+            var plaintext = new byte[encryptedData.Length];
+
+            Array.Copy(ciphertext, 0, nonce, 0, 12);
+            Array.Copy(ciphertext, 12, encryptedData, 0, encryptedData.Length);
+            Array.Copy(ciphertext, ciphertext.Length - 16, tag, 0, 16);
+
+            using (var aes = new AesGcm(key, tag.Length))
+            {
+                aes.Decrypt(nonce, ciphertext, tag, plaintext);
+            }
+
+            return plaintext;
+        }
     }
 }
