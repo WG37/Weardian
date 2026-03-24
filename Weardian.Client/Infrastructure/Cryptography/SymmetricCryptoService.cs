@@ -24,21 +24,29 @@ namespace Weardian.Client.Infrastructure.Cryptography
         public EncryptedEnvelopeDto CreateEncryptedEnvelope(string plaintext)
         {
             var ptBytes = Encoding.UTF8.GetBytes(plaintext);
-            var dataKey = _keyGen.GenerateSymmetricKey();
+
+            var dataKey = _keyGen.GenerateSymmetricKey()
+                ?? throw new InvalidOperationException("Failed to generate symmetric key");
             
-            var encryptedResults = _encryptor.Encrypt(ptBytes, dataKey);
-            var wrappedResults = _keyWrap.WrapKey(dataKey);
+            var encryptedResults = _encryptor.Encrypt(ptBytes, dataKey)
+                ?? throw new InvalidOperationException("Encryption operation failed.");
+
+            var wrappedResults = _keyWrap.WrapKey(dataKey)
+                ?? throw new InvalidOperationException("Key wrapping operation failed");
 
             return new EncryptedEnvelopeDto(
+                EnvelopeId: Guid.NewGuid(),
+                new WrappedKeyDto(
                 wrappedResults.Version,
                 wrappedResults.WrapAlgorithm,
                 wrappedResults.WrappingKeyId,
                 wrappedResults.WrappedKeyCiphertext,
                 wrappedResults.WrappedKeyTag,
-                wrappedResults.WrappedKeyNonce,
+                wrappedResults.WrappedKeyNonce),
+                new EncryptedDataDto(
                 encryptedResults.Ciphertext,
                 encryptedResults.Tag,
-                encryptedResults.Nonce);
+                encryptedResults.Nonce));
         }
     }
 }

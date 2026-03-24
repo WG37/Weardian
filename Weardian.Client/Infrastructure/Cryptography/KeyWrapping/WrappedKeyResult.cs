@@ -7,5 +7,4 @@
         byte[] WrappedKeyCiphertext,
         byte[] WrappedKeyTag,
         byte[] WrappedKeyNonce);
-    
 }

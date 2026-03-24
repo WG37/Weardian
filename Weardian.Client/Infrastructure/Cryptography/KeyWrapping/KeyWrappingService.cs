@@ -18,19 +18,23 @@ namespace Weardian.Client.Infrastructure.Cryptography.KeyWrapping
         public WrappedKeyResult WrapKey(byte[] dataKey)
         {
             var kek = _provider.GetOrCreateKek();
-            var result = _encryptor.Encrypt(dataKey, kek);
+            var wrapResult = _encryptor.Encrypt(dataKey, kek)
+                ?? throw new InvalidOperationException();
 
             return new WrappedKeyResult(
                 Version: 1,
                 WrapAlgorithm: "AES-GCM",
                 WrappingKeyId: Guid.NewGuid(),
-                WrappedKeyTag: result.Tag,
-                WrappedKeyNonce: result.Nonce,
-                WrappedKeyCiphertext: result.Ciphertext);
+                WrappedKeyTag: wrapResult.Tag,
+                WrappedKeyNonce: wrapResult.Nonce,
+                WrappedKeyCiphertext: wrapResult.Ciphertext);
         }
         public byte[] UnwrapKey(EncryptedEnvelopeDto envelope)
         {
-            throw new NotImplementedException();
+            var kek = _provider.GetOrCreateKek();
+            var unWrapResult = _encryptor.Decrypt(envelope.Ciphertext, kek);
+
+            return unWrapResult;
         }
 
     }
