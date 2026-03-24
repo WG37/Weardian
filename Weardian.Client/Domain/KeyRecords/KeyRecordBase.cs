@@ -4,8 +4,8 @@
     {
         public Guid LocalId { get; }
         public Guid PublicId { get; protected set; }
-        public required string Name { get; set; }
-        public required KeyType KeyType { get; init; }
+        public string Name { get; set; }
+        public KeyType KeyType { get; init; }
         public KeyStatus KeyStatus { get; protected set; }
 
 
