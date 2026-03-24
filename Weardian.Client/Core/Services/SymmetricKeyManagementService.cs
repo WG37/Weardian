@@ -1,6 +1,8 @@
 ﻿using Weardian.Client.Core.DTOs.KeyDtos;
 using Weardian.Client.Core.Interfaces;
 using Weardian.Client.Core.Interfaces.Cryptography;
+using Weardian.Client.Domain.KeyRecords;
+using Weardian.Client.Domain.KeyRecords.Symmetric;
 
 namespace Weardian.Client.Core.Services
 {
@@ -12,10 +14,10 @@ namespace Weardian.Client.Core.Services
             _symmetricCryptoService = symmetricCryptoService;
         }
 
-        public async Task CreateSymmetricKeyAsync(string password)
+        public async Task CreateEncryptedPasswordAsync(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentNullException(nameof(password));
+                throw new ArgumentException(nameof(password));
 
             if (password.Length < 8)
                 throw new ArgumentOutOfRangeException(nameof(password), "Password must have a length of 8 or more characters.");
@@ -27,8 +29,27 @@ namespace Weardian.Client.Core.Services
             if (!hasUpper || !hasLower || !hasDigit)
                 throw new ArgumentException("Password must contain at least one upper, lower and a digit.");
 
-            var envelope = _symmetricCryptoService.CreateEncryptedEnvelope(password);
+            try
+            {
+                var envelope = _symmetricCryptoService.CreateEncryptedEnvelope(password);
 
+                var keyRecord = new SymmetricKeyRecord(envelope.WrappedKey.WrappedKeyCiphertext)
+                {
+                    EnvelopeId = envelope.EnvelopeId,
+                    EnvelopeVersion = envelope.WrappedKey.Version,
+                    WrapAlgorithm = envelope.WrappedKey.WrapAlgorithm,
+                    WrappingKeyId = envelope.WrappedKey.WrappingKeyId,
+                    WrappedKeyNonce = envelope.WrappedKey.WrappedKeyNonce,
+                    WrappedKeyTag = envelope.WrappedKey.WrappedKeyTag
+                };
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("Failed to create envelope.", ex);
+            }
+            
+            
             
         }
 
