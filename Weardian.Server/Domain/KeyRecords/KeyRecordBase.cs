@@ -1,8 +1,8 @@
 ﻿using Weardian.Server.Domain.Users;
 
-namespace Weardian.Server.Domain.Keys
+namespace Weardian.Server.Domain.KeyRecords
 {
-    public abstract class KeyBase
+    public abstract class KeyRecordBase
     {
         public Guid Id { get; private set; } 
         public Guid PublicId { get; protected set; }
@@ -15,7 +15,7 @@ namespace Weardian.Server.Domain.Keys
 
         public DateTime CreatedOn { get; protected set; }
 
-        protected KeyBase()
+        protected KeyRecordBase()
         {
             Id = Guid.NewGuid();
             PublicId = Guid.NewGuid();

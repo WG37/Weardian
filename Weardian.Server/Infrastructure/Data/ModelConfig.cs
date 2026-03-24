@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Weardian.Server.Domain.Keys.Symmetric;
+using Weardian.Server.Domain.KeyRecords.Symmetric;
 
 namespace Weardian.Server.Infrastructure.Data
 {
@@ -12,9 +12,9 @@ namespace Weardian.Server.Infrastructure.Data
 
         public static void ConfigureSymmetricKeys(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SymmetricKey>(e =>
+            modelBuilder.Entity<SymmetricKeyRecord>(e =>
             {
-                e.ToTable("SymmetricKeys");
+                e.ToTable("SymmetricKeyRecords");
                 e.HasKey(k => k.Id);
                 e.Property(k => k.Id).ValueGeneratedNever();
 

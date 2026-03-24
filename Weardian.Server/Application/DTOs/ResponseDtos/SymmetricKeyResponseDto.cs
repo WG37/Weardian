@@ -1,5 +1,5 @@
 ﻿using Weardian.Server.Application.DTOs.CryptographyDtos;
-using Weardian.Server.Domain.Keys;
+using Weardian.Server.Domain.KeyRecords;
 
 namespace Weardian.Server.Application.DTOs.ResponseDtos
 {

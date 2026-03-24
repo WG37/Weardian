@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Weardian.Server.Domain.Keys.Symmetric;
+using Weardian.Server.Domain.KeyRecords.Symmetric;
 
 namespace Weardian.Server.Domain.Users
 {
@@ -7,6 +7,6 @@ namespace Weardian.Server.Domain.Users
     {
         public string DisplayName { get; set; }
 
-        public ICollection<SymmetricKey> Keys { get; set; } = new List<SymmetricKey>();
+        public ICollection<SymmetricKeyRecord> Keys { get; set; } = new List<SymmetricKeyRecord>();
     }
 }

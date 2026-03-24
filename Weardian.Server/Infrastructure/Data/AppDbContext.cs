@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Weardian.Server.Domain.Keys.Symmetric;
+using Weardian.Server.Domain.KeyRecords.Symmetric;
 using Weardian.Server.Domain.Users;
 
 namespace Weardian.Server.Infrastructure.Data
@@ -9,7 +9,7 @@ namespace Weardian.Server.Infrastructure.Data
     {
         public AppDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<SymmetricKey> SymmetricKeys { get; set; }
+        public DbSet<SymmetricKeyRecord> SymmetricKeyRecords { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

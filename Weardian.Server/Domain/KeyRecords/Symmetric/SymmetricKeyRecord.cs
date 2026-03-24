@@ -1,6 +1,6 @@
-﻿namespace Weardian.Server.Domain.Keys.Symmetric
+﻿namespace Weardian.Server.Domain.KeyRecords.Symmetric
 {
-    public class SymmetricKey : KeyBase
+    public class SymmetricKeyRecord : KeyRecordBase
     {
         public ReadOnlyMemory<byte> Ciphertext { get; private set; } = default!;
         public int KeyLength => Ciphertext.Length * 8;
@@ -11,7 +11,7 @@
         public required byte[] Tag { get; init; }
         public required byte[] Nonce { get; init; }
 
-        public SymmetricKey(byte[] ciphertext)
+        public SymmetricKeyRecord(byte[] ciphertext)
         {
             if (ciphertext == null || ciphertext.Length < 16)
                 throw new ArgumentException("Ciphertext must be 16 bytes or larger.");
@@ -19,6 +19,6 @@
             Ciphertext = new ReadOnlyMemory<byte>((byte[])ciphertext.Clone());
         }
 
-        protected SymmetricKey() { }
+        protected SymmetricKeyRecord() { }
     }
 }

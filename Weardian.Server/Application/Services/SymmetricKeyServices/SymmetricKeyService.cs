@@ -2,8 +2,8 @@
 using Weardian.Server.Application.DTOs.RequestDtos;
 using Weardian.Server.Application.DTOs.ResponseDtos;
 using Weardian.Server.Application.Interfaces;
-using Weardian.Server.Domain.Keys;
-using Weardian.Server.Domain.Keys.Symmetric;
+using Weardian.Server.Domain.KeyRecords.Symmetric;
+using Weardian.Server.Domain.KeyRecords;
 
 namespace Weardian.Server.Application.Services.SymmetricKeyServices
 {
@@ -24,7 +24,7 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
 
                 throw new ArgumentException("Invalid KeyType", nameof(req.KeyType));
 
-            var key = new SymmetricKey(req.Envelope.Ciphertext)
+            var key = new SymmetricKeyRecord(req.Envelope.Ciphertext)
             {
                 Name = req.Name,
                 KeyType = req.KeyType,

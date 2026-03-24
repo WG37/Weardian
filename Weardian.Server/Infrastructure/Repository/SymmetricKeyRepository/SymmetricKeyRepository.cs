@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Weardian.Server.Application.Interfaces;
-using Weardian.Server.Domain.Keys.Symmetric;
+using Weardian.Server.Domain.KeyRecords.Symmetric;
 using Weardian.Server.Infrastructure.Data;
 
 namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
@@ -13,16 +13,16 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
         {
             _db = db;
         }
-        public async Task AddAsync(SymmetricKey key)
+        public async Task AddAsync(SymmetricKeyRecord key)
         {
-            _db.SymmetricKeys.Add(key);
+            _db.SymmetricKeyRecords.Add(key);
 
             await _db.SaveChangesAsync();
         }
 
-        public async Task<SymmetricKey> GetByIdAsync(string userId, Guid publicId)
+        public async Task<SymmetricKeyRecord> GetByIdAsync(string userId, Guid publicId)
         {
-            var key = await _db.SymmetricKeys
+            var key = await _db.SymmetricKeyRecords
                 .SingleOrDefaultAsync(k => k.UserId == userId && k.PublicId == publicId);
 
             if (key == null)
@@ -31,22 +31,22 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
             return key;    
         }
 
-        public async Task<IEnumerable<SymmetricKey>> GetAllAsync(string userId)
+        public async Task<IEnumerable<SymmetricKeyRecord>> GetAllAsync(string userId)
         {
-            var keys = await _db.SymmetricKeys.Where(k => k.UserId == userId).ToListAsync();
+            var keys = await _db.SymmetricKeyRecords.Where(k => k.UserId == userId).ToListAsync();
 
             return keys;
         }
 
         public async Task<bool> RemoveByIdAsync(string userId, Guid publicId)
         {
-            var key = await _db.SymmetricKeys
+            var key = await _db.SymmetricKeyRecords
                 .SingleOrDefaultAsync(k => k.UserId == userId && k.PublicId == publicId);
 
             if (key == null)
                 return false;
 
-            _db.SymmetricKeys.Remove(key);
+            _db.SymmetricKeyRecords.Remove(key);
             await _db.SaveChangesAsync();
 
             return true;
