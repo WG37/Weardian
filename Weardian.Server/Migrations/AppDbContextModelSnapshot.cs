@@ -160,10 +160,6 @@ namespace Weardian.Server.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<byte[]>("Ciphertext")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -181,16 +177,8 @@ namespace Weardian.Server.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
-                    b.Property<byte[]>("Nonce")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<Guid>("PublicId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("Tag")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -199,6 +187,18 @@ namespace Weardian.Server.Migrations
                     b.Property<string>("WrapAlgorithm")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("WrappedKeyCiphertext")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("WrappedKeyNonce")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("WrappedKeyTag")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<Guid>("WrappingKeyId")
                         .HasColumnType("uniqueidentifier");

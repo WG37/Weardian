@@ -31,7 +31,7 @@ namespace Weardian.Server.Infrastructure.Data
 
                 e.Property(k => k.CreatedOn).IsRequired();
 
-                e.Property(k => k.Ciphertext).IsRequired()
+                e.Property(k => k.WrappedKeyCiphertext).IsRequired()
                     .HasConversion(
                     b => b.ToArray(),
                     b => new ReadOnlyMemory<byte>(b));
@@ -44,8 +44,8 @@ namespace Weardian.Server.Infrastructure.Data
                 e.Property(k => k.WrappingKeyId).IsRequired().ValueGeneratedNever();
                 e.HasIndex(k => k.WrappingKeyId);
 
-                e.Property(k => k.Tag).IsRequired();
-                e.Property(k => k.Nonce).IsRequired();
+                e.Property(k => k.WrappedKeyTag).IsRequired();
+                e.Property(k => k.WrappedKeyNonce).IsRequired();
             });
         }
     }

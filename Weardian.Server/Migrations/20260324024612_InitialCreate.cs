@@ -6,18 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Weardian.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdentityUser : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "UserId",
-                table: "SymmetricKeys",
-                type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "");
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -37,8 +30,7 @@ namespace Weardian.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -165,10 +157,34 @@ namespace Weardian.Server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_SymmetricKeys_UserId",
-                table: "SymmetricKeys",
-                column: "UserId");
+            migrationBuilder.CreateTable(
+                name: "SymmetricKeyRecords",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WrappedKeyCiphertext = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    EnvelopeVersion = table.Column<int>(type: "int", nullable: false),
+                    WrapAlgorithm = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WrappingKeyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WrappedKeyTag = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    WrappedKeyNonce = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    KeyType = table.Column<int>(type: "int", nullable: false),
+                    KeyStatus = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SymmetricKeyRecords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SymmetricKeyRecords_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -209,22 +225,26 @@ namespace Weardian.Server.Migrations
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_SymmetricKeys_AspNetUsers_UserId",
-                table: "SymmetricKeys",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.CreateIndex(
+                name: "IX_SymmetricKeyRecords_PublicId",
+                table: "SymmetricKeyRecords",
+                column: "PublicId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SymmetricKeyRecords_UserId",
+                table: "SymmetricKeyRecords",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SymmetricKeyRecords_WrappingKeyId",
+                table: "SymmetricKeyRecords",
+                column: "WrappingKeyId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_SymmetricKeys_AspNetUsers_UserId",
-                table: "SymmetricKeys");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -241,18 +261,13 @@ namespace Weardian.Server.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "SymmetricKeyRecords");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropIndex(
-                name: "IX_SymmetricKeys_UserId",
-                table: "SymmetricKeys");
-
-            migrationBuilder.DropColumn(
-                name: "UserId",
-                table: "SymmetricKeys");
         }
     }
 }
