@@ -1,15 +1,9 @@
-﻿namespace Weardian.Client.Core.DTOs.CryptographyDtos
+﻿
+
+namespace Weardian.Client.Core.DTOs.CryptographyDtos
 {
     internal sealed record EncryptedEnvelopeDto(
-        int Version,
-        string WrapAlgorithm,
-        Guid WrappingKeyId,
-
-        byte[] WrappedKeyCiphertext,
-        byte[] WrappedKeyTag,
-        byte[] WrappedKeyNonce,
-
-        byte[] Ciphertext,
-        byte[] Tag,
-        byte[] Nonce);
+        Guid EnvelopeId,
+        WrappedKeyDto WrappedKey,
+        EncryptedDataDto EncryptedData);
 }
