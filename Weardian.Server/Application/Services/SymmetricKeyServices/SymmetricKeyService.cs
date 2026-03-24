@@ -30,8 +30,8 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 KeyType = req.KeyType,
                 WrapAlgorithm = req.Envelope.WrapAlgorithm,
                 WrappingKeyId = req.Envelope.WrappingKeyId,
-                Tag = req.Envelope.Tag,
-                Nonce = req.Envelope.Nonce,
+                WrappedKeyTag = req.Envelope.Tag,
+                WrappedKeyNonce = req.Envelope.Nonce,
                 UserId = userId
             };
 
@@ -47,9 +47,9 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                     key.EnvelopeVersion,
                     key.WrapAlgorithm,
                     key.WrappingKeyId,
-                    key.Ciphertext.ToArray(),
-                    key.Tag,
-                    key.Nonce
+                    key.WrappedKeyCiphertext.ToArray(),
+                    key.WrappedKeyTag,
+                    key.WrappedKeyNonce
             ),
                 key.CreatedOn);
         }
@@ -68,9 +68,9 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                     key.EnvelopeVersion,
                     key.WrapAlgorithm,
                     key.WrappingKeyId,
-                    key.Ciphertext.ToArray(),
-                    key.Tag,
-                    key.Nonce),
+                    key.WrappedKeyCiphertext.ToArray(),
+                    key.WrappedKeyTag,
+                    key.WrappedKeyNonce),
                 key.CreatedOn);
         }
 
@@ -88,9 +88,9 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                     k.EnvelopeVersion,
                     k.WrapAlgorithm,
                     k.WrappingKeyId,
-                    k.Ciphertext.ToArray(),
-                    k.Tag,
-                    k.Nonce),
+                    k.WrappedKeyCiphertext.ToArray(),
+                    k.WrappedKeyTag,
+                    k.WrappedKeyNonce),
                 CreatedOn: k.CreatedOn)).ToList();
         }
 
