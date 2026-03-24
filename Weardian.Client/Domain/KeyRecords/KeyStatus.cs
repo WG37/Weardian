@@ -1,4 +1,4 @@
-﻿namespace Weardian.Client.Domain.Keys
+﻿namespace Weardian.Client.Domain.KeyRecords
 {
     public enum KeyStatus { Active, Disabled, Suspended }
 }

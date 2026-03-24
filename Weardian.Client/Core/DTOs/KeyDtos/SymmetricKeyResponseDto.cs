@@ -1,5 +1,5 @@
 ﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
-using Weardian.Client.Domain.Keys;
+using Weardian.Client.Domain.KeyRecords;
 
 namespace Weardian.Client.Core.DTOs.KeyDtos
 {

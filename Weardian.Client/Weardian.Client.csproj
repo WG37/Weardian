@@ -9,7 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Presentation\" />
+    <Page Remove="Presentation\App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="Presentation\App.xaml" />
   </ItemGroup>
 
   <ItemGroup>

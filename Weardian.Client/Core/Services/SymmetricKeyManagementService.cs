@@ -1,7 +1,6 @@
 ﻿using Weardian.Client.Core.DTOs.KeyDtos;
 using Weardian.Client.Core.Interfaces;
 using Weardian.Client.Core.Interfaces.Cryptography;
-using Weardian.Client.Domain.Keys.Symmetric;
 
 namespace Weardian.Client.Core.Services
 {
@@ -30,10 +29,7 @@ namespace Weardian.Client.Core.Services
 
             var envelope = _symmetricCryptoService.CreateEncryptedEnvelope(password);
 
-            var keyRecord = new SymmetricKey()
-            {
-
-            };
+            
         }
 
         public async Task<SymmetricKeyResponseDto> GetKeyByIdAsync(Guid localId)

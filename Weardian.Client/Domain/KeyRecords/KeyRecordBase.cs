@@ -1,6 +1,6 @@
-﻿namespace Weardian.Client.Domain.Keys
+﻿namespace Weardian.Client.Domain.KeyRecords
 {
-    internal abstract class KeyBase
+    internal abstract class KeyRecordBase
     {
         public Guid LocalId { get; }
         public Guid PublicId { get; protected set; }
@@ -11,7 +11,7 @@
 
         public DateTime CreatedOn { get; protected set; }
 
-        protected KeyBase()
+        protected KeyRecordBase()
         {
             LocalId = Guid.NewGuid();
             KeyStatus = KeyStatus.Active;
