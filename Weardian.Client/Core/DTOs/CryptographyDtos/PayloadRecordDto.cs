@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Client.Core.DTOs.CryptographyDtos
 {
-    internal sealed record EncryptedDataDto(
+    internal sealed record PayloadRecordDto(
         byte[] Nonce,
         byte[] Tag,
         byte[] Ciphertext);
