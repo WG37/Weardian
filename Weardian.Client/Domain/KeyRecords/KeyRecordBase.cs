@@ -2,8 +2,7 @@
 {
     internal abstract class KeyRecordBase
     {
-        public Guid LocalId { get; }
-        public Guid PublicId { get; protected set; }
+
         public string Name { get; set; }
         public KeyType KeyType { get; init; }
         public KeyStatus KeyStatus { get; protected set; }
@@ -13,7 +12,6 @@
 
         protected KeyRecordBase()
         {
-            LocalId = Guid.NewGuid();
             KeyStatus = KeyStatus.Active;
             CreatedOn = DateTime.UtcNow;
         }

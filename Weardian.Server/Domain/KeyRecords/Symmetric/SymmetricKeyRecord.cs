@@ -5,6 +5,7 @@
         public ReadOnlyMemory<byte> WrappedKeyCiphertext { get; private set; } = default!;
         public int KeyLength => WrappedKeyCiphertext.Length * 8;
 
+        public Guid EnvelopeId { get; init; }
         public int EnvelopeVersion { get; init; } = 1;
         public required string WrapAlgorithm { get; init; }
         public required Guid WrappingKeyId { get; init; }
