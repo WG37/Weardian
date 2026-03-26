@@ -18,7 +18,7 @@ namespace Weardian.Server.Infrastructure.Data
                 e.HasKey(k => k.Id);
                 e.Property(k => k.Id).ValueGeneratedNever();
 
-                e.HasIndex(k => k.PublicId).IsUnique();
+                e.HasIndex(k => k.EnvelopeId).IsUnique();
 
                 e.Property(k => k.Name).IsRequired().HasMaxLength(32);
                 e.Property(k => k.KeyType).IsRequired();
