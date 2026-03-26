@@ -43,7 +43,7 @@ namespace Weardian.Client.Infrastructure.Cryptography
                 wrappedResults.WrappedKeyCiphertext,
                 wrappedResults.WrappedKeyTag,
                 wrappedResults.WrappedKeyNonce),
-                new EncryptedDataDto(
+                new PayloadRecordDto(
                 encryptedResults.Ciphertext,
                 encryptedResults.Tag,
                 encryptedResults.Nonce));
