@@ -4,5 +4,5 @@ namespace Weardian.Server.Application.DTOs.RequestDtos
 {
     public sealed record GetSymmetricKeyRequestDto(
         [Required]
-        Guid PublicID);
+        Guid EnvelopeId);
 }

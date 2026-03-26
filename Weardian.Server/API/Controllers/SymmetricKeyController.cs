@@ -22,8 +22,8 @@ namespace Weardian.Server.API.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet("{publicId:guid}")]
-        public async Task<ActionResult<SymmetricKeyResponseDto>> GetKeyById(Guid publicId)
+        [HttpGet("{envelopeId:guid}")]
+        public async Task<ActionResult<SymmetricKeyResponseDto>> GetKeyById(Guid envelopeId)
         {
             try
             {
@@ -31,8 +31,8 @@ namespace Weardian.Server.API.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var key = await _service.GetKeyById(userId, publicId);
-                return Ok(key);
+                var keyRecord = await _service.GetKeyById(userId, envelopeId);
+                return Ok(keyRecord);
             }
             catch (KeyNotFoundException e)
             {
@@ -48,8 +48,8 @@ namespace Weardian.Server.API.Controllers
             if (userId == null)
                 return Unauthorized();
 
-            var keys = await _service.GetKeys(userId);
-            return Ok(keys);
+            var keyRecords = await _service.GetKeys(userId);
+            return Ok(keyRecords);
         
         }
 
@@ -62,8 +62,8 @@ namespace Weardian.Server.API.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var key = await _service.CreateKey(req, userId);
-                return CreatedAtAction(nameof(GetKeyById), new { publicId = key.PublicId }, key);
+                var keyRecord = await _service.CreateKey(req, userId);
+                return CreatedAtAction(nameof(GetKeyById), new { publicId = keyRecord.EnvelopeId }, keyRecord);
             }
             catch (ArgumentException e)
             {
@@ -71,14 +71,14 @@ namespace Weardian.Server.API.Controllers
             }
         }
 
-        [HttpDelete("{publicId:guid}")]
-        public async Task<ActionResult> RemoveSymmetricKey(Guid publicId)
+        [HttpDelete("{envelopeId:guid}")]
+        public async Task<ActionResult> RemoveSymmetricKey(Guid envelopeId)
         {
             var userId = _userManager.GetUserId(User)!;
             if (userId == null)
                 return Unauthorized();
 
-            var deleted = await _service.RemoveKeyById(userId, publicId);
+            var deleted = await _service.RemoveKeyById(userId, envelopeId);
             if (!deleted)
                 return NotFound();
 

@@ -24,7 +24,7 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
 
                 throw new ArgumentException("Invalid KeyType", nameof(req.KeyType));
 
-            var key = new SymmetricKeyRecord(req.Envelope.Ciphertext)
+            var keyRecord = new SymmetricKeyRecord(req.Envelope.Ciphertext)
             {
                 Name = req.Name,
                 KeyType = req.KeyType,
@@ -35,51 +35,51 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 UserId = userId
             };
 
-            await _keyRepository.AddAsync(key);
+            await _keyRepository.AddAsync(keyRecord);
 
             return new SymmetricKeyResponseDto(
-                key.PublicId,
-                key.Name,
-                key.KeyType,
-                key.KeyStatus,
-                key.KeyLength,
+                keyRecord.EnvelopeId,
+                keyRecord.Name,
+                keyRecord.KeyType,
+                keyRecord.KeyStatus,
+                keyRecord.KeyLength,
                 new EncryptedEvelopeResponseDto(
-                    key.EnvelopeVersion,
-                    key.WrapAlgorithm,
-                    key.WrappingKeyId,
-                    key.WrappedKeyCiphertext.ToArray(),
-                    key.WrappedKeyTag,
-                    key.WrappedKeyNonce
+                    keyRecord.EnvelopeVersion,
+                    keyRecord.WrapAlgorithm,
+                    keyRecord.WrappingKeyId,
+                    keyRecord.WrappedKeyCiphertext.ToArray(),
+                    keyRecord.WrappedKeyTag,
+                    keyRecord.WrappedKeyNonce
             ),
-                key.CreatedOn);
+                keyRecord.CreatedOn);
         }
 
-        public async Task<SymmetricKeyResponseDto> GetKeyById(string userId, Guid publicId)
+        public async Task<SymmetricKeyResponseDto> GetKeyById(string userId, Guid envelopeId)
         {
-            var key = await _keyRepository.GetByIdAsync(userId, publicId);
+            var keyRecord = await _keyRepository.GetByIdAsync(userId, envelopeId);
 
             return new SymmetricKeyResponseDto(
-                key.PublicId,
-                key.Name,
-                key.KeyType,
-                key.KeyStatus,
-                key.KeyLength,
+                keyRecord.EnvelopeId,
+                keyRecord.Name,
+                keyRecord.KeyType,
+                keyRecord.KeyStatus,
+                keyRecord.KeyLength,
                 new EncryptedEvelopeResponseDto(
-                    key.EnvelopeVersion,
-                    key.WrapAlgorithm,
-                    key.WrappingKeyId,
-                    key.WrappedKeyCiphertext.ToArray(),
-                    key.WrappedKeyTag,
-                    key.WrappedKeyNonce),
-                key.CreatedOn);
+                    keyRecord.EnvelopeVersion,
+                    keyRecord.WrapAlgorithm,
+                    keyRecord.WrappingKeyId,
+                    keyRecord.WrappedKeyCiphertext.ToArray(),
+                    keyRecord.WrappedKeyTag,
+                    keyRecord.WrappedKeyNonce),
+                keyRecord.CreatedOn);
         }
 
         public async Task<List<SymmetricKeyResponseDto>> GetKeys(string userId)
         {
-            var keys = await _keyRepository.GetAllAsync(userId);
+            var keyRecords = await _keyRepository.GetAllAsync(userId);
 
-            return keys.Select(k => new SymmetricKeyResponseDto(
-                PublicId: k.PublicId,
+            return keyRecords.Select(k => new SymmetricKeyResponseDto(
+                EnvelopeId: k.EnvelopeId,
                 Name: k.Name,
                 KeyType: k.KeyType,
                 KeyStatus: k.KeyStatus,
@@ -94,9 +94,9 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 CreatedOn: k.CreatedOn)).ToList();
         }
 
-        public Task<bool> RemoveKeyById(string userId, Guid publicId)
+        public Task<bool> RemoveKeyById(string userId, Guid envelopeId)
         {
-            return _keyRepository.RemoveByIdAsync(userId, publicId);
+            return _keyRepository.RemoveByIdAsync(userId, envelopeId);
         }
     }
 }

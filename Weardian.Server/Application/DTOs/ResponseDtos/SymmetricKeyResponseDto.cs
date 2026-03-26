@@ -4,7 +4,7 @@ using Weardian.Server.Domain.KeyRecords;
 namespace Weardian.Server.Application.DTOs.ResponseDtos
 {
     public sealed record SymmetricKeyResponseDto(
-        Guid PublicId,
+        Guid EnvelopeId,
         string Name,
         KeyType KeyType,
         KeyStatus KeyStatus,

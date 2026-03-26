@@ -20,10 +20,10 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
             await _db.SaveChangesAsync();
         }
 
-        public async Task<SymmetricKeyRecord> GetByIdAsync(string userId, Guid publicId)
+        public async Task<SymmetricKeyRecord> GetByIdAsync(string userId, Guid envelopeId)
         {
             var key = await _db.SymmetricKeyRecords
-                .SingleOrDefaultAsync(k => k.UserId == userId && k.PublicId == publicId);
+                .SingleOrDefaultAsync(k => k.UserId == userId && k.EnvelopeId == envelopeId);
 
             if (key == null)
                 throw new KeyNotFoundException("publicId does not exist on database");
@@ -41,7 +41,7 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
         public async Task<bool> RemoveByIdAsync(string userId, Guid publicId)
         {
             var key = await _db.SymmetricKeyRecords
-                .SingleOrDefaultAsync(k => k.UserId == userId && k.PublicId == publicId);
+                .SingleOrDefaultAsync(k => k.UserId == userId && k.EnvelopeId == publicId);
 
             if (key == null)
                 return false;
