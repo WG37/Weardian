@@ -32,7 +32,7 @@ namespace Weardian.Client.Infrastructure.Cryptography.KeyWrapping
         public byte[] UnwrapKey(EncryptedEnvelopeDto envelope)
         {
             var kek = _provider.GetOrCreateKek();
-            var unWrapResult = _encryptor.Decrypt(envelope.Ciphertext, kek);
+            var unWrapResult = _encryptor.Decrypt(envelope.WrappedKey.WrappedKeyCiphertext, kek);
 
             return unWrapResult;
         }

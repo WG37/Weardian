@@ -10,7 +10,7 @@ namespace Weardian.Client.Infrastructure.Storage.Atomic
             Directory.CreateDirectory(Path.GetDirectoryName(path)
                 ?? throw new InvalidOperationException("Failed to resolve the specified path."));
 
-            var tmp = path + ".tmp";
+            var tmp = path + "." + Guid.NewGuid().ToString("N") + "tmp";
 
             await File.WriteAllTextAsync(tmp, data, new UTF8Encoding(false));
 

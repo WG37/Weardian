@@ -5,7 +5,7 @@ namespace Weardian.Client.Core.Services
 {
     internal class SymmetricKeyRepository : ISymmetricKeyRepository
     {
-        public Task AddKeyAsync(SymmetricKeyRecord key)
+        public Task AddKeyAsync(SymmetricKeyRecord keyRecord)
         {
             throw new NotImplementedException();
         }

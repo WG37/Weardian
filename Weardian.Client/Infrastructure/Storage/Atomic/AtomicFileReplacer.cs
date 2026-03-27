@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq.Expressions;
 
 namespace Weardian.Client.Infrastructure.Storage.Atomic
 {
@@ -6,13 +7,12 @@ namespace Weardian.Client.Infrastructure.Storage.Atomic
     {
         public static void ReplaceFile(string tempPath, string path)
         {
-            if (File.Exists(path))
+            try
             {
                 File.Replace(tempPath, path, null);
             }
-            else
+            catch (FileNotFoundException)
             {
-
                 File.Move(tempPath, path);
             }
         }

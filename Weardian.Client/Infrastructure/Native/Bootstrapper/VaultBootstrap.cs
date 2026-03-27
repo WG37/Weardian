@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Weardian.Client.Infrastructure.Cryptography.KeyWrapping;
 using Weardian.Client.Infrastructure.Native.PathBuilder;
 using Weardian.Client.Infrastructure.Repositories.DTOs;
 using Weardian.Client.Infrastructure.Serialization;
@@ -16,6 +15,7 @@ namespace Weardian.Client.Infrastructure.Native.Bootstrapper
             Directory.CreateDirectory(AppDataPaths.RootDir);
             Directory.CreateDirectory(AppDataPaths.VaultDir);
             Directory.CreateDirectory(AppDataPaths.KeysDir);
+            Directory.CreateDirectory(AppDataPaths.BlobsDir);
 
             if (!File.Exists(AppDataPaths.SettingsPath))
             {

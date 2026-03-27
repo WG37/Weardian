@@ -3,6 +3,7 @@ using Weardian.Client.Core.Interfaces;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Domain.KeyRecords;
 using Weardian.Client.Domain.KeyRecords.Symmetric;
+using Weardian.Client.Domain.PayloadRecords;
 
 namespace Weardian.Client.Core.Services
 {
@@ -41,6 +42,13 @@ namespace Weardian.Client.Core.Services
                     WrappingKeyId = envelope.WrappedKey.WrappingKeyId,
                     WrappedKeyNonce = envelope.WrappedKey.WrappedKeyNonce,
                     WrappedKeyTag = envelope.WrappedKey.WrappedKeyTag
+                };
+
+                var payloadRecord = new PayloadRecord(envelope.Payload.Ciphertext)
+                {
+                    EnvelopeId = envelope.EnvelopeId,
+                    Nonce = envelope.Payload.Nonce,
+                    Tag = envelope.Payload.Tag
                 };
 
             }

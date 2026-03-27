@@ -5,7 +5,7 @@ namespace Weardian.Client.Infrastructure.Cryptography.Encryption
 {
     internal class AesEncryptor : IAesEncryptor
     {
-        public EncryptionResult Encrypt(byte[] plaintext, byte[] key)
+        public PayloadResult Encrypt(byte[] plaintext, byte[] key)
         {
             var nonce = new byte[12];
             RandomNumberGenerator.Fill(nonce);
@@ -18,7 +18,7 @@ namespace Weardian.Client.Infrastructure.Cryptography.Encryption
                 aes.Encrypt(nonce, plaintext, ciphertext, tag);
             }
 
-            return new EncryptionResult(
+            return new PayloadResult(
                 Nonce: nonce,
                 Tag: tag,
                 Ciphertext: ciphertext);

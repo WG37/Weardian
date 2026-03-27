@@ -4,6 +4,6 @@ namespace Weardian.Client.Core.Interfaces
 {
     internal interface ISymmetricKeyRepository
     {
-        public Task AddKeyAsync(SymmetricKeyRecord key);
+        public Task AddKeyAsync(SymmetricKeyRecord keyRecord);
     }
 }

@@ -17,7 +17,10 @@ namespace Weardian.Client.Infrastructure.Native.PathBuilder
             Path.Combine(RootDir, VaultFolder);
 
         public static string KeysDir =>
-            Path.Combine(VaultDir, "Keys");
+            Path.Combine(VaultDir, "keys");
+
+        public static string BlobsDir =>
+            Path.Combine(VaultDir, "blobs");
 
         public static string DataProtectionDir =>
             Path.Combine(RootDir, "Data", "Dpapi");
@@ -31,7 +34,10 @@ namespace Weardian.Client.Infrastructure.Native.PathBuilder
         public static string KekPath =>
             Path.Combine(DataProtectionDir, "kek.bin");
 
-        public static string EncryptedKeyBlob(Guid localId) =>
-            Path.Combine(KeysDir, $"{localId}.enc");
+        public static string BlobPath(Guid envelopeId) =>
+            Path.Combine(BlobsDir, $"{envelopeId}.blob");
+
+        public static string KeyRecordPath(Guid envelopeId) =>
+            Path.Combine(KeysDir, $"{envelopeId}.enc");
     }
 }
