@@ -2,8 +2,9 @@
 {
     internal interface IKekProvider
     {
-        public byte[] CreateKek();
         public byte[] GetKek();
-        public byte[] GetOrCreateKek();
+        public Task<byte[]> CreateKekAsync();
+        public Task<byte[]> GetOrCreateKekAsync();
+        public Guid GetKekId();
     }
 }

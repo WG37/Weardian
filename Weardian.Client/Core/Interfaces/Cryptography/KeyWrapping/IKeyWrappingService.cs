@@ -5,7 +5,7 @@ namespace Weardian.Client.Core.Interfaces.Cryptography.KeyWrapping
 {
     internal interface IKeyWrappingService
     {
-        public WrappedKeyResult WrapKey(byte[] dataKey);
-        public byte[] UnwrapKey(EncryptedEnvelopeDto envelope);
+        public Task<WrappedKeyResult> WrapKey(byte[] dataKey);
+        public Task<byte[]> UnwrapKey(EncryptedEnvelopeDto envelope);
     }
 }
