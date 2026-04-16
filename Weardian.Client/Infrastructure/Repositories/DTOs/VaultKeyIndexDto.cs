@@ -1,4 +1,4 @@
-﻿using Weardian.Client.Domain.KeyRecords;
+﻿using Weardian.Client.Domain.Enums;
 
 namespace Weardian.Client.Infrastructure.Repositories.DTOs
 {

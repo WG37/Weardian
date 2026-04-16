@@ -7,7 +7,7 @@ namespace Weardian.Server.Application.Interfaces
     {
         public Task<SymmetricKeyResponseDto> CreateKey(CreateSymmetricKeyRequestDto keyBytes, string userId);
         public Task<SymmetricKeyResponseDto> GetKeyById(string userId, Guid envelopeId);
-        public Task<List<SymmetricKeyResponseDto>> GetKeys(string userId);
+        public Task<IReadOnlyList<SymmetricKeyResponseDto>> GetKeys(string userId);
         public Task<bool> RemoveKeyById(string userId, Guid envelopeId);
     }
 }

@@ -5,6 +5,6 @@ namespace Weardian.Client.Core.Interfaces.Cryptography.Encryption
     internal interface IAesEncryptor
     {
         public PayloadResult Encrypt(byte[] plaintext, byte[] key);
-        public byte[] Decrypt(byte[] ciphertext, byte[] key);
+        public byte[] Decrypt(byte[] ciphertext, byte[] key, byte[] nonce, byte[] tag);
     }
 }

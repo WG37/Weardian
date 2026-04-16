@@ -31,6 +31,9 @@ namespace Weardian.Client.Infrastructure.Native.PathBuilder
         public static string VaultIndexPath =>
             Path.Combine(VaultDir, "vault.json");
 
+        public static string KekMetadataPath =>
+            Path.Combine(DataProtectionDir, "kek.json");
+
         public static string KekPath =>
             Path.Combine(DataProtectionDir, "kek.bin");
 

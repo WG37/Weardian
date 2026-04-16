@@ -15,24 +15,34 @@ namespace Weardian.Client.Infrastructure.Cryptography.KeyWrapping
             _provider  = provider;
         }
 
-        public WrappedKeyResult WrapKey(byte[] dataKey)
+        public async Task<WrappedKeyResult> WrapKey(byte[] dataKey)
         {
-            var kek = _provider.GetOrCreateKek();
+            var kek = await _provider.GetOrCreateKekAsync();
             var wrapResult = _encryptor.Encrypt(dataKey, kek)
                 ?? throw new InvalidOperationException();
 
             return new WrappedKeyResult(
                 Version: 1,
                 WrapAlgorithm: "AES-GCM",
-                WrappingKeyId: Guid.NewGuid(),
+                WrappingKeyId: _provider.GetKekId(),
                 WrappedKeyTag: wrapResult.Tag,
                 WrappedKeyNonce: wrapResult.Nonce,
                 WrappedKeyCiphertext: wrapResult.Ciphertext);
         }
-        public byte[] UnwrapKey(EncryptedEnvelopeDto envelope)
+        public async Task<byte[]> UnwrapKey(EncryptedEnvelopeDto envelope)
         {
-            var kek = _provider.GetOrCreateKek();
-            var unWrapResult = _encryptor.Decrypt(envelope.WrappedKey.WrappedKeyCiphertext, kek);
+            var currentKekId = _provider.GetKekId();
+            
+            if (envelope.WrappedKey.WrappingKeyId != currentKekId)
+                throw new InvalidOperationException("Wrapped key does not match the stored Kek.");
+
+            var kek = await _provider.GetOrCreateKekAsync();
+
+            var unWrapResult = _encryptor.Decrypt(
+                envelope.WrappedKey.WrappedKeyCiphertext,
+                kek,
+                envelope.WrappedKey.WrappedKeyNonce,
+                envelope.WrappedKey.WrappedKeyTag); 
 
             return unWrapResult;
         }

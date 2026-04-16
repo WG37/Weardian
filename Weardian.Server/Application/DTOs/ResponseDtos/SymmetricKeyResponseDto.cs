@@ -9,6 +9,6 @@ namespace Weardian.Server.Application.DTOs.ResponseDtos
         KeyType KeyType,
         KeyStatus KeyStatus,
         int KeyLength,
-        EncryptedEvelopeResponseDto Envelope,
+        EncryptedEnvelopeResponseDto Envelope,
         DateTime CreatedOn);
 }

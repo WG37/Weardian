@@ -10,9 +10,21 @@ namespace Weardian.Client.Infrastructure.Storage.Atomic
             Directory.CreateDirectory(Path.GetDirectoryName(path)
                 ?? throw new InvalidOperationException("Failed to resolve the specified path."));
 
-            var tmp = path + "." + Guid.NewGuid().ToString("N") + "tmp";
+            var tmp = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
 
             await File.WriteAllTextAsync(tmp, data, new UTF8Encoding(false));
+
+            AtomicFileReplacer.ReplaceFile(tmp, path);
+        }
+
+        public static async Task WriteToFileAsync(string path, byte[] data)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path)
+                ?? throw new InvalidOperationException("Failed to resolve the specified path."));
+
+            var tmp = path + "." + Guid.NewGuid().ToString("N") + ".tmp";
+
+            await File.WriteAllBytesAsync(tmp, data);
 
             AtomicFileReplacer.ReplaceFile(tmp, path);
         }

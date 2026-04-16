@@ -1,9 +1,13 @@
-﻿using Weardian.Client.Domain.KeyRecords.Symmetric;
+﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
+using Weardian.Client.Domain.KeyRecords.Symmetric;
+using Weardian.Client.Domain.PayloadRecords;
 
 namespace Weardian.Client.Core.Interfaces
 {
     internal interface ISymmetricKeyRepository
     {
-        public Task AddKeyAsync(SymmetricKeyRecord keyRecord);
+        public Task AddLocalRecordsAsync(SymmetricKeyRecord keyRecord, PayloadRecord payloadRecord);
+        public Task<IReadOnlyList<EncryptedPayloadRecordDto>> GetLocalPayloadRecordsAsync();
+
     }
 }

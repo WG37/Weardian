@@ -4,9 +4,9 @@ namespace Weardian.Client.Core.Interfaces
 {
     internal interface ISymmetricKeyManagementService
     {
-        public Task CreateEncryptedPasswordAsync(string password);
-        public Task<SymmetricKeyResponseDto> GetKeyByIdAsync(Guid localId);
-        public Task<SymmetricKeyResponseDto> GetKeysAsync();
+        public Task CreateEncryptedPasswordAsync(string keyName, string password);
+        public Task<SymmetricPayloadResponseDto> GetKeyByIdAsync(Guid localId);
+        public Task<SymmetricPayloadResponseDto> GetKeysAsync();
         public Task<bool> RemoveKeyById(Guid localId);
     }
 }

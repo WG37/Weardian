@@ -31,7 +31,7 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
             return key;    
         }
 
-        public async Task<IEnumerable<SymmetricKeyRecord>> GetAllAsync(string userId)
+        public async Task<IReadOnlyList<SymmetricKeyRecord>> GetAllAsync(string userId)
         {
             var keys = await _db.SymmetricKeyRecords.Where(k => k.UserId == userId).ToListAsync();
 

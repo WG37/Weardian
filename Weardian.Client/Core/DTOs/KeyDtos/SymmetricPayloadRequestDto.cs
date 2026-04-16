@@ -1,5 +1,5 @@
 ﻿namespace Weardian.Client.Core.DTOs.KeyDtos
 {
-    internal sealed class SymmetricKeyRequestDto(
+    internal sealed class SymmetricPayloadRequestDto(
         Guid LocalId);
 }

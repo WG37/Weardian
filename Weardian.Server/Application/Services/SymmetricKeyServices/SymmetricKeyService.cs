@@ -18,6 +18,8 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
 
         public async Task<SymmetricKeyResponseDto> CreateKey(CreateSymmetricKeyRequestDto req, string userId)
         {
+            // todo: add validation guards
+
             if (req.KeyType != KeyType.Encryption &&
                 req.KeyType != KeyType.Verification &&
                 req.KeyType != KeyType.Signing)
@@ -43,7 +45,7 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 keyRecord.KeyType,
                 keyRecord.KeyStatus,
                 keyRecord.KeyLength,
-                new EncryptedEvelopeResponseDto(
+                new EncryptedEnvelopeResponseDto(
                     keyRecord.EnvelopeVersion,
                     keyRecord.WrapAlgorithm,
                     keyRecord.WrappingKeyId,
@@ -64,7 +66,7 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 keyRecord.KeyType,
                 keyRecord.KeyStatus,
                 keyRecord.KeyLength,
-                new EncryptedEvelopeResponseDto(
+                new EncryptedEnvelopeResponseDto(
                     keyRecord.EnvelopeVersion,
                     keyRecord.WrapAlgorithm,
                     keyRecord.WrappingKeyId,
@@ -74,7 +76,7 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 keyRecord.CreatedOn);
         }
 
-        public async Task<List<SymmetricKeyResponseDto>> GetKeys(string userId)
+        public async Task<IReadOnlyList<SymmetricKeyResponseDto>> GetKeys(string userId)
         {
             var keyRecords = await _keyRepository.GetAllAsync(userId);
 
@@ -84,7 +86,7 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 KeyType: k.KeyType,
                 KeyStatus: k.KeyStatus,
                 KeyLength: k.KeyLength,
-                new EncryptedEvelopeResponseDto(
+                new EncryptedEnvelopeResponseDto(
                     k.EnvelopeVersion,
                     k.WrapAlgorithm,
                     k.WrappingKeyId,

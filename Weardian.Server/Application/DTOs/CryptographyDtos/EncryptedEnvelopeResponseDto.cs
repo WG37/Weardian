@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Server.Application.DTOs.CryptographyDtos
 {
-    public sealed record EncryptedEvelopeResponseDto(
+    public sealed record EncryptedEnvelopeResponseDto(
         int Version,
         string WrapAlgorithm,
         Guid WrappingKeyId,

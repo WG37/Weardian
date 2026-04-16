@@ -16,7 +16,9 @@ namespace Weardian.Server.API.Controllers
         private readonly ISymmetricKeyService _service;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public SymmetricKeyController(ISymmetricKeyService service, UserManager<ApplicationUser> userManager)
+        public SymmetricKeyController(
+            ISymmetricKeyService service, 
+            UserManager<ApplicationUser> userManager)
         {
             _service = service;
             _userManager = userManager;
@@ -41,7 +43,7 @@ namespace Weardian.Server.API.Controllers
         }
 
         [HttpGet()]
-        public async Task<ActionResult<List<SymmetricKeyResponseDto>>> GetAllKeys()
+        public async Task<ActionResult<IReadOnlyList<SymmetricKeyResponseDto>>> GetAllKeys()
         {
         
             var userId = _userManager.GetUserId(User)!;

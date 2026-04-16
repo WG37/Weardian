@@ -21,7 +21,7 @@ namespace Weardian.Client.Infrastructure.Cryptography
             _keyWrap = keyWrap;
         }
 
-        public EncryptedEnvelopeDto CreateEncryptedEnvelope(string plaintext)
+        public async Task<EncryptedEnvelopeDto> CreateEncryptedEnvelopeAsync(string plaintext)
         {
             var ptBytes = Encoding.UTF8.GetBytes(plaintext);
 
@@ -31,7 +31,7 @@ namespace Weardian.Client.Infrastructure.Cryptography
             var encryptedResults = _encryptor.Encrypt(ptBytes, dataKey)
                 ?? throw new InvalidOperationException("Encryption operation failed.");
 
-            var wrappedResults = _keyWrap.WrapKey(dataKey)
+            var wrappedResults = await _keyWrap.WrapKey(dataKey)
                 ?? throw new InvalidOperationException("Key wrapping operation failed");
 
             return new EncryptedEnvelopeDto(
@@ -44,6 +44,8 @@ namespace Weardian.Client.Infrastructure.Cryptography
                 wrappedResults.WrappedKeyTag,
                 wrappedResults.WrappedKeyNonce),
                 new PayloadRecordDto(
+                encryptedResults.Version,
+                encryptedResults.Algorithm,
                 encryptedResults.Ciphertext,
                 encryptedResults.Tag,
                 encryptedResults.Nonce));

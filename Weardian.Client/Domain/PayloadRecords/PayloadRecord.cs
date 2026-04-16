@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Client.Domain.PayloadRecords
 {
-    internal class PayloadRecord
+    internal class PayloadRecord : PayloadBase
     {
         public ReadOnlyMemory<byte> Ciphertext { get; private set; }
         public Guid EnvelopeId { get; init; }
