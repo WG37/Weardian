@@ -62,7 +62,7 @@ namespace Weardian.Client.Infrastructure.Repositories
             var payloadFile = AppDataPaths.BlobPath(payloadId);
 
             if (File.Exists(payloadFile))
-                throw new FileNotFoundException($"Payload not found for the id {payloadId}.");
+                throw new FileNotFoundException($"Payload not found for the id {payloadId}");
 
             var json = await File.ReadAllTextAsync(payloadFile);
             var payloadRecord = JsonSerializer.Deserialize<PayloadRecord>(json);
@@ -78,6 +78,20 @@ namespace Weardian.Client.Infrastructure.Repositories
                 Nonce: payloadRecord.Nonce,
                 Tag: payloadRecord.Tag,
                 CreatedOn: payloadRecord.CreatedOn);
+        }
+
+        public bool RemoveLocalPayloadRecordById(Guid payloadId)
+        {
+            if (!Directory.Exists(AppDataPaths.BlobsDir))
+                throw new InvalidOperationException("No local record directory exists.");
+
+            var payloadFile = AppDataPaths.BlobPath(payloadId);
+
+            if (!File.Exists(payloadFile))
+                throw new FileNotFoundException($"Payload not found for the id {payloadId}");
+
+            File.Delete(payloadFile);
+            return true;
         }
     }
 }

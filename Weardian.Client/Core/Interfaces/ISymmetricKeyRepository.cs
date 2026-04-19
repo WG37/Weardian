@@ -9,6 +9,7 @@ namespace Weardian.Client.Core.Interfaces
         public Task AddLocalRecordsAsync(SymmetricKeyRecord keyRecord, PayloadRecord payloadRecord);
         public Task<IReadOnlyList<EncryptedPayloadRecordDto>> GetLocalPayloadRecordsAsync();
         public Task<EncryptedPayloadRecordDto> GetLocalPayloadRecordById(Guid payloadId);
+        public bool RemoveLocalPayloadRecordById(Guid payloadId);
 
     }
 }
