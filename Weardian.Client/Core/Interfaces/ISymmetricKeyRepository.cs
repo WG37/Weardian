@@ -7,8 +7,8 @@ namespace Weardian.Client.Core.Interfaces
     internal interface ISymmetricKeyRepository
     {
         public Task AddLocalRecordsAsync(SymmetricKeyRecord keyRecord, PayloadRecord payloadRecord);
-        public Task<IReadOnlyList<EncryptedPayloadRecordDto>> GetLocalPayloadRecordsAsync();
-        public Task<EncryptedPayloadRecordDto> GetLocalPayloadRecordById(Guid payloadId);
+        public Task<IReadOnlyList<PayloadRecord>> GetLocalPayloadRecordsAsync();
+        public Task<PayloadRecord> GetLocalPayloadRecordById(Guid payloadId);
         public bool RemoveLocalPayloadRecordById(Guid payloadId);
 
     }

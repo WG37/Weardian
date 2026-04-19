@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Text.Json;
-using Weardian.Client.Core.DTOs.CryptographyDtos;
 using Weardian.Client.Core.Interfaces;
 using Weardian.Client.Domain.KeyRecords.Symmetric;
 using Weardian.Client.Domain.PayloadRecords;
@@ -23,13 +22,13 @@ namespace Weardian.Client.Infrastructure.Repositories
             await AtomicFileWriter.WriteToFileAsync(payloadPath, jsonPayload);
         }
 
-        public async Task<IReadOnlyList<EncryptedPayloadRecordDto>> GetLocalPayloadRecordsAsync()
+        public async Task<IReadOnlyList<PayloadRecord>> GetLocalPayloadRecordsAsync()
         {
             if (!Directory.Exists(AppDataPaths.BlobsDir))
                 throw new InvalidOperationException("No local record directory exists.");
 
             var payloadFiles = Directory.EnumerateFiles(AppDataPaths.BlobsDir, "*.blob");
-            var results = new List<EncryptedPayloadRecordDto>();
+            var results = new List<PayloadRecord>();
 
             foreach (var payload in payloadFiles)
             {
@@ -39,22 +38,13 @@ namespace Weardian.Client.Infrastructure.Repositories
                 if (payloadRecord == null)
                     continue;
 
-                var payloadDto = new EncryptedPayloadRecordDto(
-                    EnvelopeId: payloadRecord.EnvelopeId,
-                    Name: payloadRecord.Name,
-                    Algorithm: payloadRecord.Algorithm,
-                    Ciphertext: payloadRecord.Ciphertext.ToArray(),
-                    Nonce: payloadRecord.Nonce,
-                    Tag: payloadRecord.Tag,
-                    CreatedOn: payloadRecord.CreatedOn);
-
-                results.Add(payloadDto);
+                results.Add(payloadRecord);
             }
             
             return results;
         }
 
-        public async Task<EncryptedPayloadRecordDto> GetLocalPayloadRecordById(Guid payloadId)
+        public async Task<PayloadRecord> GetLocalPayloadRecordById(Guid payloadId)
         {
             if (!Directory.Exists(AppDataPaths.BlobsDir))
                 throw new InvalidOperationException("No local record directory exists.");
@@ -70,14 +60,7 @@ namespace Weardian.Client.Infrastructure.Repositories
             if (payloadRecord == null)
                 throw new InvalidDataException($"Payload file is invalid: {payloadId}");
 
-            return new EncryptedPayloadRecordDto(
-                EnvelopeId: payloadRecord.EnvelopeId,
-                Name: payloadRecord.Name,
-                Algorithm: payloadRecord.Algorithm,
-                Ciphertext: payloadRecord.Ciphertext.ToArray(),
-                Nonce: payloadRecord.Nonce,
-                Tag: payloadRecord.Tag,
-                CreatedOn: payloadRecord.CreatedOn);
+            return payloadRecord;
         }
 
         public bool RemoveLocalPayloadRecordById(Guid payloadId)
