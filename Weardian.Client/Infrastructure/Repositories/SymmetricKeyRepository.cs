@@ -25,7 +25,7 @@ namespace Weardian.Client.Infrastructure.Repositories
         public async Task<IReadOnlyList<PayloadRecord>> GetLocalPayloadRecordsAsync()
         {
             if (!Directory.Exists(AppDataPaths.BlobsDir))
-                throw new InvalidOperationException("No local record directory exists.");
+                return [];
 
             var payloadFiles = Directory.EnumerateFiles(AppDataPaths.BlobsDir, "*.blob");
             var results = new List<PayloadRecord>();
@@ -51,7 +51,7 @@ namespace Weardian.Client.Infrastructure.Repositories
 
             var payloadFile = AppDataPaths.BlobPath(payloadId);
 
-            if (File.Exists(payloadFile))
+            if (!File.Exists(payloadFile))
                 throw new FileNotFoundException($"Payload not found for the id {payloadId}");
 
             var json = await File.ReadAllTextAsync(payloadFile);
