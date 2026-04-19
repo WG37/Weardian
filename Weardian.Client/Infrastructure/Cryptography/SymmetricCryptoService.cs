@@ -12,7 +12,8 @@ namespace Weardian.Client.Infrastructure.Cryptography
         private readonly IKeyGeneration _keyGen;
         private readonly IKeyWrappingService _keyWrap;
 
-        public SymmetricCryptoService(IAesEncryptor encryptor, 
+        public SymmetricCryptoService(
+            IAesEncryptor encryptor, 
             IKeyGeneration keyGen,
             IKeyWrappingService keyWrap)
         {
