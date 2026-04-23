@@ -44,34 +44,34 @@ namespace Weardian.Client.Infrastructure.Repositories
             return results;
         }
 
-        public async Task<PayloadRecord> GetLocalPayloadRecordById(Guid payloadId)
+        public async Task<PayloadRecord> GetLocalPayloadRecordByIdAsync(Guid envelopeId)
         {
             if (!Directory.Exists(AppDataPaths.BlobsDir))
                 throw new InvalidOperationException("No local record directory exists.");
 
-            var payloadFile = AppDataPaths.BlobPath(payloadId);
+            var payloadFile = AppDataPaths.BlobPath(envelopeId);
 
             if (!File.Exists(payloadFile))
-                throw new FileNotFoundException($"Payload not found for the id {payloadId}");
+                throw new FileNotFoundException($"Payload not found for the id {envelopeId}");
 
             var json = await File.ReadAllTextAsync(payloadFile);
             var payloadRecord = JsonSerializer.Deserialize<PayloadRecord>(json);
 
             if (payloadRecord == null)
-                throw new InvalidDataException($"Payload file is invalid: {payloadId}");
+                throw new InvalidDataException($"Payload file is invalid: {envelopeId}");
 
             return payloadRecord;
         }
 
-        public bool RemoveLocalPayloadRecordById(Guid payloadId)
+        public bool RemoveLocalPayloadRecordById(Guid envelopeId)
         {
             if (!Directory.Exists(AppDataPaths.BlobsDir))
                 throw new InvalidOperationException("No local record directory exists.");
 
-            var payloadFile = AppDataPaths.BlobPath(payloadId);
+            var payloadFile = AppDataPaths.BlobPath(envelopeId);
 
             if (!File.Exists(payloadFile))
-                throw new FileNotFoundException($"Payload not found for the id {payloadId}");
+                throw new FileNotFoundException($"Payload not found for the id {envelopeId}");
 
             File.Delete(payloadFile);
             return true;
