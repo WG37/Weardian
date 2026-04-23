@@ -1,4 +1,4 @@
-﻿using Weardian.Client.Core.DTOs.KeyDtos;
+﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
 using Weardian.Client.Core.Interfaces;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Domain.KeyRecords.Symmetric;
@@ -84,17 +84,47 @@ namespace Weardian.Client.Core.Services
             }
         }
 
-        public async Task<SymmetricPayloadResponseDto> GetKeyByIdAsync(Guid localId)
+        public async Task<IReadOnlyList<EncryptedPayloadRecordDto>> GetPayloadRecordsAsync()
         {
-            throw new NotImplementedException();
+            var payloadRecords = await _symmetricKeyRepo.GetLocalPayloadRecordsAsync();
+
+            var payloadResults = new List<EncryptedPayloadRecordDto>();
+
+            foreach (var payload in payloadRecords)
+            {
+                var payloadDto = new EncryptedPayloadRecordDto(
+                    EnvelopeId: payload.EnvelopeId,
+                    Name: payload.Name,
+                    Algorithm: payload.Algorithm,
+                    Ciphertext: payload.Ciphertext.ToArray(),
+                    Nonce: payload.Nonce,
+                    Tag: payload.Tag,
+                    CreatedOn: payload.CreatedOn);
+
+                payloadResults.Add(payloadDto);
+            }
+
+            return payloadResults;    
         }
 
-        public async Task<SymmetricPayloadResponseDto> GetKeysAsync()
+        public async Task<EncryptedPayloadRecordDto> GetPayloadRecordByIdAsync(Guid envelopeId)
         {
-            throw new NotImplementedException();
+            if (envelopeId == Guid.Empty)
+                throw new ArgumentException("EnvelopeId cannot be empty", nameof(envelopeId));
+
+            var payloadRecord = await _symmetricKeyRepo.GetLocalPayloadRecordByIdAsync(envelopeId);
+
+            return new EncryptedPayloadRecordDto(
+                EnvelopeId: payloadRecord.EnvelopeId,
+                Name: payloadRecord.Name,
+                Algorithm: payloadRecord.Algorithm,
+                Ciphertext: payloadRecord.Ciphertext.ToArray(),
+                Nonce: payloadRecord.Nonce,
+                Tag: payloadRecord.Tag,
+                CreatedOn: payloadRecord.CreatedOn);
         }
 
-        public async Task<bool> RemoveKeyById(Guid localId)
+        public bool RemoveRecordById(Guid envelopeId)
         {
             throw new NotImplementedException();
         }
