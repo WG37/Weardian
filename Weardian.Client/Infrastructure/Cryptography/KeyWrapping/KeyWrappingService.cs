@@ -18,8 +18,7 @@ namespace Weardian.Client.Infrastructure.Cryptography.KeyWrapping
         public async Task<WrappedKeyResult> WrapKey(byte[] dataKey)
         {
             var kek = await _provider.GetOrCreateKekAsync();
-            var wrapResult = _encryptor.Encrypt(dataKey, kek)
-                ?? throw new InvalidOperationException();
+            var wrapResult = _encryptor.Encrypt(dataKey, kek);
 
             return new WrappedKeyResult(
                 Version: 1,
