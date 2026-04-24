@@ -9,6 +9,7 @@ using Weardian.Client.Infrastructure.Cryptography;
 using Weardian.Client.Infrastructure.Cryptography.Encryption;
 using Weardian.Client.Infrastructure.Cryptography.KeyWrapping;
 using Weardian.Client.Infrastructure.Native.Bootstrapper;
+using Weardian.Client.Infrastructure.Repositories;
 
 namespace Weardian.Client
 {
@@ -27,6 +28,7 @@ namespace Weardian.Client
 
             services.AddScoped<ISymmetricKeyRepository, SymmetricKeyRepository>();
             services.AddScoped<ISymmetricKeyManagementService, SymmetricKeyManagementService>();
+            services.AddScoped<IPayloadService, PayloadService>();
 
             services.AddScoped<ISymmetricCryptoService, SymmetricCryptoService>();
             services.AddScoped<IKeyGeneration, KeyGeneration>();
