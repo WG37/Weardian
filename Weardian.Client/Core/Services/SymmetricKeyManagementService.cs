@@ -11,7 +11,7 @@ namespace Weardian.Client.Core.Services
         private readonly ISymmetricCryptoService _symmetricCryptoService;
         private readonly ISymmetricKeyRepository _symmetricKeyRepo;
         public SymmetricKeyManagementService(
-            ISymmetricCryptoService symmetricCryptoService, 
+            ISymmetricCryptoService symmetricCryptoService,
             ISymmetricKeyRepository symmetricKeyRepo)
         {
             _symmetricCryptoService = symmetricCryptoService;
@@ -24,11 +24,11 @@ namespace Weardian.Client.Core.Services
                 throw new ArgumentException("KeyName or Password input is null, empty or whitespace");
 
             if (keyName.Length < 3 || keyName.Length > 12)
-                throw new ArgumentOutOfRangeException(nameof(keyName), 
+                throw new ArgumentOutOfRangeException(nameof(keyName),
                     "KeyName must have a minimum of 3 and max of 12 characters.");
 
             if (password.Length < 8)
-                throw new ArgumentOutOfRangeException(nameof(password), 
+                throw new ArgumentOutOfRangeException(nameof(password),
                     "Password must have a length of 8 or more characters.");
 
             var hasUpper = password.Any(char.IsUpper);
@@ -82,51 +82,6 @@ namespace Weardian.Client.Core.Services
             {
                 throw new InvalidOperationException("Failed to save KeyRecords to disk.", ex);
             }
-        }
-
-        public async Task<IReadOnlyList<EncryptedPayloadRecordDto>> GetPayloadRecordsAsync()
-        {
-            var payloadRecords = await _symmetricKeyRepo.GetLocalPayloadRecordsAsync();
-
-            var payloadResults = new List<EncryptedPayloadRecordDto>();
-
-            foreach (var payload in payloadRecords)
-            {
-                var payloadDto = new EncryptedPayloadRecordDto(
-                    EnvelopeId: payload.EnvelopeId,
-                    Name: payload.Name,
-                    Algorithm: payload.Algorithm,
-                    Ciphertext: payload.Ciphertext.ToArray(),
-                    Nonce: payload.Nonce,
-                    Tag: payload.Tag,
-                    CreatedOn: payload.CreatedOn);
-
-                payloadResults.Add(payloadDto);
-            }
-
-            return payloadResults;    
-        }
-
-        public async Task<EncryptedPayloadRecordDto> GetPayloadRecordByIdAsync(Guid envelopeId)
-        {
-            if (envelopeId == Guid.Empty)
-                throw new ArgumentException("EnvelopeId cannot be empty", nameof(envelopeId));
-
-            var payloadRecord = await _symmetricKeyRepo.GetLocalPayloadRecordByIdAsync(envelopeId);
-
-            return new EncryptedPayloadRecordDto(
-                EnvelopeId: payloadRecord.EnvelopeId,
-                Name: payloadRecord.Name,
-                Algorithm: payloadRecord.Algorithm,
-                Ciphertext: payloadRecord.Ciphertext.ToArray(),
-                Nonce: payloadRecord.Nonce,
-                Tag: payloadRecord.Tag,
-                CreatedOn: payloadRecord.CreatedOn);
-        }
-
-        public bool RemoveRecordById(Guid envelopeId)
-        {
-            throw new NotImplementedException();
         }
     }
 }
