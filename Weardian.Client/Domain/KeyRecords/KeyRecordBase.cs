@@ -2,7 +2,7 @@
 
 namespace Weardian.Client.Domain.KeyRecords
 {
-    internal abstract class KeyRecordBase
+    public abstract class KeyRecordBase
     {
 
         public string Name { get; set; }

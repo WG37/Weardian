@@ -6,7 +6,7 @@ using Weardian.Client.Domain.PayloadRecords;
 
 namespace Weardian.Client.Core.Services
 {
-    internal sealed class SymmetricKeyManagementService : ISymmetricKeyManagementService
+    public sealed class SymmetricKeyManagementService : ISymmetricKeyManagementService
     {
         private readonly ISymmetricCryptoService _symmetricCryptoService;
         private readonly ISymmetricKeyRepository _symmetricKeyRepo;

@@ -3,7 +3,7 @@ using Weardian.Client.Domain.PayloadRecords;
 
 namespace Weardian.Client.Core.Interfaces
 {
-    internal interface ISymmetricKeyRepository
+    public interface ISymmetricKeyRepository
     {
         public Task AddLocalRecordsAsync(SymmetricKeyRecord keyRecord, PayloadRecord payloadRecord);
         public Task<IReadOnlyList<PayloadRecord>> GetLocalPayloadRecordsAsync();

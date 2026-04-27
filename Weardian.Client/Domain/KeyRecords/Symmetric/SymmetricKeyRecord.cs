@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Client.Domain.KeyRecords.Symmetric
 {
-    internal class SymmetricKeyRecord : KeyRecordBase
+    public class SymmetricKeyRecord : KeyRecordBase
     {
         public ReadOnlyMemory<byte> WrappedKeyCiphertext { get; private set; }
         public int KeyLength => WrappedKeyCiphertext.Length * 8;

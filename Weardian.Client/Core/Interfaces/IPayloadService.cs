@@ -2,7 +2,7 @@
 
 namespace Weardian.Client.Core.Interfaces
 {
-    internal interface IPayloadService
+    public interface IPayloadService
     {
         public Task<IReadOnlyList<EncryptedPayloadRecordDto>> GetPayloadRecordsAsync();
         public Task<EncryptedPayloadRecordDto> GetPayloadRecordByIdAsync(Guid envelopeId);

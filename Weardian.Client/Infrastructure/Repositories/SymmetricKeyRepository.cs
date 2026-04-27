@@ -8,7 +8,7 @@ using Weardian.Client.Infrastructure.Storage.Atomic;
 
 namespace Weardian.Client.Infrastructure.Repositories
 {
-    internal class SymmetricKeyRepository : ISymmetricKeyRepository
+    public class SymmetricKeyRepository : ISymmetricKeyRepository
     {
         public async Task AddLocalRecordsAsync(SymmetricKeyRecord keyRecord, PayloadRecord payloadRecord)
         {

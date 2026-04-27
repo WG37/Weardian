@@ -2,7 +2,7 @@
 
 namespace Weardian.Client.Domain.PayloadRecords
 {
-    internal abstract class PayloadBase
+    public abstract class PayloadBase
     {
         public string Name { get; set; }
         public KeyType KeyType { get; init; }
