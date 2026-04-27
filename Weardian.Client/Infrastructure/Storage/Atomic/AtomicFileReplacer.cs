@@ -6,11 +6,13 @@ namespace Weardian.Client.Infrastructure.Storage.Atomic
     {
         public static void ReplaceFile(string tempPath, string path)
         {
-            try
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+
+            if (File.Exists(path))
             {
                 File.Replace(tempPath, path, null);
             }
-            catch (FileNotFoundException)
+            else
             {
                 File.Move(tempPath, path);
             }
