@@ -14,8 +14,8 @@
 
         public SymmetricKeyRecord(byte[] wrappedKeyCiphertext)
         {
-            if (wrappedKeyCiphertext == null || wrappedKeyCiphertext.Length < 16)
-                throw new ArgumentException("Ciphertext must be at least 16 bytes or larger.");
+            if (wrappedKeyCiphertext == null || wrappedKeyCiphertext.Length == 0)
+                throw new ArgumentException("Ciphertext cannot be null or empty");
 
             WrappedKeyCiphertext = new ReadOnlyMemory<byte>((byte[])wrappedKeyCiphertext.Clone());
         }

@@ -12,8 +12,8 @@
 
         public PayloadRecord(byte[] ciphertext)
         {
-            if (ciphertext == null || ciphertext.Length < 16)
-                throw new ArgumentException("Ciphertext must be at least 16 bytes or larger.");
+            if (ciphertext == null || ciphertext.Length == 0)
+                throw new ArgumentException("Ciphertext cannot be null or empty.");
 
             Ciphertext = new ReadOnlyMemory<byte>((byte[])ciphertext.Clone());
         }
