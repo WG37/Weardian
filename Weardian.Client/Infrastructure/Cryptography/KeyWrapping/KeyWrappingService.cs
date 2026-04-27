@@ -4,7 +4,7 @@ using Weardian.Client.Core.Interfaces.Cryptography.KeyWrapping;
 
 namespace Weardian.Client.Infrastructure.Cryptography.KeyWrapping
 {
-    internal class KeyWrappingService : IKeyWrappingService
+    public class KeyWrappingService : IKeyWrappingService
     {
         private readonly IAesEncryptor _encryptor;
         private readonly IKekProvider _provider;

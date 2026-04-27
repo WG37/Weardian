@@ -3,7 +3,7 @@ using Weardian.Client.Core.Interfaces.Cryptography;
 
 namespace Weardian.Client.Infrastructure.Cryptography
 {
-    internal class KeyGeneration : IKeyGeneration
+    public class KeyGeneration : IKeyGeneration
     {
         public byte[] GenerateSymmetricKey(int length = 32)
         {

@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Client.Core.Interfaces.Cryptography.KeyWrapping
 {
-    internal interface IKekProvider
+    public interface IKekProvider
     {
         public byte[] GetKek();
         public Task<byte[]> CreateKekAsync();

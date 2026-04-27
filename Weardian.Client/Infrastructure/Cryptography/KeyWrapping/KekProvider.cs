@@ -6,7 +6,7 @@ using Weardian.Client.Infrastructure.Storage.Atomic;
 
 namespace Weardian.Client.Infrastructure.Cryptography.KeyWrapping
 {
-    internal sealed class KekProvider : IKekProvider
+    public sealed class KekProvider : IKekProvider
     {
         private const int KekBytes = 32;
 

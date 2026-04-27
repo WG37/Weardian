@@ -3,7 +3,7 @@ using Weardian.Client.Infrastructure.Cryptography.KeyWrapping;
 
 namespace Weardian.Client.Core.Interfaces.Cryptography.KeyWrapping
 {
-    internal interface IKeyWrappingService
+    public interface IKeyWrappingService
     {
         public Task<WrappedKeyResult> WrapKey(byte[] dataKey);
         public Task<byte[]> UnwrapKey(EncryptedEnvelopeDto envelope);

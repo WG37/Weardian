@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Client.Infrastructure.Cryptography.Encryption
 {
-    internal sealed record PayloadResult(
+    public sealed record PayloadResult(
         int Version,
         string Algorithm,
         byte[] Nonce,

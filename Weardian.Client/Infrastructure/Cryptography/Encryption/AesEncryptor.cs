@@ -3,7 +3,7 @@ using Weardian.Client.Core.Interfaces.Cryptography.Encryption;
 
 namespace Weardian.Client.Infrastructure.Cryptography.Encryption
 {
-    internal class AesEncryptor : IAesEncryptor
+    public class AesEncryptor : IAesEncryptor
     {
         public PayloadResult Encrypt(byte[] plaintext, byte[] key)
         {

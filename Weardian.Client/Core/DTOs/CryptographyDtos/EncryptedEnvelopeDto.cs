@@ -2,7 +2,7 @@
 
 namespace Weardian.Client.Core.DTOs.CryptographyDtos
 {
-    internal sealed record EncryptedEnvelopeDto(
+    public sealed record EncryptedEnvelopeDto(
         Guid EnvelopeId,
         WrappedKeyDto WrappedKey,
         PayloadRecordDto Payload);

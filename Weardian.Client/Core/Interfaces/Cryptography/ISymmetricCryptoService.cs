@@ -2,7 +2,7 @@
 
 namespace Weardian.Client.Core.Interfaces.Cryptography
 {
-    internal interface ISymmetricCryptoService
+    public interface ISymmetricCryptoService
     {
         public Task<EncryptedEnvelopeDto> CreateEncryptedEnvelopeAsync(string plaintext);
         

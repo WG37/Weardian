@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Client.Core.DTOs.CryptographyDtos
 {
-    internal sealed record WrappedKeyDto(
+    public sealed record WrappedKeyDto(
         int Version,
         string WrapAlgorithm,
         Guid WrappingKeyId,

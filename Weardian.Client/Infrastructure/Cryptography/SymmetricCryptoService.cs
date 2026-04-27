@@ -6,7 +6,7 @@ using Weardian.Client.Core.Interfaces.Cryptography.KeyWrapping;
 
 namespace Weardian.Client.Infrastructure.Cryptography
 {
-    internal class SymmetricCryptoService : ISymmetricCryptoService
+    public class SymmetricCryptoService : ISymmetricCryptoService
     {
         private readonly IAesEncryptor _encryptor;
         private readonly IKeyGeneration _keyGen;

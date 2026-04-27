@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Weardian.Client.Core.DTOs.CryptographyDtos
 {
-    internal sealed record EncryptedPayloadRecordDto(
+    public sealed record EncryptedPayloadRecordDto(
         Guid EnvelopeId,
         string Name,
         string Algorithm,
