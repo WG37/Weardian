@@ -24,7 +24,7 @@ namespace Weardian.Client.Core.Services
                     EnvelopeId: payload.EnvelopeId,
                     Name: payload.Name,
                     Algorithm: payload.Algorithm,
-                    Ciphertext: payload.Ciphertext.ToArray(),
+                    Ciphertext: payload.Ciphertext,
                     Nonce: payload.Nonce,
                     Tag: payload.Tag,
                     CreatedOn: payload.CreatedOn);
@@ -46,7 +46,7 @@ namespace Weardian.Client.Core.Services
                 EnvelopeId: payloadRecord.EnvelopeId,
                 Name: payloadRecord.Name,
                 Algorithm: payloadRecord.Algorithm,
-                Ciphertext: payloadRecord.Ciphertext.ToArray(),
+                Ciphertext: payloadRecord.Ciphertext,
                 Nonce: payloadRecord.Nonce,
                 Tag: payloadRecord.Tag,
                 CreatedOn: payloadRecord.CreatedOn);

@@ -2,7 +2,7 @@
 {
     public class SymmetricKeyRecord : KeyRecordBase
     {
-        public ReadOnlyMemory<byte> WrappedKeyCiphertext { get; private set; }
+        public byte[] WrappedKeyCiphertext { get; private set; }
         public int KeyLength => WrappedKeyCiphertext.Length * 8;
 
         public Guid EnvelopeId { get; init; }
@@ -12,12 +12,13 @@
         public required byte[] WrappedKeyTag { get; init; }
         public required byte[] WrappedKeyNonce { get; init; }
 
+        public SymmetricKeyRecord() { }
         public SymmetricKeyRecord(byte[] wrappedKeyCiphertext)
         {
             if (wrappedKeyCiphertext == null || wrappedKeyCiphertext.Length == 0)
                 throw new ArgumentException("Ciphertext cannot be null or empty");
 
-            WrappedKeyCiphertext = new ReadOnlyMemory<byte>((byte[])wrappedKeyCiphertext.Clone());
+            WrappedKeyCiphertext = (byte[])wrappedKeyCiphertext.Clone();
         }
     }
 }
