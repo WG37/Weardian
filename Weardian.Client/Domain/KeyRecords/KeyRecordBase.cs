@@ -4,10 +4,11 @@ namespace Weardian.Client.Domain.KeyRecords
 {
     public abstract class KeyRecordBase
     {
-
         public string Name { get; set; }
         public KeyType KeyType { get; init; }
         public KeyStatus KeyStatus { get; protected set; }
+        public bool IsSynced { get; set; }
+        public DateTime SyncedOn { get; set; }
         public DateTime CreatedOn { get; protected set; }
 
         protected KeyRecordBase()
