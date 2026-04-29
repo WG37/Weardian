@@ -18,7 +18,7 @@ namespace Weardian.Client.Core.Services
             _symmetricKeyRepo = symmetricKeyRepo;
         }
 
-        public async Task CreateEncryptedPasswordAsync(string keyName, string password)
+        public async Task CreateEncryptedPasswordAsync(string keyName, string password, bool createSynced)
         {
             if (string.IsNullOrWhiteSpace(keyName) || string.IsNullOrWhiteSpace(password))
                 throw new ArgumentException("KeyName or Password input is null, empty or whitespace");
@@ -81,6 +81,11 @@ namespace Weardian.Client.Core.Services
             catch (Exception ex)
             {
                 throw new InvalidOperationException("Failed to save KeyRecords to disk.", ex);
+            }
+
+            if (createSynced)
+            {
+                
             }
         }
     }
