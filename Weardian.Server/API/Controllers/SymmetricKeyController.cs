@@ -10,7 +10,7 @@ namespace Weardian.Server.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]/keys")]
+    [Route("api/keys/symmetric")]
     public class SymmetricKeyController : ControllerBase
     {
         private readonly ISymmetricKeyService _service;
@@ -46,13 +46,12 @@ namespace Weardian.Server.API.Controllers
         public async Task<ActionResult<IReadOnlyList<SymmetricKeyResponseDto>>> GetAllKeys()
         {
         
-            var userId = _userManager.GetUserId(User)!;
+            var userId = _userManager.GetUserId(User);
             if (userId == null)
                 return Unauthorized();
 
             var keyRecords = await _service.GetKeys(userId);
             return Ok(keyRecords);
-        
         }
 
         [HttpPost]
@@ -60,12 +59,12 @@ namespace Weardian.Server.API.Controllers
         {
             try
             {
-                var userId = _userManager.GetUserId(User)!;
+                var userId = _userManager.GetUserId(User);
                 if (userId == null)
                     return Unauthorized();
 
                 var keyRecord = await _service.CreateKey(req, userId);
-                return CreatedAtAction(nameof(GetKeyById), new { publicId = keyRecord.EnvelopeId }, keyRecord);
+                return CreatedAtAction(nameof(GetKeyById), new { envelopeId = keyRecord.EnvelopeId }, keyRecord);
             }
             catch (ArgumentException e)
             {
@@ -76,7 +75,7 @@ namespace Weardian.Server.API.Controllers
         [HttpDelete("{envelopeId:guid}")]
         public async Task<ActionResult> RemoveSymmetricKey(Guid envelopeId)
         {
-            var userId = _userManager.GetUserId(User)!;
+            var userId = _userManager.GetUserId(User);
             if (userId == null)
                 return Unauthorized();
 
