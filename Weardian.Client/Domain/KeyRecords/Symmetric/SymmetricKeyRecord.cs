@@ -3,7 +3,6 @@
     public class SymmetricKeyRecord : KeyRecordBase
     {
         public byte[] WrappedKeyCiphertext { get; private set; }
-        public int KeyLength => WrappedKeyCiphertext.Length * 8;
 
         public Guid EnvelopeId { get; init; }
         public int EnvelopeVersion { get; init; } = 1;
