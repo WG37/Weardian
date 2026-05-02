@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Client.Core.DTOs.KeySyncingDtos
 {
-    public record KeySyncRequestDto(
+    public sealed record KeySyncRequestDto(
         Guid EnvelopeId,
         string Name,
         int EnvelopeVersion,

@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Client.Core.DTOs.KeySyncingDtos
 {
-    public record KeySyncResponseDto(
+    public sealed record KeySyncResponseDto(
         Guid EnvelopeId,
         DateTime SyncedOn);
 }

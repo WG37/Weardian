@@ -1,21 +1,28 @@
-﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
-using Weardian.Client.Core.Interfaces;
-using Weardian.Client.Core.Interfaces.Cryptography;
+﻿using Weardian.Client.Core.Interfaces.Cryptography;
+using Weardian.Client.Core.Interfaces.Symmetric;
+using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
+using Weardian.Client.Core.Interfaces.Sync;
 using Weardian.Client.Domain.KeyRecords.Symmetric;
 using Weardian.Client.Domain.PayloadRecords;
 
-namespace Weardian.Client.Core.Services
+namespace Weardian.Client.Core.Services.Symmetric
 {
-    public sealed class SymmetricKeyManagementService : ISymmetricKeyManagementService
+    public sealed class KeyManagementService : IKeyManagementService
     {
         private readonly ISymmetricCryptoService _symmetricCryptoService;
-        private readonly ISymmetricKeyRepository _symmetricKeyRepo;
-        public SymmetricKeyManagementService(
+        private readonly IPayloadRecordRepository _payloadRecordRepo;
+        private readonly IKeyRecordRepository _keyRecordRepo;
+        private readonly IKeyRecordSyncService _keySyncService;
+        public KeyManagementService(
             ISymmetricCryptoService symmetricCryptoService,
-            ISymmetricKeyRepository symmetricKeyRepo)
+            IPayloadRecordRepository payloadRecordRepo,
+            IKeyRecordRepository keyRecordRepo,
+            IKeyRecordSyncService keySyncService)
         {
             _symmetricCryptoService = symmetricCryptoService;
-            _symmetricKeyRepo = symmetricKeyRepo;
+            _payloadRecordRepo = payloadRecordRepo;
+            _keyRecordRepo = keyRecordRepo; 
+            _keySyncService = keySyncService;
         }
 
         public async Task CreateEncryptedPasswordAsync(string keyName, string password, bool createSynced)
@@ -76,16 +83,33 @@ namespace Weardian.Client.Core.Services
                 if (keyRecord.EnvelopeId != payloadRecord.EnvelopeId)
                     throw new InvalidOperationException("EnvelopeIds do not match.");
 
-                await _symmetricKeyRepo.AddLocalRecordsAsync(keyRecord, payloadRecord);
+                await _payloadRecordRepo.AddLocalPayloadRecordAsync(payloadRecord);
+                await _keyRecordRepo.AddLocalKeyRecordAsync(keyRecord);
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Failed to save KeyRecords to disk.", ex);
+                throw new InvalidOperationException("Failed to save local records to disk.", ex);
             }
 
             if (createSynced)
             {
-                
+                try
+                {
+                    var syncResult = await _keySyncService.SyncKeyRecordAsync(keyRecord);
+
+                    keyRecord.IsSynced = true;
+                    keyRecord.SyncedOn = syncResult.SyncedOn;
+
+                    await _keyRecordRepo.UpdateLocalKeyRecordByIdAsync(keyRecord);
+                }
+                catch (Exception ex)
+                {
+                    keyRecord.IsSynced = false;
+
+                    await _keyRecordRepo.UpdateLocalKeyRecordByIdAsync(keyRecord);
+
+                    throw new InvalidOperationException("Failed to sync key record to server.", ex);
+                }
             }
         }
     }

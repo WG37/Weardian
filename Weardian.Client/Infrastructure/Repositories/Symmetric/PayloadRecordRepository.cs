@@ -1,24 +1,22 @@
 ﻿using System.IO;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
-using Weardian.Client.Core.Interfaces;
+using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 using Weardian.Client.Domain.KeyRecords.Symmetric;
 using Weardian.Client.Domain.PayloadRecords;
 using Weardian.Client.Infrastructure.Native.PathBuilder;
 using Weardian.Client.Infrastructure.Storage.Atomic;
 
-namespace Weardian.Client.Infrastructure.Repositories
+namespace Weardian.Client.Infrastructure.Repositories.Symmetric
 {
-    public class SymmetricKeyRepository : ISymmetricKeyRepository
+    public class PayloadRecordRepository : IPayloadRecordRepository
     {
-        public async Task AddLocalRecordsAsync(SymmetricKeyRecord keyRecord, PayloadRecord payloadRecord)
+        // split key & payload records
+        public async Task AddLocalPayloadRecordAsync(PayloadRecord payloadRecord)
         {
-            var keyPath = AppDataPaths.KeyRecordPath(keyRecord.EnvelopeId);
             var payloadPath = AppDataPaths.BlobPath(payloadRecord.EnvelopeId);
 
-            var jsonKey = JsonSerializer.Serialize(keyRecord);
             var jsonPayload = JsonSerializer.Serialize(payloadRecord);
-
-            await AtomicFileWriter.WriteToFileAsync(keyPath, jsonKey);
             await AtomicFileWriter.WriteToFileAsync(payloadPath, jsonPayload);
         }
 
@@ -55,12 +53,9 @@ namespace Weardian.Client.Infrastructure.Repositories
                 throw new FileNotFoundException($"Payload not found for the id {envelopeId}");
 
             var json = await File.ReadAllTextAsync(payloadFile);
-            var payloadRecord = JsonSerializer.Deserialize<PayloadRecord>(json);
 
-            if (payloadRecord == null)
-                throw new InvalidDataException($"Payload file is invalid: {envelopeId}");
-
-            return payloadRecord;
+            return JsonSerializer.Deserialize<PayloadRecord>(json)
+                ?? throw new InvalidOperationException($"Payload file is invalid: {envelopeId}");
         }
 
         public bool RemoveLocalPayloadRecordById(Guid envelopeId)
@@ -74,7 +69,9 @@ namespace Weardian.Client.Infrastructure.Repositories
                 throw new FileNotFoundException($"Payload not found for the id {envelopeId}");
 
             File.Delete(payloadFile);
-            return true;
+
+            var deleted = !File.Exists(payloadFile);
+            return deleted;
         }
     }
 }

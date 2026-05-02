@@ -1,13 +1,14 @@
 ﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
-using Weardian.Client.Core.Interfaces;
+using Weardian.Client.Core.Interfaces.Symmetric;
+using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 
-namespace Weardian.Client.Core.Services
+namespace Weardian.Client.Core.Services.Symmetric
 {
     internal class PayloadService : IPayloadService
     {
-        private readonly ISymmetricKeyRepository _symmetricKeyRepo;
+        private readonly IPayloadRecordRepository _symmetricKeyRepo;
 
-        public PayloadService(ISymmetricKeyRepository symmetricKeyRepo)
+        public PayloadService(IPayloadRecordRepository symmetricKeyRepo)
         {
             _symmetricKeyRepo = symmetricKeyRepo;
         }
