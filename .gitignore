@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Weardian.Client/Core/Interfaces/IAuthTokenStorage.cs
+/Weardian.Client/Core/Services/AuthTokenStorage.cs
