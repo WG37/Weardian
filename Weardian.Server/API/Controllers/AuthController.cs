@@ -7,7 +7,7 @@ using Weardian.Server.Domain.Users;
 namespace Weardian.Server.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly ITokenService _service;
@@ -24,13 +24,11 @@ namespace Weardian.Server.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto req)
+        public async Task<ActionResult> Register(RegisterDto req)
         {
             var user = new ApplicationUser
             {
                 Email = req.Email,
-                UserName = req.Email,
-                DisplayName = req.DisplayName
             };
 
             var result = await _userManager.CreateAsync(user, req.Password);
