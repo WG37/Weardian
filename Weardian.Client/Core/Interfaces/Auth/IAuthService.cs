@@ -5,7 +5,7 @@ namespace Weardian.Client.Core.Interfaces.Auth
 {
     public interface IAuthService
     {
-        public Task RegisterUserAsync(string email, string username, string password);
+        public Task RegisterUserAsync(string email, string password);
         public Task LoginAsync(string email, string password);
         public Task LogoutAsync();
     }
