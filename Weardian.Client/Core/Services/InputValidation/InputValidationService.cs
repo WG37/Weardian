@@ -17,17 +17,22 @@ namespace Weardian.Client.Core.Services.InputValidation
 
         public InputValidationResult ValidateLogin(string email, string password)
         {
-            var results = new InputValidationResult();
+            var result = new InputValidationResult();
 
-            LoginEmailRules.ValidateEmailName(email, results);
-            StrongPasswordRules.ValidatePassword(password, results);
+            LoginEmailRules.ValidateEmailName(email, result);
+            StrongPasswordRules.ValidatePassword(password, result);
 
-            return results;
+            return result;
         }
 
-        public InputValidationResult ValidateRegisterUser(string email, string username, string password)
+        public InputValidationResult ValidateRegisterUser(string email, string password)
         {
-            throw new NotImplementedException();
+            var result = new InputValidationResult();
+
+            LoginEmailRules.ValidateEmailName(email, result);
+            StrongPasswordRules.ValidatePassword(password, result);
+
+            return result;
         }
 
         
