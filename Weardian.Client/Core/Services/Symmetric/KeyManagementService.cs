@@ -1,4 +1,5 @@
 ﻿using Weardian.Client.Core.Interfaces.Cryptography;
+using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 using Weardian.Client.Core.Interfaces.Sync;
@@ -13,38 +14,27 @@ namespace Weardian.Client.Core.Services.Symmetric
         private readonly IPayloadRecordRepository _payloadRecordRepo;
         private readonly IKeyRecordRepository _keyRecordRepo;
         private readonly IKeyRecordSyncService _keySyncService;
+        private readonly IInputValidationService _validationService;
         public KeyManagementService(
             ISymmetricCryptoService symmetricCryptoService,
             IPayloadRecordRepository payloadRecordRepo,
             IKeyRecordRepository keyRecordRepo,
-            IKeyRecordSyncService keySyncService)
+            IKeyRecordSyncService keySyncService,
+            IInputValidationService validationService)
         {
             _symmetricCryptoService = symmetricCryptoService;
             _payloadRecordRepo = payloadRecordRepo;
             _keyRecordRepo = keyRecordRepo; 
             _keySyncService = keySyncService;
+            _validationService = validationService;
         }
 
         public async Task CreateEncryptedPasswordAsync(string keyName, string password, bool createSynced)
         {
-            if (string.IsNullOrWhiteSpace(keyName) || string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException("KeyName or Password input is null, empty or whitespace");
+            var results = _validationService.ValidateEncryptedPassword(keyName, password);
 
-            if (keyName.Length < 3 || keyName.Length > 12)
-                throw new ArgumentOutOfRangeException(nameof(keyName),
-                    "KeyName must have a minimum of 3 and max of 12 characters.");
-
-            if (password.Length < 8)
-                throw new ArgumentOutOfRangeException(nameof(password),
-                    "Password must have a length of 8 or more characters.");
-
-            var hasUpper = password.Any(char.IsUpper);
-            var hasLower = password.Any(char.IsLower);
-            var hasDigit = password.Any(char.IsDigit);
-
-            if (!hasUpper || !hasLower || !hasDigit)
-                throw new ArgumentException(
-                    "Password must contain at least one upper, lower and a digit.");
+            if (!results.IsValid)
+                throw new ArgumentException(string.Join("\n", results.Errors));
 
             SymmetricKeyRecord keyRecord;
             PayloadRecord payloadRecord;
