@@ -1,31 +1,57 @@
 # Weardian
 
-Weardian is a Zero-knowledge application for encrypting passwords into secure keys to be stored either locally, remotely or both. Encryption happens on client-side, and when synced sends wrapped keys to the server to store remotely. The server is "dumb" and has no knowledge of the keys whatsoever meaning they are purely stored. The zero-knowledge approach ensures that even in the event of a breach, sensitive information remains secure.
+## Current Status
 
+🚧 Work in progress 🚧
 
-## Current Features
+Weardian is a zero-knowledge password encryption application that ensures sensitive data is never exposed, including on server.
+
+It encrypts passwords client-side into secure keys and stores only encrypted (wrapped) data remotely. The server has no ability to decrypt or access user secrets.
+
+---
+
+## How It Works
+
+- Passwords are encrypted on the client using AES-GCM
+- Encryption keys are securely wrapped before storage or transmission
+- Only wrapped (encrypted) keys are sent to the server
+- The server acts as a "dumb" storage layer with zero knowledge of plaintext data
+- Local storage is additionally protected using DPAPI
+
+![diagram](docs/WeardianDiagram.png)
+---
+
+## Tech Stack
+
+- **Backend:** ASP.NET (REST API, JWT auth, Identity)
+- **Frontend (in progress):** React (via WebView2 desktop)
+- **Encryption:** AES-GCM, key wrapping
+- **Storage:** SQL database (encrypted data only)
+
+---
+
+## Features
 
 ### Client-Side
-
-- Encrypts plaintext passwords using AES-GCM (authenticated encryption)
-- Implements key wrapping with AES-GCM for secure key handling
-- Protects local keys and wrapped keys using DPAPI
-- Optional encrypted synchronization with server
-- Sync process transmits only wrapped (encrypted) keys
-- Atomic file writes to prevent data corruption on failure
+- AES-GCM authenticated encryption for passwords
+- Secure key wrapping for storage and sync
+- DPAPI protection for local key storage
+- Optional encrypted sync with remote server
+- Atomic file writes to prevent corruption
 
 ### Server-Side
+- ASP.NET RESTful API
+- JWT-based authentication
+- SQL persistence for encrypted data only
+- Zero-knowledge architecture (no plaintext access)
 
-- ASP.NET backend with RESTful APIs
-- JWT-based authentication via ASP.NET Identity
-- SQL-based persistence for encrypted data
-- Stores only wrapped (encrypted) keys (zero-knowledge design)
+---
 
-## To be implemented
+## Planned Features
 
-- Client & server-side logging for events, errors, and diagnostics
-- WebView2 desktop shell with a React-based UI
-- Support for storing different key types
-- Support for storing and encrypting different data types
-- Support for asymmetric encryption algorithms
-- Additional symmetric encryption algorithm options
+- Remote synchronization of encrypted PayloadRecords
+- Logging (client + server diagnostics)
+- Support for multiple key types
+- Support for encrypting different data types
+- Asymmetric encryption support
+- Additional symmetric encryption options
