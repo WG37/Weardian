@@ -34,6 +34,8 @@ namespace Weardian.Client.Presentation
 
             var services = new ServiceCollection();
 
+            var apiBaseUrl = new Uri("https://localhost:7259");
+
             services.AddScoped<IPayloadRecordRepository, PayloadRecordRepository>();
             services.AddScoped<IKeyRecordRepository, KeyRecordRepository>();
             services.AddScoped<IKeyManagementService, KeyManagementService>();
@@ -50,9 +52,15 @@ namespace Weardian.Client.Presentation
 
             services.AddScoped<IInputValidationService, InputValidationService>();
 
+
+            services.AddHttpClient<IAuthService, AuthService>(client =>
+            {
+                client.BaseAddress = apiBaseUrl;
+            });
+
             services.AddHttpClient<IKeyRecordSyncService, KeyRecordSyncService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7259");
+                client.BaseAddress = apiBaseUrl;
             });
 
             services.AddScoped<MainWindow>();
