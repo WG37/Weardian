@@ -21,7 +21,7 @@ namespace Weardian.Client.Core.Services.Sync
             _authToken = authToken;
         }
 
-        public async Task<KeySyncResponseDto> SyncKeyRecordAsync(SymmetricKeyRecord keyRecord)
+        public async Task<KeySyncResponseDto> SyncKeyRecordAsync(KeyRecord keyRecord)
         {
 
             var token = await _authToken.GetAccessTokenAsync();

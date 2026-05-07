@@ -3,7 +3,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 using Weardian.Client.Domain.KeyRecords.Symmetric;
-using Weardian.Client.Domain.PayloadRecords;
+using Weardian.Client.Domain.PayloadRecords.Symmetric;
 using Weardian.Client.Infrastructure.Native.PathBuilder;
 using Weardian.Client.Infrastructure.Storage.Atomic;
 

@@ -1,4 +1,4 @@
-﻿namespace Weardian.Client.Domain.PayloadRecords
+﻿namespace Weardian.Client.Domain.PayloadRecords.Symmetric
 {
     public class PayloadRecord : PayloadBase
     {

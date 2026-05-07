@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /Weardian.Client/Core/Interfaces/IAuthTokenStorage.cs
 /Weardian.Client/Core/Services/AuthTokenStorage.cs
+/Weardian.Client/Domain/PayloadRecords/PayloadRecord.cs

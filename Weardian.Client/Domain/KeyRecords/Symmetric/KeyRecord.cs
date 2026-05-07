@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Client.Domain.KeyRecords.Symmetric
 {
-    public class SymmetricKeyRecord : KeyRecordBase
+    public class KeyRecord : KeyRecordBase
     {
         public byte[] WrappedKeyCiphertext { get; private set; }
 
@@ -11,8 +11,8 @@
         public required byte[] WrappedKeyTag { get; init; }
         public required byte[] WrappedKeyNonce { get; init; }
 
-        public SymmetricKeyRecord() { }
-        public SymmetricKeyRecord(byte[] wrappedKeyCiphertext)
+        public KeyRecord() { }
+        public KeyRecord(byte[] wrappedKeyCiphertext)
         {
             if (wrappedKeyCiphertext == null || wrappedKeyCiphertext.Length == 0)
                 throw new ArgumentException("Ciphertext cannot be null or empty");

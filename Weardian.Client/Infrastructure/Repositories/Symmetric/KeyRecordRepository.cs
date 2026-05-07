@@ -9,7 +9,7 @@ namespace Weardian.Client.Infrastructure.Repositories.Symmetric
 {
     public class KeyRecordRepository : IKeyRecordRepository
     {
-        public async Task AddLocalKeyRecordAsync(SymmetricKeyRecord keyRecord)
+        public async Task AddLocalKeyRecordAsync(KeyRecord keyRecord)
         {
             var keyPath = AppDataPaths.KeyRecordPath(keyRecord.EnvelopeId);
 
@@ -18,18 +18,18 @@ namespace Weardian.Client.Infrastructure.Repositories.Symmetric
             await AtomicFileWriter.WriteToFileAsync(keyPath, jsonKey);
         }
 
-        public async Task<IReadOnlyList<SymmetricKeyRecord>> GetLocalKeyRecordsAsync()
+        public async Task<IReadOnlyList<KeyRecord>> GetLocalKeyRecordsAsync()
         {
             if (!Directory.Exists(AppDataPaths.KeysDir))
                 return [];
 
             var keyRecordFiles = Directory.EnumerateFiles(AppDataPaths.KeysDir, "*.enc");
-            var results = new List<SymmetricKeyRecord>();
+            var results = new List<KeyRecord>();
 
             foreach (var key in keyRecordFiles)
             {
                 var json = await File.ReadAllTextAsync(key);
-                var keyRecord = JsonSerializer.Deserialize<SymmetricKeyRecord>(json);
+                var keyRecord = JsonSerializer.Deserialize<KeyRecord>(json);
 
                 if (keyRecord == null)
                     continue;
@@ -40,7 +40,7 @@ namespace Weardian.Client.Infrastructure.Repositories.Symmetric
             return results;
         }
 
-        public async Task<SymmetricKeyRecord> GetLocalKeyRecordByIdAsync(Guid envelopeId)
+        public async Task<KeyRecord> GetLocalKeyRecordByIdAsync(Guid envelopeId)
         {
             if (!Directory.Exists(AppDataPaths.KeysDir))
                 throw new InvalidOperationException("No local key record directory exists.");
@@ -52,11 +52,11 @@ namespace Weardian.Client.Infrastructure.Repositories.Symmetric
 
             var json = await File.ReadAllTextAsync(keyRecordFile);
 
-            return JsonSerializer.Deserialize<SymmetricKeyRecord>(json)
+            return JsonSerializer.Deserialize<KeyRecord>(json)
                 ?? throw new InvalidOperationException($"Key record file is invalid: {envelopeId}");
         }
 
-        public async Task UpdateLocalKeyRecordByIdAsync(SymmetricKeyRecord keyRecord)
+        public async Task UpdateLocalKeyRecordByIdAsync(KeyRecord keyRecord)
         {
             if (!Directory.Exists(AppDataPaths.KeysDir))
                 throw new InvalidOperationException("No local key record directory exists.");
