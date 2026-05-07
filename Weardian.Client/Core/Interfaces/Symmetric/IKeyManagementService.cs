@@ -3,5 +3,6 @@
     public interface IKeyManagementService
     {
         public Task CreateEncryptedPasswordAsync(string keyName, string password, bool createSynced = false);
+        public Task<string> RetrieveDecryptedPasswordAsync(Guid envelopeId);
     }
 }

@@ -3,6 +3,8 @@ using Weardian.Client.Core.DTOs.CryptographyDtos;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.Cryptography.Encryption;
 using Weardian.Client.Core.Interfaces.Cryptography.KeyWrapping;
+using Weardian.Client.Domain.KeyRecords.Symmetric;
+using Weardian.Client.Domain.PayloadRecords.Symmetric;
 
 namespace Weardian.Client.Infrastructure.Cryptography
 {
@@ -50,6 +52,17 @@ namespace Weardian.Client.Infrastructure.Cryptography
                 encryptedResults.Ciphertext,
                 encryptedResults.Tag,
                 encryptedResults.Nonce));
+        }
+
+        public async Task<string> DecryptEncryptedEnvelopeAsync(KeyRecord keyRecord, PayloadRecord payloadRecord)
+        {
+            var dataKey = await _keyWrap.UnwrapKey(keyRecord)
+                ?? throw new InvalidOperationException("Failed to unwrap the data key.");
+
+            var ptBytes = _encryptor.Decrypt(payloadRecord.Ciphertext, dataKey, payloadRecord.Nonce, payloadRecord.Tag)
+                ?? throw new InvalidOperationException("Failed to decrypt the payload data");
+
+            return Encoding.UTF8.GetString(ptBytes);
         }
     }
 }

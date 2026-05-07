@@ -1,10 +1,11 @@
-﻿using Weardian.Client.Core.Interfaces.Cryptography;
+﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
+using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 using Weardian.Client.Core.Interfaces.Sync;
 using Weardian.Client.Domain.KeyRecords.Symmetric;
-using Weardian.Client.Domain.PayloadRecords;
+using Weardian.Client.Domain.PayloadRecords.Symmetric;
 
 namespace Weardian.Client.Core.Services.Symmetric
 {
@@ -36,13 +37,13 @@ namespace Weardian.Client.Core.Services.Symmetric
             if (!results.IsValid)
                 throw new ArgumentException(string.Join("\n", results.Errors));
 
-            SymmetricKeyRecord keyRecord;
+            KeyRecord keyRecord;
             PayloadRecord payloadRecord;
             try
             {
                 var envelope = await _symmetricCryptoService.CreateEncryptedEnvelopeAsync(password);
 
-                keyRecord = new SymmetricKeyRecord(envelope.WrappedKey.WrappedKeyCiphertext)
+                keyRecord = new KeyRecord(envelope.WrappedKey.WrappedKeyCiphertext)
                 {
                     EnvelopeId = envelope.EnvelopeId,
                     EnvelopeVersion = envelope.WrappedKey.Version,
@@ -100,6 +101,28 @@ namespace Weardian.Client.Core.Services.Symmetric
 
                     throw new InvalidOperationException("Failed to sync key record to server.", ex);
                 }
+            }
+        }
+
+        public async Task<string> RetrieveDecryptedPasswordAsync(Guid envelopeId)
+        {
+            if (envelopeId == Guid.Empty)
+                throw new ArgumentException("PayloadRecordId is invalid.");
+
+            try
+            {
+                var payloadRecord = await _payloadRecordRepo.GetLocalPayloadRecordByIdAsync(envelopeId);
+                var keyRecord = await _keyRecordRepo.GetLocalKeyRecordByIdAsync(envelopeId);
+
+                if (payloadRecord.EnvelopeId != keyRecord.EnvelopeId)
+                    throw new InvalidOperationException("EnvelopeIds do not match.");
+
+                return await _symmetricCryptoService.DecryptEncryptedEnvelopeAsync(keyRecord, payloadRecord);
+
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to decrypt records.", ex);
             }
         }
     }

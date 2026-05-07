@@ -1,6 +1,7 @@
 ﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
 using Weardian.Client.Core.Interfaces.Cryptography.Encryption;
 using Weardian.Client.Core.Interfaces.Cryptography.KeyWrapping;
+using Weardian.Client.Domain.KeyRecords.Symmetric;
 
 namespace Weardian.Client.Infrastructure.Cryptography.KeyWrapping
 {
@@ -28,20 +29,20 @@ namespace Weardian.Client.Infrastructure.Cryptography.KeyWrapping
                 WrappedKeyNonce: wrapResult.Nonce,
                 WrappedKeyCiphertext: wrapResult.Ciphertext);
         }
-        public async Task<byte[]> UnwrapKey(EncryptedEnvelopeDto envelope)
+        public async Task<byte[]> UnwrapKey(KeyRecord keyRecord)
         {
             var currentKekId = _provider.GetKekId();
             
-            if (envelope.WrappedKey.WrappingKeyId != currentKekId)
+            if (keyRecord.WrappingKeyId != currentKekId)
                 throw new InvalidOperationException("Wrapped key does not match the stored Kek.");
 
             var kek = await _provider.GetOrCreateKekAsync();
 
             var unWrapResult = _encryptor.Decrypt(
-                envelope.WrappedKey.WrappedKeyCiphertext,
+                keyRecord.WrappedKeyCiphertext,
                 kek,
-                envelope.WrappedKey.WrappedKeyNonce,
-                envelope.WrappedKey.WrappedKeyTag); 
+                keyRecord.WrappedKeyNonce,
+                keyRecord.WrappedKeyTag); 
 
             return unWrapResult;
         }

@@ -5,6 +5,6 @@ namespace Weardian.Client.Core.Interfaces.Sync
 {
     public interface IKeyRecordSyncService
     {
-        public Task<KeySyncResponseDto> SyncKeyRecordAsync(SymmetricKeyRecord keyRecord);
+        public Task<KeySyncResponseDto> SyncKeyRecordAsync(KeyRecord keyRecord);
     }
 }

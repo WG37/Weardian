@@ -1,4 +1,4 @@
-﻿using Weardian.Client.Domain.PayloadRecords;
+﻿using Weardian.Client.Domain.PayloadRecords.Symmetric;
 
 namespace Weardian.Client.Core.Interfaces.Symmetric.Repositories
 {
