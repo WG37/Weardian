@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 using Weardian.Client.Core.DTOs.CryptographyDtos;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.Cryptography.Encryption;
@@ -62,7 +63,15 @@ namespace Weardian.Client.Infrastructure.Cryptography
             var ptBytes = _encryptor.Decrypt(payloadRecord.Ciphertext, dataKey, payloadRecord.Nonce, payloadRecord.Tag)
                 ?? throw new InvalidOperationException("Failed to decrypt the payload data");
 
-            return Encoding.UTF8.GetString(ptBytes);
+            try
+            {
+                return Encoding.UTF8.GetString(ptBytes);
+            }
+            finally
+            {
+                CryptographicOperations.ZeroMemory(ptBytes);
+                CryptographicOperations.ZeroMemory(dataKey);
+            }
         }
     }
 }
