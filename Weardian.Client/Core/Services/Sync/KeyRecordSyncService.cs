@@ -29,13 +29,13 @@ namespace Weardian.Client.Core.Services.Sync
             var dto = new KeySyncRequestDto(
                 EnvelopeId: keyRecord.EnvelopeId,
                 Name: keyRecord.Name,
+                KeyType: keyRecord.KeyType,
                 EnvelopeVersion: keyRecord.EnvelopeVersion,
                 WrapAlgorithm: keyRecord.WrapAlgorithm,
                 WrappingKeyId: keyRecord.WrappingKeyId,
                 WrappedKeyNonce: keyRecord.WrappedKeyNonce,
                 WrappedKeyCiphertext: keyRecord.WrappedKeyCiphertext,
-                WrappedKeyTag: keyRecord.WrappedKeyTag,
-                CreatedOn: keyRecord.CreatedOn);
+                WrappedKeyTag: keyRecord.WrappedKeyTag);
 
             using var request = new HttpRequestMessage(HttpMethod.Post, "/api/keys/symmetric");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
