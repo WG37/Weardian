@@ -1,5 +1,4 @@
-﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
-using Weardian.Client.Core.Interfaces.Cryptography;
+﻿using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
@@ -48,6 +47,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                     EnvelopeId = envelope.EnvelopeId,
                     EnvelopeVersion = envelope.WrappedKey.Version,
                     Name = keyName,
+                    KeyType = Domain.Enums.KeyType.Encryption,
                     WrapAlgorithm = envelope.WrappedKey.WrapAlgorithm,
                     WrappingKeyId = envelope.WrappedKey.WrappingKeyId,
                     WrappedKeyNonce = envelope.WrappedKey.WrappedKeyNonce,
@@ -59,6 +59,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                     EnvelopeId = envelope.EnvelopeId,
                     Version = envelope.Payload.Version,
                     Name = keyName,
+                    KeyType = Domain.Enums.KeyType.Encryption,
                     Algorithm = envelope.Payload.Algorithm,
                     Nonce = envelope.Payload.Nonce,
                     Tag = envelope.Payload.Tag
