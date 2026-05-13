@@ -1,24 +1,43 @@
-﻿using System.Text;
+﻿using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Weardian.Client.Core.DTOs.CryptographyDtos;
+using Weardian.Client.Core.Interfaces.Symmetric;
 
-namespace Weardian.Client
+namespace Weardian.Client.Presentation
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly IKeyManagementService _symmetricManagementService;
+        private readonly IPayloadService _payloadService;
+
+        public MainWindow(
+            IKeyManagementService symmetricManagementService,
+            IPayloadService payloadService)
         {
             InitializeComponent();
+            InitializeBrowser();
+
+            _symmetricManagementService = symmetricManagementService;
+            _payloadService = payloadService;
         }
+
+        private async void InitializeBrowser()
+        {
+            await Browser.EnsureCoreWebView2Async();
+
+            Browser.CoreWebView2.WebMessageReceived += (sender, args) =>
+            {
+                var message = args.WebMessageAsJson;
+
+                MessageBox.Show(message);
+            };
+
+            Browser.CoreWebView2.Navigate("http://localhost:5173");
+        }
+
     }
 }
