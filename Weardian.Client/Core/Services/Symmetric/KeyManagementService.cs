@@ -1,4 +1,5 @@
-﻿using Weardian.Client.Core.Interfaces.Cryptography;
+﻿using Weardian.Client.Core.DTOs.MessageHandlerDtos;
+using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
@@ -29,7 +30,7 @@ namespace Weardian.Client.Core.Services.Symmetric
             _validationService = validationService;
         }
 
-        public async Task CreateEncryptedPasswordAsync(string keyName, string password, bool createSynced)
+        public async Task<EncryptionResultDto> CreateEncryptedPasswordAsync(string keyName, string password, bool createSynced)
         {
             var results = _validationService.ValidateEncryptedPassword(keyName, password);
 
@@ -103,6 +104,14 @@ namespace Weardian.Client.Core.Services.Symmetric
                     throw new InvalidOperationException("Failed to sync key record to server.", ex);
                 }
             }
+
+            return new EncryptionResultDto(
+                EnvelopeId: payloadRecord.EnvelopeId,
+                KeyName: payloadRecord.Name,
+                Algorithm: payloadRecord.Algorithm,
+                KeyType: payloadRecord.KeyType
+                );
+            
         }
 
         public async Task<string> RetrieveDecryptedPasswordAsync(Guid envelopeId)
