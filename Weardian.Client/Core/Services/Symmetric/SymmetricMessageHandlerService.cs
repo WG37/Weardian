@@ -21,7 +21,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                 throw new ArgumentException("Invalid request: cannot be null, empty or whitespace", nameof(request));
 
             var result = JsonSerializer.Deserialize<EncryptionRequestDto>(request)
-                ?? throw new ArgumentNullException("The deserialized result cannot be null");
+                ?? throw new InvalidOperationException("Deserialization Failed: result cannot be null");
 
             var encryptionResult = await _keyManagementService
                 .CreateEncryptedPasswordAsync(
