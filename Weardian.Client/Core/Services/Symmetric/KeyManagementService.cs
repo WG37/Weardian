@@ -1,4 +1,4 @@
-﻿using Weardian.Client.Core.DTOs.MessageHandlerDtos;
+﻿using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleEncryptionDtos;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;
@@ -30,7 +30,7 @@ namespace Weardian.Client.Core.Services.Symmetric
             _validationService = validationService;
         }
 
-        public async Task<EncryptionResultDto> CreateEncryptedPasswordAsync(string keyName, string password, bool createSynced)
+        public async Task<EncryptionResponseDto> CreateEncryptedPasswordAsync(string keyName, string password, bool createSynced)
         {
             var results = _validationService.ValidateEncryptedPassword(keyName, password);
 
@@ -105,7 +105,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                 }
             }
 
-            return new EncryptionResultDto(
+            return new EncryptionResponseDto(
                 EnvelopeId: payloadRecord.EnvelopeId,
                 KeyName: payloadRecord.Name,
                 Algorithm: payloadRecord.Algorithm,
