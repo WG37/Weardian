@@ -1,4 +1,4 @@
-﻿namespace Weardian.Client.Core.DTOs.MessageHandlerDtos
+﻿namespace Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleEncryptionDtos
 {
     public sealed record EncryptionRequestDto(
         string KeyName,
