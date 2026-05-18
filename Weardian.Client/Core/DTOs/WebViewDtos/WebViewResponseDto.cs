@@ -3,7 +3,7 @@
     public sealed record WebViewResponseDto<T>(
         string Type,
         bool Success,
-        T Data,
+        T? Data,
         string? Error
         );
 }
