@@ -5,6 +5,6 @@
         Title="MainWindow" Height="578" Width="905">
     
     <Grid>
-        <wv2:WebView2 x:Name="Browser" />
+        <wv2:WebView2 x:Name="ClientWebView" />
     </Grid>
 </Window>

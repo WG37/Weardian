@@ -41,17 +41,19 @@ namespace Weardian.Client.Presentation
             services.AddScoped<IKeyManagementService, KeyManagementService>();
             services.AddScoped<IPayloadService, PayloadService>();
 
-            services.AddScoped<ISymmetricCryptoService, SymmetricCryptoService>();
-            services.AddScoped<IKeyGeneration, KeyGeneration>();
-            services.AddScoped<IAesEncryptor, AesEncryptor>();
-
-            services.AddScoped<IKeyWrappingService, KeyWrappingService>();
-            services.AddScoped<IKekProvider, KekProvider>();
-
             services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();
 
-            services.AddScoped<IInputValidationService, InputValidationService>();
+            services.AddTransient<ISymmetricCryptoService, SymmetricCryptoService>();
+            services.AddTransient<IKeyGeneration, KeyGeneration>();
+            services.AddTransient<IAesEncryptor, AesEncryptor>();
 
+            services.AddTransient<IKeyWrappingService, KeyWrappingService>();
+            services.AddTransient<IKekProvider, KekProvider>();
+
+
+            services.AddTransient<IInputValidationService, InputValidationService>();
+            services.AddTransient<ISymmetricMessageHandlerService, SymmetricMessageHandlerService>();
+            
 
             services.AddHttpClient<IAuthService, AuthService>(client =>
             {

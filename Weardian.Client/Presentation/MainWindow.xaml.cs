@@ -1,7 +1,5 @@
 ﻿using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.Wpf;
 using System.Windows;
-using Weardian.Client.Core.DTOs.CryptographyDtos;
 using Weardian.Client.Core.Interfaces.Symmetric;
 
 namespace Weardian.Client.Presentation
@@ -11,32 +9,31 @@ namespace Weardian.Client.Presentation
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IKeyManagementService _symmetricManagementService;
-        private readonly IPayloadService _payloadService;
+        private readonly ISymmetricMessageHandlerService _symmetricHandlerService;
 
         public MainWindow(
-            IKeyManagementService symmetricManagementService,
-            IPayloadService payloadService)
+            ISymmetricMessageHandlerService symmetricHandlerService)
         {
+            _symmetricHandlerService = symmetricHandlerService;
+
             InitializeComponent();
             InitializeBrowser();
-
-            _symmetricManagementService = symmetricManagementService;
-            _payloadService = payloadService;
         }
 
         private async void InitializeBrowser()
         {
-            await Browser.EnsureCoreWebView2Async();
+            await ClientWebView.EnsureCoreWebView2Async();
 
-            Browser.CoreWebView2.WebMessageReceived += (sender, args) =>
+            ClientWebView.CoreWebView2.WebMessageReceived += async (sender, args) =>
             {
-                var message = args.WebMessageAsJson;
+                var request = args.WebMessageAsJson;
 
-                MessageBox.Show(message);
+                var response = await _symmetricHandlerService.HandleAsync(request);
+
+                ClientWebView.CoreWebView2.PostWebMessageAsJson(response);
             };
 
-            Browser.CoreWebView2.Navigate("http://localhost:5173");
+            ClientWebView.CoreWebView2.Navigate("http://localhost:5173");
         }
 
     }
