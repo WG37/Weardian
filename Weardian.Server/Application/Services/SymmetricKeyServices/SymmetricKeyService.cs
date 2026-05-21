@@ -16,7 +16,7 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
             _keyRepository = keyRepository;
         }
 
-        public async Task<SymmetricKeyResponseDto> CreateKey(CreateSymmetricKeyRequestDto req, string userId)
+        public async Task<SymmetricKeyResponseDto> CreateKey(DTOs.RequestDtos.KeySyncRequestDto req, string userId)
         {
             // todo: add validation guards
 
@@ -43,8 +43,6 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 keyRecord.EnvelopeId,
                 keyRecord.Name,
                 keyRecord.KeyType,
-                keyRecord.KeyStatus,
-                keyRecord.KeyLength,
                 new EncryptedEnvelopeResponseDto(
                     keyRecord.EnvelopeVersion,
                     keyRecord.WrapAlgorithm,
@@ -64,8 +62,6 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 keyRecord.EnvelopeId,
                 keyRecord.Name,
                 keyRecord.KeyType,
-                keyRecord.KeyStatus,
-                keyRecord.KeyLength,
                 new EncryptedEnvelopeResponseDto(
                     keyRecord.EnvelopeVersion,
                     keyRecord.WrapAlgorithm,
@@ -84,8 +80,6 @@ namespace Weardian.Server.Application.Services.SymmetricKeyServices
                 EnvelopeId: k.EnvelopeId,
                 Name: k.Name,
                 KeyType: k.KeyType,
-                KeyStatus: k.KeyStatus,
-                KeyLength: k.KeyLength,
                 new EncryptedEnvelopeResponseDto(
                     k.EnvelopeVersion,
                     k.WrapAlgorithm,

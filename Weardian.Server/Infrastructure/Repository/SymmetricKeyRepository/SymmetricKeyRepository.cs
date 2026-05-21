@@ -38,10 +38,10 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
             return keys;
         }
 
-        public async Task<bool> RemoveByIdAsync(string userId, Guid publicId)
+        public async Task<bool> RemoveByIdAsync(string userId, Guid envelopeId)
         {
             var key = await _db.SymmetricKeyRecords
-                .SingleOrDefaultAsync(k => k.UserId == userId && k.EnvelopeId == publicId);
+                .SingleOrDefaultAsync(k => k.UserId == userId && k.EnvelopeId == envelopeId);
 
             if (key == null)
                 return false;
