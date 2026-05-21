@@ -1,4 +1,5 @@
 ﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
+using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleRetrievalDtos;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 
@@ -13,43 +14,37 @@ namespace Weardian.Client.Core.Services.Symmetric
             _symmetricKeyRepo = symmetricKeyRepo;
         }
 
-        public async Task<IReadOnlyList<EncryptedPayloadRecordDto>> GetPayloadRecordsAsync()
+        public async Task<IReadOnlyList<RetrieveKeyResponseDto>> GetPayloadRecordsAsync()
         {
             var payloadRecords = await _symmetricKeyRepo.GetLocalPayloadRecordsAsync();
 
-            var payloadResults = new List<EncryptedPayloadRecordDto>();
+            var retrievedKeys = new List<RetrieveKeyResponseDto>();
 
             foreach (var payload in payloadRecords)
             {
-                var payloadDto = new EncryptedPayloadRecordDto(
+                var payloadDto = new RetrieveKeyResponseDto(
                     EnvelopeId: payload.EnvelopeId,
                     Name: payload.Name,
                     Algorithm: payload.Algorithm,
-                    Ciphertext: payload.Ciphertext,
-                    Nonce: payload.Nonce,
-                    Tag: payload.Tag,
                     CreatedOn: payload.CreatedOn);
 
-                payloadResults.Add(payloadDto);
+                retrievedKeys.Add(payloadDto);
             }
 
-            return payloadResults;
+            return retrievedKeys;
         }
 
-        public async Task<EncryptedPayloadRecordDto> GetPayloadRecordByIdAsync(Guid envelopeId)
+        public async Task<RetrieveKeyResponseDto> GetPayloadRecordByIdAsync(Guid envelopeId)
         {
             if (envelopeId == Guid.Empty)
                 throw new ArgumentException("EnvelopeId cannot be empty", nameof(envelopeId));
 
             var payloadRecord = await _symmetricKeyRepo.GetLocalPayloadRecordByIdAsync(envelopeId);
 
-            return new EncryptedPayloadRecordDto(
+            return new RetrieveKeyResponseDto(
                 EnvelopeId: payloadRecord.EnvelopeId,
                 Name: payloadRecord.Name,
                 Algorithm: payloadRecord.Algorithm,
-                Ciphertext: payloadRecord.Ciphertext,
-                Nonce: payloadRecord.Nonce,
-                Tag: payloadRecord.Tag,
                 CreatedOn: payloadRecord.CreatedOn);
         }
 

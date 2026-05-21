@@ -1,11 +1,12 @@
 ﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
+using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleRetrievalDtos;
 
 namespace Weardian.Client.Core.Interfaces.Symmetric
 {
     public interface IPayloadService
     {
-        public Task<IReadOnlyList<EncryptedPayloadRecordDto>> GetPayloadRecordsAsync();
-        public Task<EncryptedPayloadRecordDto> GetPayloadRecordByIdAsync(Guid envelopeId);
+        public Task<IReadOnlyList<RetrieveKeyResponseDto>> GetPayloadRecordsAsync();
+        public Task<RetrieveKeyResponseDto> GetPayloadRecordByIdAsync(Guid envelopeId);
         public bool RemoveRecordById(Guid envelopeId);
     }
 }
