@@ -1,6 +1,4 @@
-﻿using Weardian.Client.Domain.Enums;
-
-namespace Weardian.Client.Core.DTOs.CryptographyDtos
+﻿namespace Weardian.Client.Core.DTOs.CryptographyDtos
 {
     public sealed record EncryptedPayloadRecordDto(
         Guid EnvelopeId,
