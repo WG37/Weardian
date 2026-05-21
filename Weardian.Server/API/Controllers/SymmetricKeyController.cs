@@ -25,7 +25,7 @@ namespace Weardian.Server.API.Controllers
         }
 
         [HttpGet("{envelopeId:guid}")]
-        public async Task<ActionResult<SymmetricKeyResponseDto>> GetKeyById(Guid envelopeId)
+        public async Task<ActionResult<KeySyncResponseDto>> GetKeyById(Guid envelopeId)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Weardian.Server.API.Controllers
         }
 
         [HttpGet()]
-        public async Task<ActionResult<IReadOnlyList<SymmetricKeyResponseDto>>> GetAllKeys()
+        public async Task<ActionResult<IReadOnlyList<KeySyncResponseDto>>> GetAllKeys()
         {
         
             var userId = _userManager.GetUserId(User);
@@ -55,7 +55,7 @@ namespace Weardian.Server.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<SymmetricKeyResponseDto>> CreateSymmetricKey([FromBody] CreateSymmetricKeyRequestDto req)
+        public async Task<ActionResult<KeySyncResponseDto>> CreateSymmetricKey([FromBody] KeySyncRequestDto req)
         {
             try
             {
