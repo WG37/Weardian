@@ -1,10 +1,8 @@
-﻿namespace Weardian.Server.Application.DTOs.CryptographyDtos
+﻿using Weardian.Server.Application.DTOs.RequestDtos;
+using Weardian.Server.Domain.KeyRecords;
+
+namespace Weardian.Server.Application.DTOs.CryptographyDtos
 {
     public sealed record EncryptedEnvelopeRequestDto(
-        int Version,
-        string WrapAlgorithm,
-        Guid WrappingKeyId,
-        byte[] Ciphertext,
-        byte[] Tag,
-        byte[] Nonce);
+        KeySyncRequestDto RequestDto);
 }
