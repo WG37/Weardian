@@ -7,6 +7,8 @@ export default async function postWebViewMessage(messageType, object = {}) {
         const handler = (e) => {
             const response = e.data;
 
+            console.log("WebView response:", response);
+
             if (response.type !== messageType) {
                 return;
             }

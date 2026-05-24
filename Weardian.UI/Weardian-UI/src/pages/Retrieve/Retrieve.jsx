@@ -24,7 +24,7 @@ function Retrieve() {
             setResult("Key retrieved");
             setKeyId("");
 
-        } catch (error) {
+        } catch (err) {
             console.error(error);
 
             setError("Failed to retrieve key");
@@ -62,6 +62,8 @@ function Retrieve() {
         try {
             await deleteKeyById(selectedKeyId)
 
+            setKeys(currentKeys => currentKeys.filter(key => key.keyId !== selectedKeyId));
+            setSelectedKey(null);
         } catch (error) {
             
             console.error(error);
@@ -119,7 +121,7 @@ function Retrieve() {
                         className="delete-button"
                         type="button"
                         disabled={!selectedKey || loading}
-                        onClick={() => handleDeletekey(selectedKey.id)}>
+                        onClick={() => handleDeleteKey(selectedKey.keyId)}>
                         Delete Key
                     </button>
 
@@ -127,7 +129,7 @@ function Retrieve() {
                         className="decrypt-button"
                         type="button"
                         disabled={!selectedKey || loading}
-                        onClick={() => handleDecryptKey(selectedKey.id)}>
+                        onClick={() => handleDecryptKey(selectedKey.keyId)}>
                         Decrypt Key
                     </button>
 
@@ -139,7 +141,7 @@ function Retrieve() {
 
                 {error && <p>{error}</p>}
                 
-                {!loading && keys.length > 0 && (
+                {!loading && (
                     <KeysTable 
                         keys={keys}
                         selectedKey={selectedKey}

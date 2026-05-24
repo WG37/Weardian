@@ -3,7 +3,7 @@
 namespace Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleEncryptionDtos
 {
     public sealed record EncryptionResponseDto(
-        Guid EnvelopeId,
+        Guid KeyId,
         string KeyName,
         string Algorithm,
         KeyType KeyType

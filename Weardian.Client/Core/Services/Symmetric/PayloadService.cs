@@ -27,7 +27,7 @@ namespace Weardian.Client.Core.Services.Symmetric
             foreach (var payload in payloadRecords)
             {
                 var payloadDto = new RetrieveKeyResponseDto(
-                    EnvelopeId: payload.EnvelopeId,
+                    KeyId: payload.EnvelopeId,
                     Name: payload.Name,
                     Algorithm: payload.Algorithm,
                     CreatedOn: payload.CreatedOn);
@@ -46,7 +46,7 @@ namespace Weardian.Client.Core.Services.Symmetric
             var payloadRecord = await _symmetricPayloadRepo.GetLocalPayloadRecordByIdAsync(envelopeId);
 
             return new RetrieveKeyResponseDto(
-                EnvelopeId: payloadRecord.EnvelopeId,
+                KeyId: payloadRecord.EnvelopeId,
                 Name: payloadRecord.Name,
                 Algorithm: payloadRecord.Algorithm,
                 CreatedOn: payloadRecord.CreatedOn);

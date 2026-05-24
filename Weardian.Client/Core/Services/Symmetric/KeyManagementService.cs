@@ -106,7 +106,7 @@ namespace Weardian.Client.Core.Services.Symmetric
             }
 
             return new EncryptionResponseDto(
-                EnvelopeId: payloadRecord.EnvelopeId,
+                KeyId: payloadRecord.EnvelopeId,
                 KeyName: payloadRecord.Name,
                 Algorithm: payloadRecord.Algorithm,
                 KeyType: payloadRecord.KeyType

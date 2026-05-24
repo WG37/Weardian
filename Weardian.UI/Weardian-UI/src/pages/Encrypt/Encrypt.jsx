@@ -20,7 +20,7 @@ function Encrypt() {
         try {
             const encryptResult = await encryptInput(keyName, password, sync);
 
-            setResult(`Encryption successful: ${encryptResult}`);
+            setResult(`Encryption successful: ${encryptResult.data}`);
             setKeyName("");
             setPassword("");
             setSync(false);

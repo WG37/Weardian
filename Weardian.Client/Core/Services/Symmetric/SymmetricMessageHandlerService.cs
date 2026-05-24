@@ -38,7 +38,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                     "encryption" => await HandleEncryptionRequestAsync(request),
                     "decryption" => await HandleDecryptionRequestAsync(request),
                     "retrieveAllKeys" => await HandleRetrieveAllKeysRequestAsync(),
-                    "delete" => HandleDeleteKeyRequestAsync(request),
+                    "deleteKey" => HandleDeleteKeyRequestAsync(request),
                     _ => throw new InvalidOperationException("Invalid request type.")
                 };
             }
@@ -134,7 +134,7 @@ namespace Weardian.Client.Core.Services.Symmetric
 
             return JsonSerializer.Serialize(
                 new WebViewResponseDto<string>(
-                    Type: "deleted",
+                    Type: "deleteKey",
                     Success: deleted,
                     Data: "Key successfully deleted from system.",
                     Error: null
