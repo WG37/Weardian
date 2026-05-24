@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleDecryptionDtos;
+using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleDeleteDtos;
 using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleEncryptionDtos;
 using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleRetrievalDtos;
 using Weardian.Client.Core.DTOs.WebViewDtos;
@@ -26,18 +27,19 @@ namespace Weardian.Client.Core.Services.Symmetric
             try
             {
                 if (string.IsNullOrWhiteSpace(request))
-                    throw new ArgumentException("Request type cannot be null or empty", nameof(request));
+                    throw new ArgumentException("Request type cannot be null or empty.", nameof(request));
 
                 var requestType = JsonSerializer.Deserialize<WebViewRequestDto>(request, 
                     JsonSerializeCaseHelper.CaseInsensitiveOptions)
-                    ?? throw new InvalidOperationException("Failed to deserialized request type");
+                    ?? throw new InvalidOperationException("Failed to deserialized request type.");
 
                 return requestType.Type switch
                 {
                     "encryption" => await HandleEncryptionRequestAsync(request),
                     "decryption" => await HandleDecryptionRequestAsync(request),
                     "retrieveAllKeys" => await HandleRetrieveAllKeysRequestAsync(),
-                    _ => throw new InvalidOperationException("Invalid request type")
+                    "delete" => HandleDeleteKeyRequestAsync(request),
+                    _ => throw new InvalidOperationException("Invalid request type.")
                 };
             }
             catch (Exception ex)
@@ -56,11 +58,11 @@ namespace Weardian.Client.Core.Services.Symmetric
         public async Task<string> HandleEncryptionRequestAsync(string request)
         {
             if (string.IsNullOrWhiteSpace(request))
-                throw new ArgumentException("Invalid request: cannot be null, empty or whitespace", nameof(request));
+                throw new ArgumentException("Invalid request: cannot be null, empty or whitespace.", nameof(request));
 
             var dto = JsonSerializer.Deserialize<EncryptionRequestDto>(request, 
                 JsonSerializeCaseHelper.CaseInsensitiveOptions)
-                ?? throw new InvalidOperationException("Deserialization Failed: result cannot be null");
+                ?? throw new InvalidOperationException("Deserialization Failed: result cannot be null.");
 
             var encryptionResponse = await _keyManagementService
                 .CreateEncryptedPasswordAsync(
@@ -81,13 +83,13 @@ namespace Weardian.Client.Core.Services.Symmetric
         public async Task<string> HandleDecryptionRequestAsync(string request)
         {
             if (string.IsNullOrWhiteSpace(request))
-                throw new ArgumentException("Invalid request: cannot be null, empty or whitespace", nameof(request));
+                throw new ArgumentException("Invalid request: cannot be null, empty or whitespace.", nameof(request));
 
             var dto = JsonSerializer.Deserialize<DecryptionRequestDto>(request, 
                 JsonSerializeCaseHelper.CaseInsensitiveOptions);
 
             if (dto == null || dto.KeyId == Guid.Empty)
-                throw new InvalidOperationException("Deserialization Failed: null result or Guid is invalid.");
+                throw new InvalidOperationException("Deserialization Failed: null result or GUID is invalid.");
 
             var decryptionResult = await _keyManagementService
                 .RetrieveDecryptedPasswordAsync(dto.KeyId);
@@ -115,6 +117,29 @@ namespace Weardian.Client.Core.Services.Symmetric
                     Error: null
                     ),
                 JsonSerializeCaseHelper.CamelCaseOptions); 
+        }
+
+        public string HandleDeleteKeyRequestAsync(string request)
+        {
+            if (string.IsNullOrWhiteSpace(request))
+                throw new ArgumentException("Invalid request: cannot be null, empty or whitespace.", nameof(request));
+
+            var dto = JsonSerializer.Deserialize<DeleteKeyRequestDto>(request,
+                JsonSerializeCaseHelper.CaseInsensitiveOptions);
+
+            if (dto == null || dto.KeyId == Guid.Empty)
+                throw new InvalidOperationException("Deserialization Failed: null result or GUID is invalid.");
+
+            var deleted = _payloadService.RemoveRecordsById(dto.KeyId);
+
+            return JsonSerializer.Serialize(
+                new WebViewResponseDto<string>(
+                    Type: "deleted",
+                    Success: deleted,
+                    Data: "Key successfully deleted from system.",
+                    Error: null
+                    ),
+                JsonSerializeCaseHelper.CamelCaseOptions);
         }
     }
 }

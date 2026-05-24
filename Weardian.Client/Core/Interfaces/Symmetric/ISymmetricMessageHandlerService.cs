@@ -6,5 +6,6 @@
         public Task<string> HandleEncryptionRequestAsync(string request);
         public Task<string> HandleDecryptionRequestAsync(string request);
         public Task<string> HandleRetrieveAllKeysRequestAsync();
+        public string HandleDeleteKeyRequestAsync(string request);
     }
 }
