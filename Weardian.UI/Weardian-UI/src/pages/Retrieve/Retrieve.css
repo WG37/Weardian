@@ -1,0 +1,44 @@
+.keyRetrieval-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
+
+.keyBox-title {
+    margin: 0;
+}
+
+.retrievalControls-container {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.retrieveButtons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.retrieve-input {
+    width: 250px;
+    padding: 10px;
+}
+
+.delete-button {
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+.keyRetrieval-box {
+    min-height: 300px;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+.keyList-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
