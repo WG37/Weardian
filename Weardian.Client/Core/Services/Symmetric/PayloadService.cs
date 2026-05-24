@@ -7,16 +7,20 @@ namespace Weardian.Client.Core.Services.Symmetric
 {
     internal class PayloadService : IPayloadService
     {
-        private readonly IPayloadRecordRepository _symmetricKeyRepo;
+        private readonly IPayloadRecordRepository _symmetricPayloadRepo;
+        private readonly IKeyRecordRepository _symmetricKeyRepo;
 
-        public PayloadService(IPayloadRecordRepository symmetricKeyRepo)
+        public PayloadService(
+            IPayloadRecordRepository symmetricPayloadRepo,
+            IKeyRecordRepository symmetricKeyRepo)
         {
+            _symmetricPayloadRepo = symmetricPayloadRepo;
             _symmetricKeyRepo = symmetricKeyRepo;
         }
 
         public async Task<IReadOnlyList<RetrieveKeyResponseDto>> GetPayloadRecordsAsync()
         {
-            var payloadRecords = await _symmetricKeyRepo.GetLocalPayloadRecordsAsync();
+            var payloadRecords = await _symmetricPayloadRepo.GetLocalPayloadRecordsAsync();
 
             var retrievedKeys = new List<RetrieveKeyResponseDto>();
 
@@ -39,7 +43,7 @@ namespace Weardian.Client.Core.Services.Symmetric
             if (envelopeId == Guid.Empty)
                 throw new ArgumentException("EnvelopeId cannot be empty", nameof(envelopeId));
 
-            var payloadRecord = await _symmetricKeyRepo.GetLocalPayloadRecordByIdAsync(envelopeId);
+            var payloadRecord = await _symmetricPayloadRepo.GetLocalPayloadRecordByIdAsync(envelopeId);
 
             return new RetrieveKeyResponseDto(
                 EnvelopeId: payloadRecord.EnvelopeId,
@@ -48,14 +52,18 @@ namespace Weardian.Client.Core.Services.Symmetric
                 CreatedOn: payloadRecord.CreatedOn);
         }
 
-        public bool RemoveRecordById(Guid envelopeId)
+        public bool RemoveRecordsById(Guid envelopeId)
         {
             if (envelopeId == Guid.Empty)
                 throw new ArgumentException("EnvelopeId cannot be empty", nameof(envelopeId));
 
-            var deleted = _symmetricKeyRepo.RemoveLocalPayloadRecordById(envelopeId);
+            var payloadDeleted = _symmetricPayloadRepo.RemoveLocalPayloadRecordById(envelopeId);
+            var keyRecordDeleted = _symmetricKeyRepo.RemoveLocalKeyRecordById(envelopeId);
 
-            return deleted;
+            if (!payloadDeleted || !keyRecordDeleted)
+                throw new InvalidOperationException("Failed to delete local record pair.");
+
+            return true;
         }
     }
 }
