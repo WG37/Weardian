@@ -1,4 +1,6 @@
-﻿namespace Weardian.Client.Domain.PayloadRecords.Symmetric
+﻿using System.Text.Json.Serialization;
+
+namespace Weardian.Client.Domain.PayloadRecords.Symmetric
 {
     public class PayloadRecord : PayloadBase
     {
@@ -11,6 +13,8 @@
         public required byte[] Tag { get; init; }
 
         public PayloadRecord() { }
+
+        [JsonConstructor]
         public PayloadRecord(byte[] ciphertext)
         {
             if (ciphertext == null || ciphertext.Length == 0)

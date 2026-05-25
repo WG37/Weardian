@@ -3,7 +3,7 @@
     public sealed record PayloadRecordDto(
         int Version,
         string Algorithm,
-        byte[] Nonce,
+        byte[] Ciphertext,
         byte[] Tag,
-        byte[] Ciphertext);
+        byte[] Nonce);
 }

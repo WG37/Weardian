@@ -1,4 +1,6 @@
-﻿namespace Weardian.Client.Domain.KeyRecords.Symmetric
+﻿using System.Text.Json.Serialization;
+
+namespace Weardian.Client.Domain.KeyRecords.Symmetric
 {
     public class KeyRecord : KeyRecordBase
     {
@@ -12,6 +14,8 @@
         public required byte[] WrappedKeyNonce { get; init; }
 
         public KeyRecord() { }
+
+        [JsonConstructor]
         public KeyRecord(byte[] wrappedKeyCiphertext)
         {
             if (wrappedKeyCiphertext == null || wrappedKeyCiphertext.Length == 0)
