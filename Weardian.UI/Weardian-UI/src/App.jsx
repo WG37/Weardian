@@ -4,8 +4,7 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import MainLayout from "./layouts/MainLayout"
 import Home from "./pages/Home/Home";
 import Encrypt from "./pages/Encrypt/Encrypt";
-import Decrypt from "./pages/Decrypt/Decrypt";
-import Retrieve from "./pages/Retrieve/Retrieve";
+import KeyManagement from "./pages/KeyManagement/KeyManagement";
 
 function App() {
     const [display, setDisplay] = useState("home");
@@ -17,8 +16,7 @@ function App() {
             <div className="main">
                 {display === "home" && <Home />}
                 {display === "encrypt" && <Encrypt />}
-                {display === "decrypt" && <Decrypt />}
-                {display === "retrieve" && <Retrieve />}
+                {display === "keyManagement" && <KeyManagement />}
             </div>
         </div>
     );

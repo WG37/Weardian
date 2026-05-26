@@ -1,4 +1,4 @@
-import "./sidebar.css";
+import "./Sidebar.css";
 
 function Sidebar({ setDisplay }) {
     return (
@@ -13,16 +13,8 @@ function Sidebar({ setDisplay }) {
                 Encrypt
             </button>
 
-            <button className="sidebar-button" onClick={() => setDisplay("decrypt")}>
-                Decrypt
-            </button>
-
-            <button className="sidebar-button" onClick={() => setDisplay("retrieve")}>
-                Retrieve
-            </button>
-
-            <button className="sidebar-button" onClick={() => setDisplay("delete")}>
-                Delete
+            <button className="sidebar-button" onClick={() => setDisplay("keyManagement")}>
+                Key Management
             </button>
         </div>
     );

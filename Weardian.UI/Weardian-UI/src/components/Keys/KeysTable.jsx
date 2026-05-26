@@ -1,6 +1,13 @@
-export default function KeysTable({ keys, selectedKey ,setSelectedKey }) {
+import "./KeysTable.css";
+
+export default function KeysTable({ 
+    keys, 
+    selectedKey,
+    setSelectedKey, 
+    showKeyId, 
+    setShowKeyId }) {
     return (
-        <table>
+        <table className="keysTable">
             <thead>
               <tr>
                <th>Id</th>
@@ -11,14 +18,23 @@ export default function KeysTable({ keys, selectedKey ,setSelectedKey }) {
             </thead>
 
             <tbody>
-                {keys?.map((key) => (
+                {keys.map((key) => (
                     <tr key={key.keyId}
                         onClick={() => setSelectedKey(key)}
-                        className={selectedKey?.id === key.id ? "selected-row" : ""}>
-                        <td>{key.Id}</td>
+                        className={selectedKey?.keyId === key.keyId ? "selected-row" : ""}>
+                        <td onClick={(e) => {
+                            e.stopPropagation();
+
+                            setShowKeyId(
+                                showKeyId === key.keyId
+                                    ? null : key.keyId 
+                            );
+                        }}>{showKeyId === key.keyId
+                            ? key.keyId : "Show Key ID"}</td>
+                            
                         <td>{key.name}</td>
                         <td>{key.algorithm}</td>
-                        <td>{key.createdOn}</td>
+                        <td>{key.createdOn.slice(0,10)}</td>
                     </tr>
                 ))}
             </tbody>

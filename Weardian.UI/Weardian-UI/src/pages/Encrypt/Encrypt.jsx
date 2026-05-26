@@ -42,16 +42,16 @@ function Encrypt() {
             <form className="encryptForm-container" onSubmit={handleSubmit}>
                 <input 
                     type="text" 
-                    placeholder="Enter password to encrypt" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)} 
-                />
-                
-                <input 
-                    type="text" 
                     placeholder="Enter a name for your key" 
                     value={keyName}
                     onChange={(e) => setKeyName(e.target.value)}
+                />
+                
+                <input 
+                    type="password"
+                    placeholder="Enter password to encrypt" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)} 
                 />
 
                 <button 

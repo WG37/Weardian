@@ -1,0 +1,87 @@
+.keyRetrieval-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    padding: 20px;
+}
+
+.keyRetrieval-left {
+    display: flex;
+    flex-direction:column;
+    gap: 10px;
+}
+
+.keyBox-title {
+    margin: 0;
+    margin-bottom: 50px;
+}
+
+.retrievalControls-container {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.retrieveButtons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.retrieve-input {
+    width: 250px;
+    padding: 10px;
+    margin-right: 50px;
+    background: #3f3e3e;
+    color: white;
+}
+
+.delete-button {
+    padding: 10px 16px;
+    cursor: pointer;
+
+    background: rgba(180, 12, 12, 0.568);
+    border: 1px solid red;
+    border-radius: 8px;
+
+    color: white;
+    transition: background 0.2s ease,
+                border-color 0.2s ease;
+}
+
+.delete-button:hover {
+    background: rgba(255, 80, 80, 0.2);
+    border-color: #ff6b6b;
+}
+
+.decrypt-button {
+    padding: 10px 16px;
+    cursor: pointer;
+
+    background: rgba(187, 138, 4, 0.795);
+    border: 1px solid rgb(247, 142, 4);
+    border-radius: 8px;
+    
+    color: white;
+    transition: background 0.2s ease,
+                border-color 0.2 ease;
+}
+
+.decrypt-button:hover {
+    background: rgba(187, 138, 4, 0.425);
+    border-color: rgb(240, 178, 98);
+}
+
+.keyRetrieval-box {
+    min-height: 300px;
+    padding: 20px;
+    gap: 20px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+}
+
+.keyList-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

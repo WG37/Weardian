@@ -1,3 +1,4 @@
+import "./MainLayout.css";
 
 function MainContent({content}) {
     return (
