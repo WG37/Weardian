@@ -38,7 +38,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                     "encryption" => await HandleEncryptionRequestAsync(request),
                     "decryption" => await HandleDecryptionRequestAsync(request),
                     "retrieveAllKeys" => await HandleRetrieveAllKeysRequestAsync(),
-                    "deleteKey" => HandleDeleteKeyRequestAsync(request),
+                    "deleteKey" => HandleDeleteKeyRequest(request),
                     _ => throw new InvalidOperationException("Invalid request type.")
                 };
             }
@@ -119,7 +119,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                 JsonSerializeCaseHelper.CamelCaseOptions); 
         }
 
-        public string HandleDeleteKeyRequestAsync(string request)
+        public string HandleDeleteKeyRequest(string request)
         {
             if (string.IsNullOrWhiteSpace(request))
                 throw new ArgumentException("Invalid request: cannot be null, empty or whitespace.", nameof(request));
