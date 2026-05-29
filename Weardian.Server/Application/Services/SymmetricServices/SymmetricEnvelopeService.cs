@@ -4,7 +4,7 @@ using Weardian.Server.Domain.EncryptedEnvelopes.Symmetric;
 using Weardian.Server.Domain.KeyRecords.Symmetric;
 using Weardian.Server.Domain.PayloadRecords.Symmetric;
 
-namespace Weardian.Server.Application.Services.SymmetricKeyServices
+namespace Weardian.Server.Application.Services.SymmetricServices
 {
     public class SymmetricEnvelopeService : ISymmetricEnvelopeService
     {

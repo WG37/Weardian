@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Application.Services.EnvelopeValidation;
-using Weardian.Server.Application.Services.SymmetricKeyServices;
+using Weardian.Server.Application.Services.SymmetricServices;
 using Weardian.Server.Domain.Users;
 using Weardian.Server.Infrastructure.Authentication.TokenServices;
 using Weardian.Server.Infrastructure.Data;
