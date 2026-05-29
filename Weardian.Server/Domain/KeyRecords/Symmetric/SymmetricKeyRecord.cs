@@ -2,8 +2,7 @@
 {
     public class SymmetricKeyRecord : KeyRecordBase
     {
-        public ReadOnlyMemory<byte> WrappedKeyCiphertext { get; private set; } = default!;
-        public int KeyLength => WrappedKeyCiphertext.Length * 8;
+        public ReadOnlyMemory<byte> WrappedKeyCiphertext { get; private set; } 
 
         public Guid EnvelopeId { get; init; }
         public int EnvelopeVersion { get; init; } = 1;
@@ -15,7 +14,7 @@
         public SymmetricKeyRecord(byte[] wrappedKeyCiphertext)
         {
             if (wrappedKeyCiphertext == null || wrappedKeyCiphertext.Length < 16)
-                throw new ArgumentException("Ciphertext must be 16 bytes or larger.");
+                throw new ArgumentException("Ciphertext must be 16 bytes or larger.", nameof(wrappedKeyCiphertext));
 
             WrappedKeyCiphertext = new ReadOnlyMemory<byte>((byte[])wrappedKeyCiphertext.Clone());
         }

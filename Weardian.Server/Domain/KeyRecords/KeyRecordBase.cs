@@ -1,4 +1,5 @@
-﻿using Weardian.Server.Domain.Users;
+﻿using Weardian.Server.Domain.Enums;
+using Weardian.Server.Domain.Users;
 
 namespace Weardian.Server.Domain.KeyRecords
 {
@@ -8,9 +9,6 @@ namespace Weardian.Server.Domain.KeyRecords
         public required string Name { get; set; }
         public required KeyType KeyType { get; init; }
         public KeyStatus KeyStatus { get; protected set; }
-
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
 
         public DateTime CreatedOn { get; protected set; }
 

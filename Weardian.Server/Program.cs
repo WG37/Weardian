@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Weardian.Server.Application.Interfaces;
+using Weardian.Server.Application.Services.EnvelopeValidation;
 using Weardian.Server.Application.Services.SymmetricKeyServices;
 using Weardian.Server.Domain.Users;
 using Weardian.Server.Infrastructure.Authentication.TokenServices;
@@ -52,8 +53,10 @@ namespace Weardian.Server
                 });
 
 
-            builder.Services.AddScoped<ISymmetricKeyRepository, SymmetricKeyRepository>();
-            builder.Services.AddScoped<ISymmetricKeyService, SymmetricKeyService>();
+            builder.Services.AddScoped<ISymmetricEnvelopeRepository, SymmetricEnvelopeRepository>();
+            builder.Services.AddScoped<ISymmetricEnvelopeService, SymmetricEnvelopeService>();
+
+            builder.Services.AddTransient<IEnvelopeValidationService, EnvelopeValidationService>();
 
             builder.Services.AddScoped<ITokenService, TokenService>();
 

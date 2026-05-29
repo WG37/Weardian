@@ -13,11 +13,11 @@ namespace Weardian.Server.API.Controllers
     [Route("api/keys/symmetric")]
     public class SymmetricKeyController : ControllerBase
     {
-        private readonly ISymmetricKeyService _service;
+        private readonly ISymmetricEnvelopeService _service;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public SymmetricKeyController(
-            ISymmetricKeyService service, 
+            ISymmetricEnvelopeService service, 
             UserManager<ApplicationUser> userManager)
         {
             _service = service;
@@ -55,7 +55,7 @@ namespace Weardian.Server.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<KeySyncResponseDto>> CreateSymmetricKey([FromBody] KeySyncRequestDto req)
+        public async Task<ActionResult<KeySyncResponseDto>> CreateSymmetricKey([FromBody] KeyRecordRequestDto req)
         {
             try
             {
