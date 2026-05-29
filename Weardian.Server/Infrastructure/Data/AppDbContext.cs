@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Weardian.Server.Domain.EncryptedEnvelopes.Symmetric;
 using Weardian.Server.Domain.KeyRecords.Symmetric;
 using Weardian.Server.Domain.Users;
 
@@ -9,7 +10,7 @@ namespace Weardian.Server.Infrastructure.Data
     {
         public AppDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<SymmetricKeyRecord> SymmetricKeyRecords { get; set; }
+        public DbSet<SymmetricEncryptedEnvelope> SymmetricEncryptedEnvelopes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,28 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Weardian.Server.Application.Interfaces;
-using Weardian.Server.Domain.KeyRecords.Symmetric;
+using Weardian.Server.Domain.EncryptedEnvelopes.Symmetric;
 using Weardian.Server.Infrastructure.Data;
 
 namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
 {
-    public class SymmetricKeyRepository : ISymmetricKeyRepository
+    public class SymmetricEnvelopeRepository : ISymmetricEnvelopeRepository
     {
         private readonly AppDbContext _db;
 
-        public SymmetricKeyRepository(AppDbContext db)
+        public SymmetricEnvelopeRepository(AppDbContext db)
         {
             _db = db;
         }
-        public async Task AddAsync(SymmetricKeyRecord key)
+        public async Task AddAsync(SymmetricEncryptedEnvelope envelope)
         {
-            _db.SymmetricKeyRecords.Add(key);
+            _db.SymmetricEncryptedEnvelopes.Add(envelope);
 
             await _db.SaveChangesAsync();
         }
 
-        public async Task<SymmetricKeyRecord> GetByIdAsync(string userId, Guid envelopeId)
+        public async Task<SymmetricEncryptedEnvelope> GetByIdAsync(string userId, Guid envelopeId)
         {
-            var key = await _db.SymmetricKeyRecords
+            var key = await _db.SymmetricEncryptedEnvelopes
                 .SingleOrDefaultAsync(k => k.UserId == userId && k.EnvelopeId == envelopeId);
 
             if (key == null)
@@ -31,22 +31,22 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
             return key;    
         }
 
-        public async Task<IReadOnlyList<SymmetricKeyRecord>> GetAllAsync(string userId)
+        public async Task<IReadOnlyList<SymmetricEncryptedEnvelope>> GetAllAsync(string userId)
         {
-            var keys = await _db.SymmetricKeyRecords.Where(k => k.UserId == userId).ToListAsync();
+            var keys = await _db.SymmetricEncryptedEnvelopes.Where(k => k.UserId == userId).ToListAsync();
 
             return keys;
         }
 
         public async Task<bool> RemoveByIdAsync(string userId, Guid envelopeId)
         {
-            var key = await _db.SymmetricKeyRecords
+            var key = await _db.SymmetricEncryptedEnvelopes
                 .SingleOrDefaultAsync(k => k.UserId == userId && k.EnvelopeId == envelopeId);
 
             if (key == null)
                 return false;
 
-            _db.SymmetricKeyRecords.Remove(key);
+            _db.SymmetricEncryptedEnvelopes.Remove(key);
             await _db.SaveChangesAsync();
 
             return true;
