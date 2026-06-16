@@ -7,7 +7,7 @@ namespace Weardian.Server.Application.Interfaces
     {
         public Task AddAsync(SymmetricEncryptedEnvelope envelope);
         public Task<IReadOnlyList<SymmetricEncryptedEnvelope>> GetAllAsync(string userId);
-        public Task<SymmetricEncryptedEnvelope> GetByIdAsync(string userId, Guid envelopeId);
+        public Task<SymmetricEncryptedEnvelope?> GetByIdAsync(string userId, Guid envelopeId);
         public Task<bool> RemoveByIdAsync(string userId, Guid envelopeId);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Weardian.Server.Application.DTOs.CryptographyDtos;
+﻿using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.RequestDtos;
 using Weardian.Server.Application.Interfaces;
 
 namespace Weardian.Server.Application.Services.EnvelopeValidation

@@ -1,7 +1,6 @@
 ﻿using Weardian.Server.Domain.KeyRecords.Symmetric;
 using Weardian.Server.Domain.PayloadRecords.Symmetric;
 using Weardian.Server.Domain.Users;
-using Weardian.Server.Migrations;
 
 namespace Weardian.Server.Domain.EncryptedEnvelopes.Symmetric
 {

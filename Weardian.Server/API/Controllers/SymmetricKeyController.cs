@@ -33,8 +33,8 @@ namespace Weardian.Server.API.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var keyRecord = await _service.GetKeyById(userId, envelopeId);
-                return Ok(keyRecord);
+                var envelope = await _service.GetEncryptedEnvelopeById(userId, envelopeId);
+                return Ok(envelope);
             }
             catch (KeyNotFoundException e)
             {
@@ -50,8 +50,8 @@ namespace Weardian.Server.API.Controllers
             if (userId == null)
                 return Unauthorized();
 
-            var keyRecords = await _service.GetKeys(userId);
-            return Ok(keyRecords);
+            var envelopes = await _service.GetEncryptedEnvelopes(userId);
+            return Ok(envelopes);
         }
 
         [HttpPost]
@@ -63,8 +63,8 @@ namespace Weardian.Server.API.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var keyRecord = await _service.CreateKey(req, userId);
-                return CreatedAtAction(nameof(GetKeyById), new { envelopeId = keyRecord.EnvelopeId }, keyRecord);
+                var envelope = await _service.CreateEncryptedEnvelope(req, userId);
+                return CreatedAtAction(nameof(GetKeyById), new { envelopeId = envelope.EnvelopeId }, envelope);
             }
             catch (ArgumentException e)
             {
@@ -79,7 +79,7 @@ namespace Weardian.Server.API.Controllers
             if (userId == null)
                 return Unauthorized();
 
-            var deleted = await _service.RemoveKeyById(userId, envelopeId);
+            var deleted = await _service.RemoveEncryptedEnvelopeById(userId, envelopeId);
             if (!deleted)
                 return NotFound();
 

@@ -1,12 +1,13 @@
-﻿using Weardian.Server.Application.DTOs.CryptographyDtos;
+﻿using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.RequestDtos;
+using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.ResponseDtos;
 
 namespace Weardian.Server.Application.Interfaces
 {
     public interface ISymmetricEnvelopeService
     {
-        public Task<EncryptedEnvelopeResponseDto> CreateKey(EncryptedEnvelopeSyncRequestDto req, string userId);
-        public Task<EncryptedEnvelopeResponseDto> GetKeyById(string userId, Guid envelopeId);
-        public Task<IReadOnlyList<EncryptedEnvelopeResponseDto>> GetKeys(string userId);
-        public Task<bool> RemoveKeyById(string userId, Guid envelopeId);
+        public Task<EncryptedEnvelopeStatusResponseDto> CreateEncryptedEnvelope(EncryptedEnvelopeSyncRequestDto req, string userId);
+        public Task<EncryptedEnvelopeSyncResponseDto> GetEncryptedEnvelopeById(string userId, Guid envelopeId);
+        public Task<IReadOnlyList<EncryptedEnvelopeSyncResponseDto>> GetEncryptedEnvelopes(string userId);
+        public Task<EncryptedEnvelopeSyncResponseDto> RemoveEncryptedEnvelopeById(string userId, Guid envelopeId);
     }
 }

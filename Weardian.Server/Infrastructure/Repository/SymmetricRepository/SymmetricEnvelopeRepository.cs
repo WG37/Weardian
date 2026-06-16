@@ -20,33 +20,30 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
             await _db.SaveChangesAsync();
         }
 
-        public async Task<SymmetricEncryptedEnvelope> GetByIdAsync(string userId, Guid envelopeId)
+        public async Task<SymmetricEncryptedEnvelope?> GetByIdAsync(string userId, Guid envelopeId)
         {
-            var key = await _db.SymmetricEncryptedEnvelopes
+            var envelope = await _db.SymmetricEncryptedEnvelopes
                 .SingleOrDefaultAsync(k => k.UserId == userId && k.EnvelopeId == envelopeId);
 
-            if (key == null)
-                throw new KeyNotFoundException("publicId does not exist on database");
-
-            return key;    
+            return envelope;    
         }
 
         public async Task<IReadOnlyList<SymmetricEncryptedEnvelope>> GetAllAsync(string userId)
         {
-            var keys = await _db.SymmetricEncryptedEnvelopes.Where(k => k.UserId == userId).ToListAsync();
+            var envelopes = await _db.SymmetricEncryptedEnvelopes.Where(k => k.UserId == userId).ToListAsync();
 
-            return keys;
+            return envelopes;
         }
 
         public async Task<bool> RemoveByIdAsync(string userId, Guid envelopeId)
         {
-            var key = await _db.SymmetricEncryptedEnvelopes
+            var envelope = await _db.SymmetricEncryptedEnvelopes
                 .SingleOrDefaultAsync(k => k.UserId == userId && k.EnvelopeId == envelopeId);
 
-            if (key == null)
+            if (envelope == null)
                 return false;
 
-            _db.SymmetricEncryptedEnvelopes.Remove(key);
+            _db.SymmetricEncryptedEnvelopes.Remove(envelope);
             await _db.SaveChangesAsync();
 
             return true;
