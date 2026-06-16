@@ -74,7 +74,7 @@ namespace Weardian.Server.Infrastructure.Data
                             b => b.ToArray(),
                             b => new ReadOnlyMemory<byte>(b));
 
-                    payload.Property(p => p.Version).IsRequired();
+                    payload.Property(p => p.EnvelopeVersion).IsRequired();
                     payload.Property(p => p.Algorithm).IsRequired();
                     payload.Property(p => p.Nonce).IsRequired();
                     payload.Property(p => p.Tag).IsRequired();

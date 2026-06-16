@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
-using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.RequestDtos;
+using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.RequestDtos.Symmetric;
 using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.ResponseDtos;
+using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.ResponseDtos.Symmetric;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Domain.EncryptedEnvelopes.Symmetric;
 using Weardian.Server.Domain.KeyRecords.Symmetric;
@@ -110,13 +111,32 @@ namespace Weardian.Server.Application.Services.SymmetricServices
                    Success: false,
                    Error: "Envelope Id is invalid");
             }
-                
+
             return new EncryptedEnvelopeSyncResponseDto(
                 EnvelopeId: envelope.EnvelopeId,
-                KeyRecord: envelope.KeyRecord,
-                PayloadRecord: envelope.PayloadRecord,
+                KeyRecord: new KeyRecordResponseDto(
+                    EnvelopeId: envelope.KeyRecord.EnvelopeId,
+                    Name: envelope.KeyRecord.Name,
+                    KeyType: envelope.KeyRecord.KeyType,
+                    EnvelopeVersion: envelope.KeyRecord.EnvelopeVersion,
+                    WrapAlgorithm: envelope.KeyRecord.WrapAlgorithm,
+                    WrappingKeyId: envelope.KeyRecord.WrappingKeyId,
+                    WrappedKeyNonce: envelope.KeyRecord.WrappedKeyNonce,
+                    WrappedKeyCiphertext: envelope.KeyRecord.WrappedKeyCiphertext.ToArray(),
+                    WrappedKeyTag: envelope.KeyRecord.WrappedKeyTag),
+
+                PayloadRecord: new PayloadRecordResponseDto(
+                    EnvelopeId: envelope.PayloadRecord.EnvelopeId,
+                    Name: envelope.PayloadRecord.Name,
+                    KeyType: envelope.PayloadRecord.KeyType,
+                    EnvelopeVersion: envelope.PayloadRecord.EnvelopeVersion,
+                    Algorithm: envelope.PayloadRecord.Algorithm,
+                    Nonce: envelope.PayloadRecord.Nonce,
+                    Ciphertext: envelope.PayloadRecord.Ciphertext.ToArray(),
+                    Tag: envelope.PayloadRecord.Tag),
+
                 Success: true,
-                Error: null);
+                Error: null); 
         }
 
         public async Task<IReadOnlyList<EncryptedEnvelopeSyncResponseDto>> GetEncryptedEnvelopes(string userId)
@@ -126,8 +146,27 @@ namespace Weardian.Server.Application.Services.SymmetricServices
 
             return envelopes.Select(e => new EncryptedEnvelopeSyncResponseDto(
                 EnvelopeId: e.EnvelopeId,
-                KeyRecord: e.KeyRecord,
-                PayloadRecord: e.PayloadRecord,
+                KeyRecord: new KeyRecordResponseDto(
+                    EnvelopeId: e.KeyRecord.EnvelopeId,
+                    Name: e.KeyRecord.Name,
+                    KeyType: e.KeyRecord.KeyType,
+                    EnvelopeVersion: e.KeyRecord.EnvelopeVersion,
+                    WrapAlgorithm: e.KeyRecord.WrapAlgorithm,
+                    WrappingKeyId: e.KeyRecord.WrappingKeyId,
+                    WrappedKeyNonce: e.KeyRecord.WrappedKeyNonce,
+                    WrappedKeyCiphertext: e.KeyRecord.WrappedKeyCiphertext.ToArray(),
+                    WrappedKeyTag: e.KeyRecord.WrappedKeyTag),
+
+                PayloadRecord: new PayloadRecordResponseDto(
+                    EnvelopeId: e.PayloadRecord.EnvelopeId,
+                    Name: e.PayloadRecord.Name,
+                    KeyType: e.PayloadRecord.KeyType,
+                    EnvelopeVersion: e.PayloadRecord.EnvelopeVersion,
+                    Algorithm: e.PayloadRecord.Algorithm,
+                    Nonce: e.PayloadRecord.Nonce,
+                    Ciphertext: e.PayloadRecord.Ciphertext.ToArray(),
+                    Tag: e.PayloadRecord.Tag
+                    ),
                 Success: true,
                 Error: null)
             ).ToList();

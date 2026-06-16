@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Weardian.Server.Application.DTOs.RequestDtos;
-using Weardian.Server.Application.DTOs.ResponseDtos;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.RequestDtos.Symmetric;
+using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.ResponseDtos.Symmetric;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Domain.Users;
 
@@ -25,27 +26,25 @@ namespace Weardian.Server.API.Controllers
         }
 
         [HttpGet("{envelopeId:guid}")]
-        public async Task<ActionResult<KeySyncResponseDto>> GetKeyById(Guid envelopeId)
-        {
-            try
-            {
-                var userId = _userManager.GetUserId(User)!;
-                if (userId == null)
-                    return Unauthorized();
+        public async Task<ActionResult<EncryptedEnvelopeSyncResponseDto>> GetKeyById(Guid envelopeId)
+        {  
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+                return Unauthorized();
 
-                var envelope = await _service.GetEncryptedEnvelopeById(userId, envelopeId);
-                return Ok(envelope);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
+            var envelope = await _service.GetEncryptedEnvelopeById(userId, envelopeId);
+
+            if (!envelope.Success)
+                return NotFound();
+
+            return Ok(envelope);
+            
+
         }
 
         [HttpGet()]
-        public async Task<ActionResult<IReadOnlyList<KeySyncResponseDto>>> GetAllKeys()
-        {
-        
+        public async Task<ActionResult<IReadOnlyList<EncryptedEnvelopeSyncResponseDto>>> GetAllKeys()
+        { 
             var userId = _userManager.GetUserId(User);
             if (userId == null)
                 return Unauthorized();
@@ -55,35 +54,30 @@ namespace Weardian.Server.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<KeySyncResponseDto>> CreateSymmetricKey([FromBody] KeyRecordRequestDto req)
+        public async Task<ActionResult<EncryptedEnvelopeSyncResponseDto>> CreateSymmetricKey([FromBody] EncryptedEnvelopeSyncRequestDto req)
         {
-            try
-            {
-                var userId = _userManager.GetUserId(User);
-                if (userId == null)
-                    return Unauthorized();
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+                return Unauthorized();
 
-                var envelope = await _service.CreateEncryptedEnvelope(req, userId);
-                return CreatedAtAction(nameof(GetKeyById), new { envelopeId = envelope.EnvelopeId }, envelope);
-            }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
+            var envelope = await _service.CreateEncryptedEnvelope(req, userId);
+
+            if (!envelope.Success)
+                return BadRequest(envelope);
+
+            return CreatedAtAction(nameof(GetKeyById), new { envelopeId = envelope.EnvelopeId }, envelope);
         }
 
         [HttpDelete("{envelopeId:guid}")]
-        public async Task<ActionResult> RemoveSymmetricKey(Guid envelopeId)
+        public async Task<ActionResult<EncryptedEnvelopeSyncResponseDto>> RemoveSymmetricKey(Guid envelopeId)
         {
             var userId = _userManager.GetUserId(User);
             if (userId == null)
                 return Unauthorized();
 
             var deleted = await _service.RemoveEncryptedEnvelopeById(userId, envelopeId);
-            if (!deleted)
-                return NotFound();
 
-            return NoContent();
+            return Ok(deleted);
         }
     }
 }

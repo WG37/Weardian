@@ -1,6 +1,6 @@
 ﻿using Weardian.Server.Domain.Enums;
 
-namespace Weardian.Server.Application.DTOs.RequestDtos
+namespace Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.RequestDtos.Symmetric
 {
     public sealed record PayloadRecordRequestDto(
         Guid EnvelopeId,
