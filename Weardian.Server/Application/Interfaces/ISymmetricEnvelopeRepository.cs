@@ -1,5 +1,4 @@
 ﻿using Weardian.Server.Domain.EncryptedEnvelopes.Symmetric;
-using Weardian.Server.Domain.KeyRecords.Symmetric;
 
 namespace Weardian.Server.Application.Interfaces
 {

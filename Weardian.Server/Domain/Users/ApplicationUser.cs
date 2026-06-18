@@ -6,6 +6,6 @@ namespace Weardian.Server.Domain.Users
 {
     public class ApplicationUser : IdentityUser
     {
-        public ICollection<SymmetricEncryptedEnvelope> EncryptedEnvelopes = new List<SymmetricEncryptedEnvelope>();
+        public ICollection<SymmetricEncryptedEnvelope> EncryptedEnvelopes { get; set; } = new List<SymmetricEncryptedEnvelope>();
     }
 }

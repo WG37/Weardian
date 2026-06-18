@@ -19,7 +19,6 @@ function Encrypt() {
 
         try {
             await encryptInput(keyName, password, sync);
-
             setResult("Encryption successful");
             setKeyName("");
             setPassword("");
@@ -27,7 +26,6 @@ function Encrypt() {
             
         } catch (err) {
             console.error(err);
-            
             setError(`Failed to encrypt: ${err}`);
         }
         finally {

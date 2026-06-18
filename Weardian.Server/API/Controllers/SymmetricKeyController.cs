@@ -38,8 +38,6 @@ namespace Weardian.Server.API.Controllers
                 return NotFound();
 
             return Ok(envelope);
-            
-
         }
 
         [HttpGet()]
