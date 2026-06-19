@@ -57,27 +57,41 @@ namespace Weardian.Client.Core.Services.Symmetric
 
         public async Task<string> HandleEncryptionRequestAsync(string request)
         {
-            if (string.IsNullOrWhiteSpace(request))
-                throw new ArgumentException("Invalid request: cannot be null, empty or whitespace.", nameof(request));
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request))
+                    throw new ArgumentException("Invalid request: cannot be null, empty or whitespace.", nameof(request));
 
-            var dto = JsonSerializer.Deserialize<EncryptionRequestDto>(request, 
-                JsonSerializeCaseHelper.CaseInsensitiveOptions)
-                ?? throw new InvalidOperationException("Deserialization Failed: result cannot be null.");
+                var dto = JsonSerializer.Deserialize<EncryptionRequestDto>(request,
+                    JsonSerializeCaseHelper.CaseInsensitiveOptions)
+                    ?? throw new InvalidOperationException("Deserialization Failed: result cannot be null.");
 
-            var encryptionResponse = await _keyManagementService
-                .CreateEncryptedPasswordAsync(
-                    dto.KeyName, 
-                    dto.Password, 
-                    dto.CreateSynced);
+                var encryptionResponse = await _keyManagementService
+                    .CreateEncryptedPasswordAsync(
+                        dto.KeyName,
+                        dto.Password,
+                        dto.CreateSynced);
 
-            return JsonSerializer.Serialize(
-                new WebViewResponseDto<EncryptionResponseDto>(
-                    Type: "encryption",
-                    Success: true,
-                    Data: encryptionResponse,
-                    Error: null
-                    ), 
-                JsonSerializeCaseHelper.CamelCaseOptions);
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<EncryptionResponseDto>(
+                        Type: "encryption",
+                        Success: true,
+                        Data: encryptionResponse,
+                        Error: null
+                        ),
+                    JsonSerializeCaseHelper.CamelCaseOptions);
+            }
+            catch (ArgumentException ex)
+            {
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<EncryptionResponseDto>(
+                        Type: "encryption",
+                        Success: false,
+                        Data: null,
+                        Error: ex.Message
+                    ),
+                    JsonSerializeCaseHelper.CamelCaseOptions);
+            }
         }
 
         public async Task<string> HandleDecryptionRequestAsync(string request)

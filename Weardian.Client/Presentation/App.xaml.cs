@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http;
 using System.Windows;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Cryptography;
@@ -60,7 +59,7 @@ namespace Weardian.Client.Presentation
                 client.BaseAddress = apiBaseUrl;
             });
 
-            services.AddHttpClient<IKeyRecordSyncService, KeyRecordSyncService>(client =>
+            services.AddHttpClient<IEnvelopeSyncService, EnvelopeSyncService>(client =>
             {
                 client.BaseAddress = apiBaseUrl;
             });

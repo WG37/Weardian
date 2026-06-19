@@ -1,8 +1,8 @@
 ﻿using Weardian.Client.Domain.Enums;
 
-namespace Weardian.Client.Core.DTOs.KeySyncingDtos
+namespace Weardian.Client.Core.DTOs.EnvelopeSyncingDtos.RequestDtos
 {
-    public sealed record KeySyncRequestDto(
+    public sealed record KeyRecordRequestDto(
         Guid EnvelopeId,
         string Name,
         KeyType KeyType,

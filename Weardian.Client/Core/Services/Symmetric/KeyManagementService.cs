@@ -1,4 +1,5 @@
-﻿using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleEncryptionDtos;
+﻿using Weardian.Client.Core.DTOs.EnvelopeSyncingDtos.RequestDtos;
+using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleEncryptionDtos;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;
@@ -14,19 +15,19 @@ namespace Weardian.Client.Core.Services.Symmetric
         private readonly ISymmetricCryptoService _symmetricCryptoService;
         private readonly IPayloadRecordRepository _payloadRecordRepo;
         private readonly IKeyRecordRepository _keyRecordRepo;
-        private readonly IKeyRecordSyncService _keySyncService;
+        private readonly IEnvelopeSyncService _envelopeSyncService;
         private readonly IInputValidationService _validationService;
         public KeyManagementService(
             ISymmetricCryptoService symmetricCryptoService,
             IPayloadRecordRepository payloadRecordRepo,
             IKeyRecordRepository keyRecordRepo,
-            IKeyRecordSyncService keySyncService,
+            IEnvelopeSyncService envelopeSyncService,
             IInputValidationService validationService)
         {
             _symmetricCryptoService = symmetricCryptoService;
             _payloadRecordRepo = payloadRecordRepo;
             _keyRecordRepo = keyRecordRepo; 
-            _keySyncService = keySyncService;
+            _envelopeSyncService = envelopeSyncService;
             _validationService = validationService;
         }
 
@@ -34,7 +35,7 @@ namespace Weardian.Client.Core.Services.Symmetric
         {
             var results = _validationService.ValidateEncryptedPassword(keyName, password);
 
-            if (!results.IsValid)
+            if (!results.IsValid)    
                 throw new ArgumentException(string.Join("\n", results.Errors));
 
             KeyRecord keyRecord;
@@ -88,10 +89,35 @@ namespace Weardian.Client.Core.Services.Symmetric
             {
                 try
                 {
-                    var syncResult = await _keySyncService.SyncKeyRecordAsync(keyRecord);
+                    var envelopeSyncRequest = new EncryptedEnvelopeSyncRequestDto(
+                        EnvelopeId: payloadRecord.EnvelopeId,
+
+                        KeyRecord: new KeyRecordRequestDto(
+                           EnvelopeId: keyRecord.EnvelopeId,
+                           Name: keyRecord.Name,
+                           KeyType: keyRecord.KeyType,
+                           EnvelopeVersion: keyRecord.EnvelopeVersion,
+                           WrapAlgorithm: keyRecord.WrapAlgorithm,
+                           WrappingKeyId: keyRecord.WrappingKeyId,
+                           WrappedKeyNonce: keyRecord.WrappedKeyNonce,
+                           WrappedKeyCiphertext: keyRecord.WrappedKeyCiphertext,
+                           WrappedKeyTag: keyRecord.WrappedKeyTag),
+
+                        PayloadRecord: new PayloadRecordRequestDto(
+                            EnvelopeId: payloadRecord.EnvelopeId,
+                            Name: payloadRecord.Name,
+                            KeyType: payloadRecord.KeyType,
+                            EnvelopeVersion: payloadRecord.Version,
+                            Algorithm: payloadRecord.Algorithm,
+                            Nonce: payloadRecord.Nonce,
+                            Ciphertext: payloadRecord.Ciphertext,
+                            Tag: payloadRecord.Tag)
+                        );
+
+                    var envelopeSyncResult = await _envelopeSyncService.SyncEncryptedEnvelopeAsync(envelopeSyncRequest);
 
                     keyRecord.IsSynced = true;
-                    keyRecord.SyncedOn = syncResult.SyncedOn;
+                    keyRecord.SyncedOn = envelopeSyncResult.SyncedOn;
 
                     await _keyRecordRepo.UpdateLocalKeyRecordByIdAsync(keyRecord);
                 }
@@ -111,7 +137,6 @@ namespace Weardian.Client.Core.Services.Symmetric
                 Algorithm: payloadRecord.Algorithm,
                 KeyType: payloadRecord.KeyType
                 );
-            
         }
 
         public async Task<string> RetrieveDecryptedPasswordAsync(Guid envelopeId)
