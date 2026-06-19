@@ -16,17 +16,16 @@ function Encrypt() {
 
         setLoading(true);
         setResult("");
-
+        setError("");
         try {
             await encryptInput(keyName, password, sync);
             setResult("Encryption successful");
             setKeyName("");
             setPassword("");
             setSync(false);
-            
         } catch (err) {
             console.error(err);
-            setError(`Failed to encrypt: ${err}`);
+            setError(`Failed to encrypt: ${err.message ?? err}`);
         }
         finally {
             setLoading(false);
@@ -72,6 +71,12 @@ function Encrypt() {
                         <div className="key-result">
                             <p>{result}</p>
                         </div>
+                    </div>
+                )}
+
+                {error && (
+                    <div className="encrypt-error-box">
+                        <p>{error}</p>
                     </div>
                 )}
             </form>
