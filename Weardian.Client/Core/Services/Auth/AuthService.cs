@@ -23,18 +23,31 @@ namespace Weardian.Client.Core.Services.Auth
             _validationService = validationService;
         }
 
-        public async Task RegisterUserAsync(string email, string password)
+        public async Task<RegistrationResponseDto> RegisterUserAsync(string email, string password)
         {
-            var validationResults = _validationService.ValidateRegisterUser(email, password);
+            try 
+            { 
+                var validationResults = _validationService.ValidateRegisterUser(email, password);
             
-            if (!validationResults.IsValid)
-                throw new ArgumentException(string.Join("\n", validationResults.Errors));
+                if (!validationResults.IsValid)
+                    throw new ArgumentException(string.Join("\n", validationResults.Errors));
 
-            var registerDto = new RegisterRequestDto(email, password);
+                var registerDto = new RegisterRequestDto(email, password);
 
-            var response = await _httpClient.PostAsJsonAsync("/api/auth/register", registerDto);
+                var response = await _httpClient.PostAsJsonAsync("/api/auth/register", registerDto);
 
-            response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
+
+                return new RegistrationResponseDto(
+                    IsSuccessful: true,
+                    Error: null);
+            }
+            catch (HttpRequestException ex)
+            {
+                return new RegistrationResponseDto(
+                    IsSuccessful: false,
+                    Error: ex.Message);
+            }
         }
 
         public async Task LoginAsync(string email, string password)

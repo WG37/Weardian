@@ -18,15 +18,15 @@ namespace Weardian.Client.Core.Services.Symmetric
             _symmetricKeyRepo = symmetricKeyRepo;
         }
 
-        public async Task<IReadOnlyList<RetrieveKeyResponseDto>> GetPayloadRecordsAsync()
+        public async Task<IReadOnlyList<RetrievePayloadResponseDto>> GetPayloadRecordsAsync()
         {
             var payloadRecords = await _symmetricPayloadRepo.GetLocalPayloadRecordsAsync();
 
-            var retrievedKeys = new List<RetrieveKeyResponseDto>();
+            var retrievedKeys = new List<RetrievePayloadResponseDto>();
 
             foreach (var payload in payloadRecords)
             {
-                var payloadDto = new RetrieveKeyResponseDto(
+                var payloadDto = new RetrievePayloadResponseDto(
                     KeyId: payload.EnvelopeId,
                     Name: payload.Name,
                     Algorithm: payload.Algorithm,
@@ -38,14 +38,14 @@ namespace Weardian.Client.Core.Services.Symmetric
             return retrievedKeys;
         }
 
-        public async Task<RetrieveKeyResponseDto> GetPayloadRecordByIdAsync(Guid envelopeId)
+        public async Task<RetrievePayloadResponseDto> GetPayloadRecordByIdAsync(Guid envelopeId)
         {
             if (envelopeId == Guid.Empty)
                 throw new ArgumentException("EnvelopeId cannot be empty", nameof(envelopeId));
 
             var payloadRecord = await _symmetricPayloadRepo.GetLocalPayloadRecordByIdAsync(envelopeId);
 
-            return new RetrieveKeyResponseDto(
+            return new RetrievePayloadResponseDto(
                 KeyId: payloadRecord.EnvelopeId,
                 Name: payloadRecord.Name,
                 Algorithm: payloadRecord.Algorithm,

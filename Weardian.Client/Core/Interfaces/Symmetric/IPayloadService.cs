@@ -5,8 +5,8 @@ namespace Weardian.Client.Core.Interfaces.Symmetric
 {
     public interface IPayloadService
     {
-        public Task<IReadOnlyList<RetrieveKeyResponseDto>> GetPayloadRecordsAsync();
-        public Task<RetrieveKeyResponseDto> GetPayloadRecordByIdAsync(Guid envelopeId);
+        public Task<IReadOnlyList<RetrievePayloadResponseDto>> GetPayloadRecordsAsync();
+        public Task<RetrievePayloadResponseDto> GetPayloadRecordByIdAsync(Guid envelopeId);
         public bool RemoveRecordsById(Guid envelopeId);
     }
 }

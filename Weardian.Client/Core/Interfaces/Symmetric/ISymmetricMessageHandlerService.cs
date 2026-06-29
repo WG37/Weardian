@@ -3,6 +3,8 @@
     public interface ISymmetricMessageHandlerService
     {
         public Task<string> HandleAsync(string request);
+        public Task<string> HandleRegistrationRequestAsync(string request);
+        public Task<string> HandleLoginRequestAsync(string request);
         public Task<string> HandleEncryptionRequestAsync(string request);
         public Task<string> HandleDecryptionRequestAsync(string request);
         public Task<string> HandleRetrieveAllKeysRequestAsync();

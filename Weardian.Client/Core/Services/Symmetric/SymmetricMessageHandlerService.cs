@@ -1,9 +1,12 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http;
+using System.Text.Json;
+using Weardian.Client.Core.DTOs.AuthDtos.Requests;
 using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleDecryptionDtos;
 using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleDeleteDtos;
 using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleEncryptionDtos;
 using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleRetrievalDtos;
 using Weardian.Client.Core.DTOs.WebViewDtos;
+using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Serialization;
 
@@ -13,28 +16,32 @@ namespace Weardian.Client.Core.Services.Symmetric
     {
         private readonly IKeyManagementService _keyManagementService;
         private readonly IPayloadService _payloadService;
-      
+        private readonly IAuthService _authService;
+
         public SymmetricMessageHandlerService(
             IKeyManagementService keyManagementService,
-            IPayloadService payloadService)
+            IPayloadService payloadService,
+            IAuthService authService)
         {
             _keyManagementService = keyManagementService;
             _payloadService = payloadService;
+            _authService = authService;
         }
-        
+
         public async Task<string> HandleAsync(string request)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(request))
-                    throw new ArgumentException("Request type cannot be null or empty.", nameof(request));
+                    throw new ArgumentException("Request type cannot be null, empty or whitespace.", nameof(request));
 
                 var requestType = JsonSerializer.Deserialize<WebViewRequestDto>(request, 
                     JsonSerializeCaseHelper.CaseInsensitiveOptions)
-                    ?? throw new InvalidOperationException("Failed to deserialized request type.");
+                    ?? throw new InvalidOperationException("Failed to deserialize request type.");
 
                 return requestType.Type switch
                 {
+                    "register" => await HandleRegistrationRequestAsync(request),
                     "encryption" => await HandleEncryptionRequestAsync(request),
                     "decryption" => await HandleDecryptionRequestAsync(request),
                     "retrieveAllKeys" => await HandleRetrieveAllKeysRequestAsync(),
@@ -42,15 +49,53 @@ namespace Weardian.Client.Core.Services.Symmetric
                     _ => throw new InvalidOperationException("Invalid request type.")
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return JsonSerializer.Serialize(
                     new WebViewResponseDto<object>(
                         Type: "Error",
                         Success: false,
                         Data: null,
-                        Error: ex.Message
+                        Error: "An error has occured in the application."
                         ), 
+                    JsonSerializeCaseHelper.CamelCaseOptions);
+            }
+        }
+
+        public async Task<string> HandleRegistrationRequestAsync(string request)
+        {
+            try
+            {
+                var dto = JsonSerializer.Deserialize<RegisterRequestDto>(request,
+                    JsonSerializeCaseHelper.CaseInsensitiveOptions)
+                    ?? throw new InvalidOperationException("Deserialization Failed: results cannot be null");
+
+                if (string.IsNullOrWhiteSpace(dto.Email))
+                    throw new ArgumentException("Email cannot be null, empty or whitespace", nameof(dto.Email));
+                
+                if (string.IsNullOrWhiteSpace(dto.Password))
+                    throw new ArgumentException("Password cannot be null, empty or whitespace", nameof(dto.Password));
+
+                await _authService.RegisterUserAsync(dto.Email, dto.Password);
+
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<string>(
+                        Type: "register",
+                        Success: true,
+                        Data: "Registration Successful",
+                        Error: null
+                        ), 
+                    JsonSerializeCaseHelper.CamelCaseOptions);
+            }
+            catch (ArgumentException ex)
+            {
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<string>(
+                        Type: "register",
+                        Success: false,
+                        Data: null,
+                        Error: ex.Message
+                        ),
                     JsonSerializeCaseHelper.CamelCaseOptions);
             }
         }
@@ -59,12 +104,15 @@ namespace Weardian.Client.Core.Services.Symmetric
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(request))
-                    throw new ArgumentException("Invalid request: cannot be null, empty or whitespace.", nameof(request));
-
                 var dto = JsonSerializer.Deserialize<EncryptionRequestDto>(request,
                     JsonSerializeCaseHelper.CaseInsensitiveOptions)
                     ?? throw new InvalidOperationException("Deserialization Failed: result cannot be null.");
+
+                if (string.IsNullOrWhiteSpace(dto.KeyName))
+                    throw new ArgumentException("KeyName cannot be null, empty or whitespace.", nameof(dto.KeyName));
+
+                if (string.IsNullOrWhiteSpace(dto.Password))
+                    throw new ArgumentException("Password cannot be null, empty, or whitespace.", nameof(dto.Password));
 
                 var encryptionResponse = await _keyManagementService
                     .CreateEncryptedPasswordAsync(
@@ -96,9 +144,6 @@ namespace Weardian.Client.Core.Services.Symmetric
 
         public async Task<string> HandleDecryptionRequestAsync(string request)
         {
-            if (string.IsNullOrWhiteSpace(request))
-                throw new ArgumentException("Invalid request: cannot be null, empty or whitespace.", nameof(request));
-
             var dto = JsonSerializer.Deserialize<DecryptionRequestDto>(request, 
                 JsonSerializeCaseHelper.CaseInsensitiveOptions);
 
@@ -120,11 +165,10 @@ namespace Weardian.Client.Core.Services.Symmetric
 
         public async Task<string> HandleRetrieveAllKeysRequestAsync()
         {
-
             var keysResult = await _payloadService.GetPayloadRecordsAsync();
 
             return JsonSerializer.Serialize(
-                new WebViewResponseDto<IReadOnlyList<RetrieveKeyResponseDto>>(
+                new WebViewResponseDto<IReadOnlyList<RetrievePayloadResponseDto>>(
                     Type: "retrieveAllKeys",
                     Success: true,
                     Data: keysResult,
@@ -135,9 +179,6 @@ namespace Weardian.Client.Core.Services.Symmetric
 
         public string HandleDeleteKeyRequest(string request)
         {
-            if (string.IsNullOrWhiteSpace(request))
-                throw new ArgumentException("Invalid request: cannot be null, empty or whitespace.", nameof(request));
-
             var dto = JsonSerializer.Deserialize<DeleteKeyRequestDto>(request,
                 JsonSerializeCaseHelper.CaseInsensitiveOptions);
 
@@ -150,7 +191,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                 new WebViewResponseDto<string>(
                     Type: "deleteKey",
                     Success: deleted,
-                    Data: "Key successfully deleted from system.",
+                    Data: "Key successfully deleted.",
                     Error: null
                     ),
                 JsonSerializeCaseHelper.CamelCaseOptions);
