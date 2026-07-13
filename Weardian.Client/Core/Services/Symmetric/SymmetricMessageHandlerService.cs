@@ -42,6 +42,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                 return requestType.Type switch
                 {
                     "register" => await HandleRegistrationRequestAsync(request),
+                    "login" => await HandleLoginRequestAsync(request),
                     "encryption" => await HandleEncryptionRequestAsync(request),
                     "decryption" => await HandleDecryptionRequestAsync(request),
                     "retrieveAllKeys" => await HandleRetrieveAllKeysRequestAsync(),
@@ -79,10 +80,10 @@ namespace Weardian.Client.Core.Services.Symmetric
                 await _authService.RegisterUserAsync(dto.Email, dto.Password);
 
                 return JsonSerializer.Serialize(
-                    new WebViewResponseDto<string>(
+                    new WebViewResponseDto<object>(
                         Type: "register",
                         Success: true,
-                        Data: "Registration Successful",
+                        Data: null,
                         Error: null
                         ), 
                     JsonSerializeCaseHelper.CamelCaseOptions);
@@ -90,8 +91,46 @@ namespace Weardian.Client.Core.Services.Symmetric
             catch (ArgumentException ex)
             {
                 return JsonSerializer.Serialize(
-                    new WebViewResponseDto<string>(
+                    new WebViewResponseDto<object>(
                         Type: "register",
+                        Success: false,
+                        Data: null,
+                        Error: ex.Message
+                        ),
+                    JsonSerializeCaseHelper.CamelCaseOptions);
+            }
+        }
+
+        public async Task<string> HandleLoginRequestAsync(string request)
+        {
+            try
+            {
+                var dto = JsonSerializer.Deserialize<LoginRequestDto>(request,
+                    JsonSerializeCaseHelper.CaseInsensitiveOptions)
+                    ?? throw new InvalidOperationException("Deserialization Failed: result cannot be null.");
+
+                if (string.IsNullOrWhiteSpace(dto.Email))
+                    throw new ArgumentException("Email cannot be null, empty or whitespace", nameof(dto.Email));
+
+                if (string.IsNullOrWhiteSpace(dto.Password))
+                    throw new ArgumentException("Password cannot be null, empty or whitespace", nameof(dto.Password));
+
+                await _authService.LoginAsync(dto.Email, dto.Password);
+
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<object>(
+                        Type: "login",
+                        Success: true,
+                        Data: null,
+                        Error: null
+                        ),
+                    JsonSerializeCaseHelper.CamelCaseOptions);
+            }
+            catch (ArgumentException ex)
+            {
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<object>(
+                        Type: "login",
                         Success: false,
                         Data: null,
                         Error: ex.Message
