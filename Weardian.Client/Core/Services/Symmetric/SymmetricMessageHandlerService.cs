@@ -1,6 +1,6 @@
-﻿using System.Net.Http;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Weardian.Client.Core.DTOs.AuthDtos.Requests;
+using Weardian.Client.Core.DTOs.AuthDtos.Responses;
 using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleDecryptionDtos;
 using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleDeleteDtos;
 using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleEncryptionDtos;
@@ -77,21 +77,21 @@ namespace Weardian.Client.Core.Services.Symmetric
                 if (string.IsNullOrWhiteSpace(dto.Password))
                     throw new ArgumentException("Password cannot be null, empty or whitespace", nameof(dto.Password));
 
-                await _authService.RegisterUserAsync(dto.Email, dto.Password);
+                var result = await _authService.RegisterUserAsync(dto.Email, dto.Password);
 
                 return JsonSerializer.Serialize(
-                    new WebViewResponseDto<object>(
+                    new WebViewResponseDto<RegistrationResponseDto>(
                         Type: "register",
                         Success: true,
-                        Data: null,
-                        Error: null
+                        Data: result,
+                        Error: result.Error
                         ), 
                     JsonSerializeCaseHelper.CamelCaseOptions);
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 return JsonSerializer.Serialize(
-                    new WebViewResponseDto<object>(
+                    new WebViewResponseDto<RegistrationResponseDto>(
                         Type: "register",
                         Success: false,
                         Data: null,
@@ -126,7 +126,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                         ),
                     JsonSerializeCaseHelper.CamelCaseOptions);
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 return JsonSerializer.Serialize(
                     new WebViewResponseDto<object>(
@@ -168,7 +168,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                         ),
                     JsonSerializeCaseHelper.CamelCaseOptions);
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 return JsonSerializer.Serialize(
                     new WebViewResponseDto<EncryptionResponseDto>(
@@ -227,10 +227,10 @@ namespace Weardian.Client.Core.Services.Symmetric
             var deleted = _payloadService.RemoveRecordsById(dto.KeyId);
 
             return JsonSerializer.Serialize(
-                new WebViewResponseDto<string>(
+                new WebViewResponseDto<bool>(
                     Type: "deleteKey",
-                    Success: deleted,
-                    Data: "Key successfully deleted.",
+                    Success: true,
+                    Data: deleted,
                     Error: null
                     ),
                 JsonSerializeCaseHelper.CamelCaseOptions);

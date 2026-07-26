@@ -8,7 +8,7 @@ namespace Weardian.Client.Domain.PayloadRecords.Symmetric
         public Guid EnvelopeId { get; init; }
 
         public int Version { get; init; } = 1;
-        public string Algorithm { get; init; }
+        public required string Algorithm { get; init; }
         public required byte[] Nonce { get; init; }
         public required byte[] Tag { get; init; }
 

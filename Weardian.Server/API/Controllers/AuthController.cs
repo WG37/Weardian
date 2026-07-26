@@ -28,14 +28,19 @@ namespace Weardian.Server.API.Controllers
         {
             var user = new ApplicationUser
             {
-                Email = req.Email,
+                UserName = req.Email,
+                Email = req.Email
             };
 
             var result = await _userManager.CreateAsync(user, req.Password);
             if (!result.Succeeded)
-                return BadRequest(result.Errors);
+                return BadRequest(new RegistrationResponseDto(
+                    IsSuccessful: false,
+                    Error: string.Join(",", result.Errors.Select(e => e.Description))));
 
-            return Ok();
+            return Ok(new RegistrationResponseDto(
+                IsSuccessful: true,
+                Error: null));
         }
 
         [HttpPost("login")]
