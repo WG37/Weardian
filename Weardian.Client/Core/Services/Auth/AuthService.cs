@@ -30,41 +30,81 @@ namespace Weardian.Client.Core.Services.Auth
             var validationResults = _validationService.ValidateRegisterUser(email, password);
             
             if (!validationResults.IsValid)
-                throw new ArgumentException(string.Join("\n", validationResults.Errors));
+            {
+                return new RegistrationResponseDto(
+                    IsSuccessful: false,
+                    Error: string.Join("\n", validationResults.Errors));
+            }
 
             var registerDto = new RegisterRequestDto(email, password);
 
             var response = await _httpClient.PostAsJsonAsync("/api/auth/register", registerDto);
 
-            var json = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<RegistrationResponseDto>(
-                json,
-                JsonSerializeCaseHelper.CaseInsensitiveOptions)
-                ?? throw new InvalidOperationException("Failed to deserialize registration response");
+            var result = await response.Content.ReadFromJsonAsync<RegistrationResponseDto>(
+                JsonSerializeCaseHelper.CaseInsensitiveOptions);
+           
+            if (result == null)
+            {
+                return new RegistrationResponseDto(
+                    IsSuccessful: false,
+                    Error: "Failed to deserialize registration response");
+            }
 
             return result;
         }
 
-        public async Task LoginAsync(string email, string password)
+        public async Task<LoginResponseDto> LoginAsync(string email, string password)
         {
             var validationResults = _validationService.ValidateLogin(email, password);
 
             if (!validationResults.IsValid)
-                throw new ArgumentException(string.Join("\n", validationResults.Errors));
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: string.Join("\n", validationResults.Errors));
+            }
 
             var loginDto = new LoginRequestDto(email, password);
 
             var response = await _httpClient.PostAsJsonAsync("/api/auth/login", loginDto);
 
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: "Invalid Credentials."
+                    );
+            }
 
-            var authResponse = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
+            var authResponse = await response.Content.ReadFromJsonAsync<AuthTokenResponseDto>();
 
-            if (authResponse == null || string.IsNullOrEmpty(authResponse.AccessToken))
-                throw new InvalidOperationException("Failed to authenticate: Invalid response.");
+            if (authResponse == null)
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: "Invalid response from server");
+            }
 
-            await _authStorage.SetAccessTokenAsync(authResponse.AccessToken);
+            if (!authResponse.IsSuccessful)
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    authResponse.Error
+                    );
+            }
+
+            if (string.IsNullOrEmpty(authResponse.Token))
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: "Token is invalid");
+            }
+
+            await _authStorage.SetAccessTokenAsync(authResponse.Token);
+
+            return new LoginResponseDto(
+                IsSuccessful: true,
+                Error: null);
         }
 
         public async Task LogoutAsync()

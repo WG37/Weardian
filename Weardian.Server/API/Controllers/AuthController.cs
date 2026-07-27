@@ -48,15 +48,24 @@ namespace Weardian.Server.API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(req.Email);
             if (user == null)
-                return Unauthorized();
+                return Unauthorized( new AuthTokenResponseDto(
+                    Token: null,
+                    IsSuccessful: false,
+                    Error: "Invalid email or password"));
 
             var signInResult = await _signInManager.CheckPasswordSignInAsync(user, req.Password, true);
             if (!signInResult.Succeeded)
-                return Unauthorized();
+                return Unauthorized(new AuthTokenResponseDto(
+                    Token: null,
+                    IsSuccessful: false,
+                    Error: "Invalid email or password"));
 
             var token = _service.GenerateAccessToken(user);
 
-            return Ok(new LoginReponseDto(token));
+            return Ok(new AuthTokenResponseDto(
+                Token: token,
+                IsSuccessful: true,
+                Error: null));
         }
     }
 }

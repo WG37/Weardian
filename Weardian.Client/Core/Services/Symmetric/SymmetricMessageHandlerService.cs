@@ -84,7 +84,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                         Type: "register",
                         Success: true,
                         Data: result,
-                        Error: result.Error
+                        Error: null
                         ), 
                     JsonSerializeCaseHelper.CamelCaseOptions);
             }
@@ -115,13 +115,13 @@ namespace Weardian.Client.Core.Services.Symmetric
                 if (string.IsNullOrWhiteSpace(dto.Password))
                     throw new ArgumentException("Password cannot be null, empty or whitespace", nameof(dto.Password));
 
-                await _authService.LoginAsync(dto.Email, dto.Password);
+                var loginResponse = await _authService.LoginAsync(dto.Email, dto.Password);
 
                 return JsonSerializer.Serialize(
-                    new WebViewResponseDto<object>(
+                    new WebViewResponseDto<LoginResponseDto>(
                         Type: "login",
                         Success: true,
-                        Data: null,
+                        Data: loginResponse,
                         Error: null
                         ),
                     JsonSerializeCaseHelper.CamelCaseOptions);
