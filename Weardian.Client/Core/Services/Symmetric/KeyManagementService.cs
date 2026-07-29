@@ -1,5 +1,5 @@
-﻿using Weardian.Client.Core.DTOs.EnvelopeSyncingDtos.RequestDtos;
-using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleEncryptionDtos;
+﻿using Weardian.Client.Core.DTOs.EnvelopeSyncing.Request;
+using Weardian.Client.Core.DTOs.MessageHandler.HandleEncryption;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;

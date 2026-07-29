@@ -1,4 +1,4 @@
-﻿using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.RequestDtos.Symmetric;
+﻿using Weardian.Server.Application.DTOs.Cryptography.EncryptedEnvelopes.Request.Symmetric;
 
 namespace Weardian.Server.Application.Services.EnvelopeValidation.Rules
 {

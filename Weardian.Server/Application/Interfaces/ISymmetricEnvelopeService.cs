@@ -1,6 +1,6 @@
-﻿using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.RequestDtos.Symmetric;
-using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.ResponseDtos;
-using Weardian.Server.Application.DTOs.CryptographyDtos.EncryptedEnvelopes.ResponseDtos.Symmetric;
+﻿using Weardian.Server.Application.DTOs.Cryptography.EncryptedEnvelopes.Request.Symmetric;
+using Weardian.Server.Application.DTOs.Cryptography.EncryptedEnvelopes.Response;
+using Weardian.Server.Application.DTOs.Cryptography.EncryptedEnvelopes.Response.Symmetric;
 
 namespace Weardian.Server.Application.Interfaces
 {

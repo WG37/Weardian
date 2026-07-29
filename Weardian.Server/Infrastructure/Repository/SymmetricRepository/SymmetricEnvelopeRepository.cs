@@ -3,7 +3,7 @@ using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Domain.EncryptedEnvelopes.Symmetric;
 using Weardian.Server.Infrastructure.Data;
 
-namespace Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository
+namespace Weardian.Server.Infrastructure.Repository.SymmetricRepository
 {
     public class SymmetricEnvelopeRepository : ISymmetricEnvelopeRepository
     {

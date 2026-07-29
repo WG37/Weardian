@@ -10,7 +10,7 @@ using Weardian.Server.Application.Services.SymmetricServices;
 using Weardian.Server.Domain.Users;
 using Weardian.Server.Infrastructure.Authentication.TokenServices;
 using Weardian.Server.Infrastructure.Data;
-using Weardian.Server.Infrastructure.Repository.SymmetricKeyRepository;
+using Weardian.Server.Infrastructure.Repository.SymmetricRepository;
 
 namespace Weardian.Server
 {

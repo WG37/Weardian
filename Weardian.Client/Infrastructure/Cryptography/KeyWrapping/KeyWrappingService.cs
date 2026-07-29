@@ -1,5 +1,4 @@
-﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
-using Weardian.Client.Core.Interfaces.Cryptography.Encryption;
+﻿using Weardian.Client.Core.Interfaces.Cryptography.Encryption;
 using Weardian.Client.Core.Interfaces.Cryptography.KeyWrapping;
 using Weardian.Client.Domain.KeyRecords.Symmetric;
 

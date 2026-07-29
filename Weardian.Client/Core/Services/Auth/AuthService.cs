@@ -1,8 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
-using Weardian.Client.Core.DTOs.AuthDtos.Requests;
-using Weardian.Client.Core.DTOs.AuthDtos.Responses;
+using Weardian.Client.Core.DTOs.Auth.Requests;
+using Weardian.Client.Core.DTOs.Auth.Responses;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Serialization;
@@ -107,9 +106,12 @@ namespace Weardian.Client.Core.Services.Auth
                 Error: null);
         }
 
-        public async Task LogoutAsync()
+        public async Task<LogoutResponseDto> LogoutAsync()
         {
-             await _authStorage.ClearAccessTokenAsync();
+            await _authStorage.ClearAccessTokenAsync();
+
+            return new LogoutResponseDto(
+                IsSuccessful: true);
         }
     }
 }

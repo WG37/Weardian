@@ -1,8 +1,8 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Weardian.Client.Core.DTOs.EnvelopeSyncingDtos.RequestDtos;
-using Weardian.Client.Core.DTOs.EnvelopeSyncingDtos.ResponseDtos;
+using Weardian.Client.Core.DTOs.EnvelopeSyncing.Request;
+using Weardian.Client.Core.DTOs.EnvelopeSyncing.Response;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Sync;
 

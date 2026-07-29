@@ -1,5 +1,4 @@
-﻿using Weardian.Client.Core.DTOs.AuthDtos.Requests;
-using Weardian.Client.Core.DTOs.AuthDtos.Responses;
+﻿using Weardian.Client.Core.DTOs.Auth.Responses;
 
 namespace Weardian.Client.Core.Interfaces.Auth
 {
@@ -7,6 +6,6 @@ namespace Weardian.Client.Core.Interfaces.Auth
     {
         public Task<RegistrationResponseDto> RegisterUserAsync(string email, string password);
         public Task<LoginResponseDto> LoginAsync(string email, string password);
-        public Task LogoutAsync();
+        public Task<LogoutResponseDto> LogoutAsync();
     }
 }

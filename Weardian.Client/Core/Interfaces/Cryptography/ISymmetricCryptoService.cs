@@ -1,4 +1,4 @@
-﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
+﻿using Weardian.Client.Core.DTOs.Cryptography;
 using Weardian.Client.Domain.KeyRecords.Symmetric;
 using Weardian.Client.Domain.PayloadRecords.Symmetric;
 

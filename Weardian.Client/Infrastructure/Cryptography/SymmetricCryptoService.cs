@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using Weardian.Client.Core.DTOs.CryptographyDtos;
+using Weardian.Client.Core.DTOs.Cryptography;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.Cryptography.Encryption;
 using Weardian.Client.Core.Interfaces.Cryptography.KeyWrapping;

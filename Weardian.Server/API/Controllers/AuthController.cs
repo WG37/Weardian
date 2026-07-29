@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Weardian.Server.Application.DTOs.LoginDtos;
+using Weardian.Server.Application.DTOs.Login;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Domain.Users;
 

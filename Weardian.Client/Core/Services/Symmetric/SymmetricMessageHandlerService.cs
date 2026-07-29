@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
-using Weardian.Client.Core.DTOs.AuthDtos.Requests;
-using Weardian.Client.Core.DTOs.AuthDtos.Responses;
-using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleDecryptionDtos;
-using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleDeleteDtos;
-using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleEncryptionDtos;
-using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleRetrievalDtos;
-using Weardian.Client.Core.DTOs.WebViewDtos;
+using Weardian.Client.Core.DTOs.Auth.Requests;
+using Weardian.Client.Core.DTOs.Auth.Responses;
+using Weardian.Client.Core.DTOs.MessageHandler.HandleDecryption;
+using Weardian.Client.Core.DTOs.MessageHandler.HandleDelete;
+using Weardian.Client.Core.DTOs.MessageHandler.HandleEncryption;
+using Weardian.Client.Core.DTOs.MessageHandler.HandleRetrieval;
+using Weardian.Client.Core.DTOs.WebView;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Serialization;
@@ -43,6 +43,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                 {
                     "register" => await HandleRegistrationRequestAsync(request),
                     "login" => await HandleLoginRequestAsync(request),
+                    "logout" => await HandleLogoutRequestAsync(),
                     "encryption" => await HandleEncryptionRequestAsync(request),
                     "decryption" => await HandleDecryptionRequestAsync(request),
                     "retrieveAllKeys" => await HandleRetrieveAllKeysRequestAsync(),
@@ -137,6 +138,20 @@ namespace Weardian.Client.Core.Services.Symmetric
                         ),
                     JsonSerializeCaseHelper.CamelCaseOptions);
             }
+        }
+
+        public async Task<string> HandleLogoutRequestAsync()
+        {
+            var logoutResponse = await _authService.LogoutAsync();
+
+            return JsonSerializer.Serialize(
+                new WebViewResponseDto<LogoutResponseDto>(
+                    Type: "logout",
+                    Success: true,
+                    Data: logoutResponse,
+                    Error: null
+                    ), 
+                JsonSerializeCaseHelper.CamelCaseOptions);
         }
 
         public async Task<string> HandleEncryptionRequestAsync(string request)

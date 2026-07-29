@@ -1,5 +1,4 @@
-﻿using Microsoft.Web.WebView2.Core;
-using System.Windows;
+﻿using System.Windows;
 using Weardian.Client.Core.Interfaces.Symmetric;
 
 namespace Weardian.Client.Presentation

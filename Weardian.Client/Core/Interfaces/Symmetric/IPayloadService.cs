@@ -1,5 +1,4 @@
-﻿using Weardian.Client.Core.DTOs.CryptographyDtos;
-using Weardian.Client.Core.DTOs.MessageHandlerDtos.HandleRetrievalDtos;
+﻿using Weardian.Client.Core.DTOs.MessageHandler.HandleRetrieval;
 
 namespace Weardian.Client.Core.Interfaces.Symmetric
 {

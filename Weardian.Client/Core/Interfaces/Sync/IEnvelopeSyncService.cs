@@ -1,5 +1,5 @@
-﻿using Weardian.Client.Core.DTOs.EnvelopeSyncingDtos.RequestDtos;
-using Weardian.Client.Core.DTOs.EnvelopeSyncingDtos.ResponseDtos;
+﻿using Weardian.Client.Core.DTOs.EnvelopeSyncing.Request;
+using Weardian.Client.Core.DTOs.EnvelopeSyncing.Response;
 
 namespace Weardian.Client.Core.Interfaces.Sync
 {
