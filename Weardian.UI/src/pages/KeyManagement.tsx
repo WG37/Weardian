@@ -106,7 +106,7 @@ function KeyManagement() {
           </p>
           <div>
             <button
-              className="rounded-md bg-red-600 px-2 py-2"
+              className="rounded-md bg-red-600 px-2 py-2 text-white"
               onClick={() => {
                 if (selectedKey) {
                   handleDeleteKey(selectedKey);
@@ -117,7 +117,7 @@ function KeyManagement() {
             </button>
 
             <button
-              className="rounded-md bg-gray-600 px-2 py-2"
+              className="rounded-md bg-gray-600 px-2 py-2 text-white"
               onClick={() => setIsModalOpen(false)}
             >
               Cancel

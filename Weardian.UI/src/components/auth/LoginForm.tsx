@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { loginUser } from "../../bridge/WebViewBridge";
+import useAuth from "../../auth/useAuth";
 
 interface LoginFormProps {
   onSuccess: () => void;
@@ -11,6 +12,8 @@ function LoginForm({ onSuccess, onClose }: LoginFormProps) {
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
+
+  const { login } = useAuth();
 
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -24,6 +27,7 @@ function LoginForm({ onSuccess, onClose }: LoginFormProps) {
       }
 
       onSuccess();
+      login();
     } catch (err: any) {
       setError("Something went wrong. Please try again");
     }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AuthModal from "../modal/AuthModal";
 
-function RegisterButton() {
+function LogoutButton() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -10,11 +10,11 @@ function RegisterButton() {
         className="rounded-lg border border-slate-500 px-2 text-white hover:border-slate-300 active:border-slate-700"
         onClick={() => setOpen(true)}
       >
-        Register
+        Logout
       </button>
-      <AuthModal open={open} mode="register" onClose={() => setOpen(false)} />
+      <AuthModal open={open} mode="logout" onClose={() => setOpen(false)}></AuthModal>
     </>
   );
 }
 
-export default RegisterButton;
+export default LogoutButton;

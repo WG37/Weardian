@@ -5,6 +5,7 @@ import type { RetrievePayloadResponse } from "../types/retrieve/RetrievePayloadR
 import type { DeleteKeyResponse } from "../types/delete/DeleteKeyResponse";
 import type { RegisterResponse } from "../types/auth/registerResponse";
 import type { loginResponse } from "../types/auth/loginResponse";
+import type { LogoutResponse } from "../types/auth/logoutResponse";
 
 export function encryptInput(
   keyName: string,
@@ -52,4 +53,8 @@ export function loginUser(email: string, password: string): Promise<loginRespons
     email,
     password,
   });
+}
+
+export function logoutUser(): Promise<LogoutResponse> {
+  return postWebViewMessage<LogoutResponse>("logout");
 }

@@ -6,7 +6,12 @@ function LoginButton() {
 
   return (
     <>
-      <button onClick={() => setOpen(true)}>Login</button>
+      <button
+        className="rounded-lg border border-slate-500 px-2 text-white hover:border-slate-300 active:border-slate-700"
+        onClick={() => setOpen(true)}
+      >
+        Login
+      </button>
       <AuthModal open={open} mode="login" onClose={() => setOpen(false)} />
     </>
   );
