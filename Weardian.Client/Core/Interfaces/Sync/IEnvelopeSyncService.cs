@@ -1,10 +1,10 @@
-﻿using Weardian.Client.Core.DTOs.EnvelopeSyncing.Request;
-using Weardian.Client.Core.DTOs.EnvelopeSyncing.Response;
+﻿using Weardian.Client.Core.DTOs.Sync.Response;
+using Weardian.Client.Core.DTOs.Sync.Transfers;
 
 namespace Weardian.Client.Core.Interfaces.Sync
 {
     public interface IEnvelopeSyncService
     {
-        public Task<EncryptedEnvelopeSyncResponseDto> SyncEncryptedEnvelopeAsync(EncryptedEnvelopeSyncRequestDto envelopeRequest);
+        public Task<EncryptedEnvelopeSyncResponseDto> SyncEncryptedEnvelopeAsync(EncryptedEnvelopeSyncDto envelopeRequest);
     }
 }

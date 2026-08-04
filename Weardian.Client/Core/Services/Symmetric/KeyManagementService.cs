@@ -1,5 +1,5 @@
-﻿using Weardian.Client.Core.DTOs.EnvelopeSyncing.Request;
-using Weardian.Client.Core.DTOs.MessageHandler.HandleEncryption;
+﻿using Weardian.Client.Core.DTOs.MessageHandler.HandleEncryption;
+using Weardian.Client.Core.DTOs.Sync.Transfers;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;
@@ -89,10 +89,10 @@ namespace Weardian.Client.Core.Services.Symmetric
             {
                 try
                 {
-                    var envelopeSyncRequest = new EncryptedEnvelopeSyncRequestDto(
+                    var envelopeSyncRequest = new EncryptedEnvelopeSyncDto(
                         EnvelopeId: payloadRecord.EnvelopeId,
 
-                        KeyRecord: new KeyRecordRequestDto(
+                        KeyRecord: new KeyRecordTransferDto(
                            EnvelopeId: keyRecord.EnvelopeId,
                            Name: keyRecord.Name,
                            KeyType: keyRecord.KeyType,
@@ -103,7 +103,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                            WrappedKeyCiphertext: keyRecord.WrappedKeyCiphertext,
                            WrappedKeyTag: keyRecord.WrappedKeyTag),
 
-                        PayloadRecord: new PayloadRecordRequestDto(
+                        PayloadRecord: new PayloadRecordTransferDto(
                             EnvelopeId: payloadRecord.EnvelopeId,
                             Name: payloadRecord.Name,
                             KeyType: payloadRecord.KeyType,

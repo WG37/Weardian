@@ -1,4 +1,4 @@
-﻿namespace Weardian.Client.Core.DTOs.EnvelopeSyncing.Response
+﻿namespace Weardian.Client.Core.DTOs.Sync.Response
 {
     public sealed record EncryptedEnvelopeSyncResponseDto(
         Guid EnvelopeId,

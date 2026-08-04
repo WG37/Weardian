@@ -37,7 +37,12 @@ namespace Weardian.Client.Presentation
 
             services.AddScoped<IPayloadRecordRepository, PayloadRecordRepository>();
             services.AddScoped<IKeyRecordRepository, KeyRecordRepository>();
+
             services.AddScoped<IKeyManagementService, KeyManagementService>();
+
+            services.AddScoped<IPayloadRecordSyncService, PayloadRecordSyncService>();
+            services.AddScoped<IKeyRecordSyncService, KeyRecordSyncService>();
+
             services.AddScoped<IPayloadService, PayloadService>();
 
             services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();

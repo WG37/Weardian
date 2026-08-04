@@ -1,8 +1,8 @@
 ﻿using Weardian.Client.Domain.Enums;
 
-namespace Weardian.Client.Core.DTOs.EnvelopeSyncing.Request
+namespace Weardian.Client.Core.DTOs.Sync.Transfers
 {
-    public sealed record PayloadRecordRequestDto(
+    public sealed record PayloadRecordTransferDto(
         Guid EnvelopeId,
         string Name,
         KeyType KeyType,
