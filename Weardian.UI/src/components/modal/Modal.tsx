@@ -15,10 +15,13 @@ function Modal({ open, onClose, children }: ModalProps) {
       onClick={onClose}
     >
       <div
-        className="relative rounded-lg border border-slate-500 bg-slate-600"
+        className="relative rounded-lg border border-slate-800 bg-slate-800"
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="absolute top-2 right-2 active:scale-95" onClick={onClose}>
+        <button
+          className="absolute top-2 right-2 hover:text-red-600 active:scale-95"
+          onClick={onClose}
+        >
           ✕
         </button>
         {children}

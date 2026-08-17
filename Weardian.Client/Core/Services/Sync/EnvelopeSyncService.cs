@@ -1,7 +1,8 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Weardian.Client.Core.DTOs.Sync.Response;
+using Weardian.Client.Core.DTOs.Sync.Response.Get;
+using Weardian.Client.Core.DTOs.Sync.Response.Post;
 using Weardian.Client.Core.DTOs.Sync.Transfers;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Sync;
@@ -40,6 +41,25 @@ namespace Weardian.Client.Core.Services.Sync
                 throw new InvalidOperationException("Invalid envelope sync response");
 
             return syncResponse;
+        }
+
+        public async Task<IReadOnlyList<EncryptedEnvelopeResponseDto>> GetSymmetricServerEnvelopes()
+        {
+            var token = await _authToken.GetAccessTokenAsync();
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/keys/symmetric");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            using var response = await _httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            var envelopes = await response.Content.ReadFromJsonAsync<List<EncryptedEnvelopeResponseDto>>();
+
+            if (envelopes == null)
+                throw new InvalidOperationException("Invalid envelope response from server");
+
+            return envelopes;
         }
     }
 }

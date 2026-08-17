@@ -58,13 +58,13 @@ function LoginForm({ onSuccess, onClose }: LoginFormProps) {
         </div>
         <div className="flex justify-between pr-6 pl-6 pb-4">
           <button
-            className="rounded-md border border-slate-400 bg-slate-800 px-4 py-0.5 text-white hover:border-slate-900 hover:text-gray-500"
+            className="rounded-md border border-slate-400 bg-slate-800 px-4 py-0.5 text-white hover:border-white hover:text-white"
             type="submit"
           >
             Login
           </button>
           <button
-            className="rounded-md border border-slate-400 bg-slate-800 px-4 py-0.5 text-white hover:border-slate-900 hover:text-gray-500"
+            className="rounded-md border border-slate-400 bg-slate-800 px-4 py-0.5 text-white hover:border-white hover:text-white"
             onClick={onClose}
           >
             Cancel
