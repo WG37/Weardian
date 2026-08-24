@@ -13,13 +13,19 @@ namespace Weardian.Client.Core.Services.Sync
     {
         private readonly HttpClient _httpClient;
         private readonly IAuthTokenStorage _authToken;
+        private readonly IKeyRecordSyncService _keyRecordSyncService;
+        private readonly IPayloadRecordSyncService _payloadRecordSyncService;
 
         public EnvelopeSyncService(
             HttpClient httpClient,
-            IAuthTokenStorage authToken)
+            IAuthTokenStorage authToken,
+            IKeyRecordSyncService keyRecordSyncService,
+            IPayloadRecordSyncService payloadRecordSyncService)
         {
             _httpClient = httpClient;
             _authToken = authToken;
+            _keyRecordSyncService = keyRecordSyncService;
+            _payloadRecordSyncService = payloadRecordSyncService;
         }
 
         public async Task<EncryptedEnvelopeSyncResponseDto> SyncEncryptedEnvelopeAsync(EncryptedEnvelopeSyncDto envelopeRequest)
@@ -43,7 +49,7 @@ namespace Weardian.Client.Core.Services.Sync
             return syncResponse;
         }
 
-        public async Task<IReadOnlyList<EncryptedEnvelopeResponseDto>> GetSymmetricServerEnvelopes()
+        private async Task<IReadOnlyList<EncryptedEnvelopeResponseDto>> GetSymmetricServerEnvelopesAsync()
         {
             var token = await _authToken.GetAccessTokenAsync();
 
@@ -60,6 +66,41 @@ namespace Weardian.Client.Core.Services.Sync
                 throw new InvalidOperationException("Invalid envelope response from server");
 
             return envelopes;
+        }
+
+        private async Task<IReadOnlyList<EncryptedEnvelopeResponseDto>> GetSymmetricLocalEnvelopesAsync()
+        {
+            var payloadRecords = await _payloadRecordSyncService.GetAllPayloadRecordsAsync();
+            var keyRecords = await _keyRecordSyncService.GetAllKeyRecordsAsync();
+
+            var envelopes = new List<EncryptedEnvelopeResponseDto>();
+
+            foreach (var payload in payloadRecords)
+            {
+                var matchingRecord = keyRecords
+                    .FirstOrDefault(key => key.EnvelopeId == payload.EnvelopeId);
+
+                if (matchingRecord == null)
+                    continue;
+
+                var envelope = new EncryptedEnvelopeResponseDto(
+                    EnvelopeId: payload.EnvelopeId,
+                    KeyRecord: matchingRecord,
+                    PayloadRecord: payload,
+                    Success: true,
+                    Error: null
+                );
+
+                envelopes.Add(envelope);
+            }
+
+            return envelopes;
+        }
+
+        public async Task SyncAllEnvelopesAsync()
+        {
+            var serverEnvelopes = await GetSymmetricServerEnvelopesAsync();
+            var localEnvelopes = await GetSymmetricLocalEnvelopesAsync();
         }
     }
 }
