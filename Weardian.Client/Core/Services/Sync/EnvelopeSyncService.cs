@@ -68,12 +68,12 @@ namespace Weardian.Client.Core.Services.Sync
             return envelopes;
         }
 
-        private async Task<IReadOnlyList<EncryptedEnvelopeResponseDto>> GetSymmetricLocalEnvelopesAsync()
+        private async Task<IReadOnlyList<EncryptedEnvelopeSyncDto>> GetSymmetricLocalEnvelopesAsync()
         {
             var payloadRecords = await _payloadRecordSyncService.GetAllPayloadRecordsAsync();
             var keyRecords = await _keyRecordSyncService.GetAllKeyRecordsAsync();
 
-            var envelopes = new List<EncryptedEnvelopeResponseDto>();
+            var envelopes = new List<EncryptedEnvelopeSyncDto>();
 
             foreach (var payload in payloadRecords)
             {
@@ -83,12 +83,10 @@ namespace Weardian.Client.Core.Services.Sync
                 if (matchingRecord == null)
                     continue;
 
-                var envelope = new EncryptedEnvelopeResponseDto(
+                var envelope = new EncryptedEnvelopeSyncDto(
                     EnvelopeId: payload.EnvelopeId,
                     KeyRecord: matchingRecord,
-                    PayloadRecord: payload,
-                    Success: true,
-                    Error: null
+                    PayloadRecord: payload
                 );
 
                 envelopes.Add(envelope);
@@ -101,6 +99,30 @@ namespace Weardian.Client.Core.Services.Sync
         {
             var serverEnvelopes = await GetSymmetricServerEnvelopesAsync();
             var localEnvelopes = await GetSymmetricLocalEnvelopesAsync();
+
+           // upload local envelope to server if envelope does not exist on server
+           foreach (var localEnvelope in localEnvelopes)
+            {
+                var existsOnServer = serverEnvelopes
+                    .Any(serverEnvelope => serverEnvelope.EnvelopeId == localEnvelope.EnvelopeId);
+
+                if (!existsOnServer) 
+                { 
+                    await SyncEncryptedEnvelopeAsync(localEnvelope);
+                }
+            }
+
+           // downloads server envelope if local envelope does not exist
+           foreach (var serverEnvelope in serverEnvelopes)
+            {
+                var existsLocal = localEnvelopes
+                    .Any(localEnvelope => localEnvelope.EnvelopeId == serverEnvelope.EnvelopeId);
+
+                if (!existsLocal)
+                {
+                    
+                }
+            }
         }
     }
 }

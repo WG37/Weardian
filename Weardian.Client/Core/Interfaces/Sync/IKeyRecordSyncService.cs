@@ -6,5 +6,6 @@ namespace Weardian.Client.Core.Interfaces.Sync
     {
         public Task<IReadOnlyList<KeyRecordTransferDto>> GetAllKeyRecordsAsync();
         public Task<KeyRecordTransferDto> GetKeyRecordByIdAsync(Guid envelopeId);
+        public Task AddKeyRecordAsync(KeyRecordTransferDto keyRecordDto);
     }
 }

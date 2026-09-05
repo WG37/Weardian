@@ -1,6 +1,7 @@
 ﻿using Weardian.Client.Core.DTOs.Sync.Transfers;
 using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 using Weardian.Client.Core.Interfaces.Sync;
+using Weardian.Client.Domain.KeyRecords.Symmetric;
 
 namespace Weardian.Client.Core.Services.Sync
 {
@@ -55,6 +56,26 @@ namespace Weardian.Client.Core.Services.Sync
                 WrappedKeyCiphertext: record.WrappedKeyCiphertext,
                 WrappedKeyTag: record.WrappedKeyTag
                 );
+        }
+
+        public async Task AddKeyRecordAsync(KeyRecordTransferDto keyRecordDto)
+        {
+            if (keyRecordDto == null)
+                throw new ArgumentNullException(nameof(keyRecordDto), "Key record cannot be null");
+
+            var keyRecord = new KeyRecord(keyRecordDto.WrappedKeyCiphertext)
+            {
+                EnvelopeId = keyRecordDto.EnvelopeId,
+                Name = keyRecordDto.Name,
+                KeyType = keyRecordDto.KeyType,
+                EnvelopeVersion = keyRecordDto.EnvelopeVersion,
+                WrapAlgorithm = keyRecordDto.WrapAlgorithm,
+                WrappingKeyId = keyRecordDto.WrappingKeyId,
+                WrappedKeyNonce = keyRecordDto.WrappedKeyNonce,
+                WrappedKeyTag = keyRecordDto.WrappedKeyTag
+            };
+
+            await _keyRepo.AddLocalKeyRecordAsync(keyRecord);
         }
     }
 }
