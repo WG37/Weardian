@@ -1,6 +1,7 @@
 ﻿using Weardian.Client.Core.DTOs.Sync.Transfers;
 using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 using Weardian.Client.Core.Interfaces.Sync;
+using Weardian.Client.Domain.PayloadRecords.Symmetric;
 
 namespace Weardian.Client.Core.Services.Sync
 {
@@ -50,6 +51,25 @@ namespace Weardian.Client.Core.Services.Sync
                 Nonce: record.Nonce,
                 Ciphertext: record.Ciphertext,
                 Tag: record.Tag);
+        }
+
+        public async Task AddPayloadRecordAsync(PayloadRecordTransferDto payload)
+        {
+            if (payload == null)
+                throw new ArgumentNullException(nameof(payload), "Payload cannot be null");
+
+            var payloadRecord = new PayloadRecord(payload.Ciphertext)
+            {
+                EnvelopeId = payload.EnvelopeId,
+                Name = payload.Name,
+                KeyType = payload.KeyType,
+                Version = payload.EnvelopeVersion,
+                Algorithm = payload.Algorithm,
+                Nonce = payload.Nonce,
+                Tag = payload.Tag
+            };
+
+            await _payloadRepo.AddLocalPayloadRecordAsync(payloadRecord);
         }
     }
 }

@@ -6,5 +6,6 @@ namespace Weardian.Client.Core.Interfaces.Sync
     {
         public Task<IReadOnlyList<PayloadRecordTransferDto>> GetAllPayloadRecordsAsync();
         public Task<PayloadRecordTransferDto> GetPayloadRecordByIdAsync(Guid envelopeId);
+        public Task AddPayloadRecordAsync(PayloadRecordTransferDto payloadRecord);
     }
 }

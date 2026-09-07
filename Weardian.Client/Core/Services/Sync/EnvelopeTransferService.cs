@@ -9,14 +9,14 @@ using Weardian.Client.Core.Interfaces.Sync;
 
 namespace Weardian.Client.Core.Services.Sync
 {
-    public class EnvelopeSyncService : IEnvelopeSyncService
+    public class EnvelopeTransferService : IEnvelopeTransferService
     {
         private readonly HttpClient _httpClient;
         private readonly IAuthTokenStorage _authToken;
         private readonly IKeyRecordSyncService _keyRecordSyncService;
         private readonly IPayloadRecordSyncService _payloadRecordSyncService;
 
-        public EnvelopeSyncService(
+        public EnvelopeTransferService(
             HttpClient httpClient,
             IAuthTokenStorage authToken,
             IKeyRecordSyncService keyRecordSyncService,
@@ -88,7 +88,6 @@ namespace Weardian.Client.Core.Services.Sync
                     KeyRecord: matchingRecord,
                     PayloadRecord: payload
                 );
-
                 envelopes.Add(envelope);
             }
 
@@ -120,7 +119,8 @@ namespace Weardian.Client.Core.Services.Sync
 
                 if (!existsLocal)
                 {
-                    
+                    await _payloadRecordSyncService.AddPayloadRecordAsync(serverEnvelope.PayloadRecord!);
+                    await _keyRecordSyncService.AddKeyRecordAsync(serverEnvelope.KeyRecord!);
                 }
             }
         }

@@ -64,7 +64,7 @@ namespace Weardian.Client.Presentation
                 client.BaseAddress = apiBaseUrl;
             });
 
-            services.AddHttpClient<IEnvelopeSyncService, EnvelopeSyncService>(client =>
+            services.AddHttpClient<IEnvelopeTransferService, EnvelopeTransferService>(client =>
             {
                 client.BaseAddress = apiBaseUrl;
             });

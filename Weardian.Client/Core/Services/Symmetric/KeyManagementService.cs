@@ -15,13 +15,13 @@ namespace Weardian.Client.Core.Services.Symmetric
         private readonly ISymmetricCryptoService _symmetricCryptoService;
         private readonly IPayloadRecordRepository _payloadRecordRepo;
         private readonly IKeyRecordRepository _keyRecordRepo;
-        private readonly IEnvelopeSyncService _envelopeSyncService;
+        private readonly IEnvelopeTransferService _envelopeSyncService;
         private readonly IInputValidationService _validationService;
         public KeyManagementService(
             ISymmetricCryptoService symmetricCryptoService,
             IPayloadRecordRepository payloadRecordRepo,
             IKeyRecordRepository keyRecordRepo,
-            IEnvelopeSyncService envelopeSyncService,
+            IEnvelopeTransferService envelopeSyncService,
             IInputValidationService validationService)
         {
             _symmetricCryptoService = symmetricCryptoService;
