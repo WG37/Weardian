@@ -2,6 +2,6 @@
 {
     public sealed record EncryptedEnvelopeSyncDto(
         Guid EnvelopeId,
-        KeyRecordTransferDto KeyRecord,
-        PayloadRecordTransferDto PayloadRecord);
+        KeyRecordTransferDto KeyRequestDto,
+        PayloadRecordTransferDto PayloadRequestDto);
 }

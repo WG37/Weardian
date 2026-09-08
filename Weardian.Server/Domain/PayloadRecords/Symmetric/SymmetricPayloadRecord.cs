@@ -12,8 +12,8 @@
 
         public SymmetricPayloadRecord(byte[] ciphertext)
         {
-            if (ciphertext == null || ciphertext.Length < 16)
-                throw new ArgumentException("Ciphertext must be 16 bytes or larger.", nameof(ciphertext));
+            if (ciphertext == null)
+                throw new ArgumentException("Ciphertext is null", nameof(ciphertext));
 
             Ciphertext = new ReadOnlyMemory<byte>((byte[])ciphertext.Clone());
         }

@@ -8,6 +8,7 @@ using Weardian.Client.Core.DTOs.MessageHandler.HandleRetrieval;
 using Weardian.Client.Core.DTOs.WebView;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Symmetric;
+using Weardian.Client.Core.Interfaces.Sync;
 using Weardian.Client.Core.Serialization;
 
 namespace Weardian.Client.Core.Services.Symmetric
@@ -17,15 +18,21 @@ namespace Weardian.Client.Core.Services.Symmetric
         private readonly IKeyManagementService _keyManagementService;
         private readonly IPayloadService _payloadService;
         private readonly IAuthService _authService;
+        private readonly IEnvelopeTransferService _envelopeTransferService;
+        private readonly IAuthTokenStorage _authToken;
 
         public SymmetricMessageHandlerService(
             IKeyManagementService keyManagementService,
             IPayloadService payloadService,
-            IAuthService authService)
+            IAuthService authService,
+            IEnvelopeTransferService envelopeTransferService,
+            IAuthTokenStorage authToken)
         {
             _keyManagementService = keyManagementService;
             _payloadService = payloadService;
             _authService = authService;
+            _envelopeTransferService = envelopeTransferService;
+            _authToken = authToken;
         }
 
         public async Task<string> HandleAsync(string request)
@@ -219,6 +226,13 @@ namespace Weardian.Client.Core.Services.Symmetric
 
         public async Task<string> HandleRetrieveAllKeysRequestAsync()
         {
+            var token = await _authToken.GetAccessTokenAsync();
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                await _envelopeTransferService.SyncAllEnvelopesAsync();
+            }
+
             var keysResult = await _payloadService.GetPayloadRecordsAsync();
 
             return JsonSerializer.Serialize(

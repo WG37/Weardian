@@ -1,11 +1,13 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Weardian.Client.Core.DTOs.Sync.Response.Get;
 using Weardian.Client.Core.DTOs.Sync.Response.Post;
 using Weardian.Client.Core.DTOs.Sync.Transfers;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Sync;
+using Weardian.Client.Core.Serialization;
 
 namespace Weardian.Client.Core.Services.Sync
 {
@@ -85,8 +87,8 @@ namespace Weardian.Client.Core.Services.Sync
 
                 var envelope = new EncryptedEnvelopeSyncDto(
                     EnvelopeId: payload.EnvelopeId,
-                    KeyRecord: matchingRecord,
-                    PayloadRecord: payload
+                    KeyRequestDto: matchingRecord,
+                    PayloadRequestDto: payload
                 );
                 envelopes.Add(envelope);
             }

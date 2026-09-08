@@ -92,7 +92,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                     var envelopeSyncRequest = new EncryptedEnvelopeSyncDto(
                         EnvelopeId: payloadRecord.EnvelopeId,
 
-                        KeyRecord: new KeyRecordTransferDto(
+                        KeyRequestDto: new KeyRecordTransferDto(
                            EnvelopeId: keyRecord.EnvelopeId,
                            Name: keyRecord.Name,
                            KeyType: keyRecord.KeyType,
@@ -103,7 +103,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                            WrappedKeyCiphertext: keyRecord.WrappedKeyCiphertext,
                            WrappedKeyTag: keyRecord.WrappedKeyTag),
 
-                        PayloadRecord: new PayloadRecordTransferDto(
+                        PayloadRequestDto: new PayloadRecordTransferDto(
                             EnvelopeId: payloadRecord.EnvelopeId,
                             Name: payloadRecord.Name,
                             KeyType: payloadRecord.KeyType,
