@@ -126,5 +126,17 @@ namespace Weardian.Client.Core.Services.Sync
                 }
             }
         }
+
+        public async Task DeleteSyncedEnvelopeAsync(Guid envelopeId)
+        {
+            var token = await _authToken.GetAccessTokenAsync();
+
+            using var request = new HttpRequestMessage(HttpMethod.Delete, $"/api/keys/symmetric/{envelopeId}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            using var response = await _httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

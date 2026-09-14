@@ -54,7 +54,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                     "encryption" => await HandleEncryptionRequestAsync(request),
                     "decryption" => await HandleDecryptionRequestAsync(request),
                     "retrieveAllKeys" => await HandleRetrieveAllKeysRequestAsync(),
-                    "deleteKey" => HandleDeleteKeyRequest(request),
+                    "deleteKey" => await HandleDeleteKeyRequest(request),
                     _ => throw new InvalidOperationException("Invalid request type.")
                 };
             }
@@ -228,7 +228,7 @@ namespace Weardian.Client.Core.Services.Symmetric
         {
             var token = await _authToken.GetAccessTokenAsync();
 
-            if (!string.IsNullOrEmpty(token))
+            if (!string.IsNullOrWhiteSpace(token))
             {
                 await _envelopeTransferService.SyncAllEnvelopesAsync();
             }
@@ -245,13 +245,20 @@ namespace Weardian.Client.Core.Services.Symmetric
                 JsonSerializeCaseHelper.CamelCaseOptions); 
         }
 
-        public string HandleDeleteKeyRequest(string request)
+        public async Task<string> HandleDeleteKeyRequest(string request)
         {
+            var token = await _authToken.GetAccessTokenAsync();
+
             var dto = JsonSerializer.Deserialize<DeleteKeyRequestDto>(request,
                 JsonSerializeCaseHelper.CaseInsensitiveOptions);
 
             if (dto == null || dto.KeyId == Guid.Empty)
                 throw new InvalidOperationException("Deserialization Failed: null result or GUID is invalid.");
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                await _envelopeTransferService.DeleteSyncedEnvelopeAsync(dto.KeyId);
+            }
 
             var deleted = _payloadService.RemoveRecordsById(dto.KeyId);
 

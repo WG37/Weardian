@@ -7,5 +7,6 @@ namespace Weardian.Client.Core.Interfaces.Sync
     {
         public Task<EncryptedEnvelopeSyncResponseDto> SyncEncryptedEnvelopeAsync(EncryptedEnvelopeSyncDto envelopeRequest);
         public Task SyncAllEnvelopesAsync();
+        public Task DeleteSyncedEnvelopeAsync(Guid envelopeId);
     }
 }
