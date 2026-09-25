@@ -35,9 +35,9 @@ export function decryptInput(selectedKey: string): Promise<DecryptResponse> {
   });
 }
 
-export function deleteKeyById(selectedKey: string): Promise<DeleteKeyResponse> {
-  return postWebViewMessage<DeleteKeyResponse>("deleteKey", {
-    keyId: selectedKey,
+export function deleteKeysByIds(selectedKeys: string[]): Promise<DeleteKeyResponse> {
+  return postWebViewMessage<DeleteKeyResponse>("deleteKeys", {
+    keyIds: selectedKeys,
   });
 }
 

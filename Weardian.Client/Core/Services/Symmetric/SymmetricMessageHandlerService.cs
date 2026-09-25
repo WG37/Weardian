@@ -54,7 +54,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                     "encryption" => await HandleEncryptionRequestAsync(request),
                     "decryption" => await HandleDecryptionRequestAsync(request),
                     "retrieveAllKeys" => await HandleRetrieveAllKeysRequestAsync(),
-                    "deleteKey" => await HandleDeleteKeyRequest(request),
+                    "deleteKeys" => await HandleDeleteKeysRequest(request),
                     _ => throw new InvalidOperationException("Invalid request type.")
                 };
             }
@@ -245,28 +245,36 @@ namespace Weardian.Client.Core.Services.Symmetric
                 JsonSerializeCaseHelper.CamelCaseOptions); 
         }
 
-        public async Task<string> HandleDeleteKeyRequest(string request)
+        public async Task<string> HandleDeleteKeysRequest(string request)
         {
             var token = await _authToken.GetAccessTokenAsync();
 
-            var dto = JsonSerializer.Deserialize<DeleteKeyRequestDto>(request,
+            var dto = JsonSerializer.Deserialize<DeleteKeysRequestDto>(request,
                 JsonSerializeCaseHelper.CaseInsensitiveOptions);
 
-            if (dto == null || dto.KeyId == Guid.Empty)
-                throw new InvalidOperationException("Deserialization Failed: null result or GUID is invalid.");
+            if (dto == null || dto.KeyIds.Count == 0)
+                throw new InvalidOperationException("Deserialization failed: no key IDs provided.");
 
-            if (!string.IsNullOrWhiteSpace(token))
+            if (dto.KeyIds.Any(id => id == Guid.Empty))
+                throw new InvalidOperationException("One or more keyIds are invalid.");
+
+            var isAuthenticated = !string.IsNullOrWhiteSpace(token);
+            
+            foreach (var keyId in dto.KeyIds)
             {
-                await _envelopeTransferService.DeleteSyncedEnvelopeAsync(dto.KeyId);
+                if (isAuthenticated)
+                {
+                    await _envelopeTransferService.DeleteSyncedEnvelopeAsync(keyId);
+                }
+                
+                _payloadService.RemoveRecordsById(keyId);
             }
-
-            var deleted = _payloadService.RemoveRecordsById(dto.KeyId);
 
             return JsonSerializer.Serialize(
                 new WebViewResponseDto<bool>(
-                    Type: "deleteKey",
+                    Type: "deleteKeys",
                     Success: true,
-                    Data: deleted,
+                    Data: true,
                     Error: null
                     ),
                 JsonSerializeCaseHelper.CamelCaseOptions);

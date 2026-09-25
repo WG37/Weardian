@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { retrieveAllKeys, decryptInput, deleteKeyById } from "../bridge/WebViewBridge";
+import { retrieveAllKeys, decryptInput, deleteKeysByIds } from "../bridge/WebViewBridge";
 import type { RetrievePayloadResponse } from "../types/retrieve/RetrievePayloadResponse";
 import Card from "../components/Card";
 import KeyTable from "../components/KeyTable";
@@ -14,7 +14,7 @@ function KeyManagement() {
   const [result, setResult] = useState<string>("");
 
   const [keys, setKeys] = useState<RetrievePayloadResponse[]>([]);
-  const [selectedKey, setSelectedKey] = useState<RetrievePayloadResponse | null>(null);
+  const [selectedKeys, setSelectedKeys] = useState<RetrievePayloadResponse[]>([]);
   const [showKeyId, setShowKeyId] = useState<string | null>(null);
 
   const [error, setError] = useState("");
@@ -35,19 +35,24 @@ function KeyManagement() {
     }
   }
 
-  async function handleDeleteKey(selectedKey: RetrievePayloadResponse) {
+  async function handleDeleteKey(selectedKeys: RetrievePayloadResponse[]) {
     setDeleting(true);
     setResult("");
     setError("");
 
     try {
-      const deleteKey = await deleteKeyById(selectedKey.keyId);
+      const keyIds = selectedKeys.map((key) => key.keyId);
+      const deletedKeys = await deleteKeysByIds(keyIds);
 
-      setKeys((prev) => prev.filter((k) => k.keyId !== selectedKey.keyId));
-      setSelectedKey(null);
+      setKeys((prev) =>
+        prev.filter((key) => !selectedKeys.some((selectedKey) => selectedKey.keyId === key.keyId)),
+      );
+      setSelectedKeys([]);
       setIsModalOpen(false);
 
-      setResult(deleteKey);
+      setResult(
+        `${deletedKeys.length} key${deletedKeys.length === 1 ? "" : "s"} successfully deleted`,
+      );
     } catch (err: any) {
       setError(`Failed to delete key: ${err.message ?? err}`);
     } finally {
@@ -81,10 +86,10 @@ function KeyManagement() {
         <div className="flex justify-end gap-6 mb-8">
           <button
             className="rounded-md bg-emerald-800 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-emerald-900 active:scale-95"
-            disabled={!selectedKey || decrypting}
+            disabled={selectedKeys.length !== 1 || decrypting}
             onClick={() => {
-              if (selectedKey) {
-                handleDecryptKey(selectedKey);
+              if (selectedKeys.length === 1) {
+                handleDecryptKey(selectedKeys[0]);
               }
             }}
           >
@@ -93,7 +98,7 @@ function KeyManagement() {
 
           <button
             className="rounded-md bg-red-600 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-red-700 active:scale-95"
-            disabled={!selectedKey || deleting}
+            disabled={!selectedKeys || deleting}
             onClick={() => setIsModalOpen(true)}
           >
             Delete
@@ -108,8 +113,8 @@ function KeyManagement() {
             <button
               className="rounded-md bg-red-600 px-2 py-2 text-white"
               onClick={() => {
-                if (selectedKey) {
-                  handleDeleteKey(selectedKey);
+                if (selectedKeys.length > 0) {
+                  handleDeleteKey(selectedKeys);
                 }
               }}
             >
@@ -132,8 +137,8 @@ function KeyManagement() {
         ) : (
           <KeyTable
             keys={keys}
-            selectedKey={selectedKey}
-            setSelectedKey={setSelectedKey}
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
             showKeyId={showKeyId}
             setShowKeyId={setShowKeyId}
           />
