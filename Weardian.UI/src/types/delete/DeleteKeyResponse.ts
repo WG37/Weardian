@@ -1,1 +1,1 @@
-export type DeleteKeyResponse = string;
+export type DeleteKeyResponse = number;

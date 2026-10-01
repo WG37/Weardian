@@ -259,6 +259,8 @@ namespace Weardian.Client.Core.Services.Symmetric
                 throw new InvalidOperationException("One or more keyIds are invalid.");
 
             var isAuthenticated = !string.IsNullOrWhiteSpace(token);
+
+            var deletedKeys = 0;
             
             foreach (var keyId in dto.KeyIds)
             {
@@ -268,13 +270,15 @@ namespace Weardian.Client.Core.Services.Symmetric
                 }
                 
                 _payloadService.RemoveRecordsById(keyId);
+
+                deletedKeys++;
             }
 
             return JsonSerializer.Serialize(
-                new WebViewResponseDto<bool>(
+                new WebViewResponseDto<int>(
                     Type: "deleteKeys",
                     Success: true,
-                    Data: true,
+                    Data: deletedKeys,
                     Error: null
                     ),
                 JsonSerializeCaseHelper.CamelCaseOptions);

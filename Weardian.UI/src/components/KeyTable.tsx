@@ -25,8 +25,10 @@ function KeyTable({ keys, selectedKeys, setSelectedKeys, showKeyId, setShowKeyId
   }
 
   function toggleAllKeys() {
-    if (selectedKeys) {
+    if (allSelectedKeys) {
       setSelectedKeys([]);
+    } else {
+      setSelectedKeys([...keys]);
     }
   }
 

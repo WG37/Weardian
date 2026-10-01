@@ -2,7 +2,7 @@
 {
     public sealed record RetrievePayloadResponseDto(
         Guid KeyId,
-        string Name,
+        string KeyName,
         string Algorithm,
         DateTime CreatedOn);
 }

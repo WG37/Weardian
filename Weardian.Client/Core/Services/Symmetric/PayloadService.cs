@@ -27,7 +27,7 @@ namespace Weardian.Client.Core.Services.Symmetric
             {
                 var payloadDto = new RetrievePayloadResponseDto(
                     KeyId: payload.EnvelopeId,
-                    Name: payload.Name,
+                    KeyName: payload.Name,
                     Algorithm: payload.Algorithm,
                     CreatedOn: payload.CreatedOn);
 
@@ -46,7 +46,7 @@ namespace Weardian.Client.Core.Services.Symmetric
 
             return new RetrievePayloadResponseDto(
                 KeyId: payloadRecord.EnvelopeId,
-                Name: payloadRecord.Name,
+                KeyName: payloadRecord.Name,
                 Algorithm: payloadRecord.Algorithm,
                 CreatedOn: payloadRecord.CreatedOn);
         }

@@ -50,9 +50,7 @@ function KeyManagement() {
       setSelectedKeys([]);
       setIsModalOpen(false);
 
-      setResult(
-        `${deletedKeys.length} key${deletedKeys.length === 1 ? "" : "s"} successfully deleted`,
-      );
+      setResult(`${deletedKeys} key${deletedKeys === 1 ? "" : "s"} successfully deleted`);
     } catch (err: any) {
       setError(`Failed to delete key: ${err.message ?? err}`);
     } finally {
