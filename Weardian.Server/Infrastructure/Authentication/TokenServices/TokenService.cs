@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Domain.Users;
@@ -30,7 +31,7 @@ namespace Weardian.Server.Infrastructure.Authentication.TokenServices
             };
 
             var expires = DateTime.UtcNow.AddMinutes(int.Parse(jwt["AccessTokenMinutes"]!));
-
+            
             var token = new JwtSecurityToken(
                 issuer: jwt["Issuer"],
                 audience: jwt["Audience"],
@@ -39,6 +40,21 @@ namespace Weardian.Server.Infrastructure.Authentication.TokenServices
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        public string GenerateRefreshToken()
+        {
+            var rawTokenBytes = RandomNumberGenerator.GetBytes(32);
+
+            return Convert.ToBase64String(rawTokenBytes);
+        }
+
+        public string GenerateHashForRefreshToken(string rawToken)
+        {
+            var rawTokenBytes = Encoding.UTF8.GetBytes(rawToken);
+            var hashTokenBytes = SHA256.HashData(rawTokenBytes);
+            var hashedToken = Convert.ToHexString(hashTokenBytes).ToLowerInvariant();
+
+            return hashedToken;
         }
     }
 }

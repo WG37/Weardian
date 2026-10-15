@@ -32,7 +32,6 @@ namespace Weardian.Client.Core.Services.Sync
 
         public async Task<EncryptedEnvelopeSyncResponseDto> SyncEncryptedEnvelopeAsync(EncryptedEnvelopeSyncDto envelopeRequest)
         {
-
             var token = await _authToken.GetAccessTokenAsync();
 
             using var request = new HttpRequestMessage(HttpMethod.Post, "/api/keys/symmetric");

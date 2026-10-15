@@ -23,14 +23,14 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricRepository
         public async Task<SymmetricEncryptedEnvelope?> GetByIdAsync(string userId, Guid envelopeId)
         {
             var envelope = await _db.SymmetricEncryptedEnvelopes
-                .SingleOrDefaultAsync(k => k.UserId == userId && k.EnvelopeId == envelopeId);
+                .SingleOrDefaultAsync(e => e.UserId == userId && e.EnvelopeId == envelopeId);
 
             return envelope;    
         }
 
         public async Task<IReadOnlyList<SymmetricEncryptedEnvelope>> GetAllAsync(string userId)
         {
-            var envelopes = await _db.SymmetricEncryptedEnvelopes.Where(k => k.UserId == userId).ToListAsync();
+            var envelopes = await _db.SymmetricEncryptedEnvelopes.Where(e => e.UserId == userId).ToListAsync();
 
             return envelopes;
         }
@@ -38,7 +38,7 @@ namespace Weardian.Server.Infrastructure.Repository.SymmetricRepository
         public async Task<bool> RemoveByIdAsync(string userId, Guid envelopeId)
         {
             var envelope = await _db.SymmetricEncryptedEnvelopes
-                .SingleOrDefaultAsync(k => k.UserId == userId && k.EnvelopeId == envelopeId);
+                .SingleOrDefaultAsync(e => e.UserId == userId && e.EnvelopeId == envelopeId);
 
             if (envelope == null)
                 return false;

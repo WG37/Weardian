@@ -98,7 +98,6 @@ namespace Weardian.Server.Application.Services.SymmetricServices
                     Error: "envelopeId cannot be empty");
             }
                 
-
             var envelope = await _envelopeRepository.GetByIdAsync(userId, envelopeId);
 
             if (envelope == null)
