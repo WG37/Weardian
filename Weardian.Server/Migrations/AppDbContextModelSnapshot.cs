@@ -155,6 +155,33 @@ namespace Weardian.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Weardian.Server.Domain.Authentication.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Expiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("HashedToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens", (string)null);
+                });
+
             modelBuilder.Entity("Weardian.Server.Domain.EncryptedEnvelopes.Symmetric.SymmetricEncryptedEnvelope", b =>
                 {
                     b.Property<Guid>("EnvelopeId")
@@ -288,6 +315,17 @@ namespace Weardian.Server.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Weardian.Server.Domain.Authentication.RefreshToken", b =>
+                {
+                    b.HasOne("Weardian.Server.Domain.Users.ApplicationUser", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Weardian.Server.Domain.EncryptedEnvelopes.Symmetric.SymmetricEncryptedEnvelope", b =>
                 {
                     b.HasOne("Weardian.Server.Domain.Users.ApplicationUser", "User")
@@ -408,6 +446,8 @@ namespace Weardian.Server.Migrations
             modelBuilder.Entity("Weardian.Server.Domain.Users.ApplicationUser", b =>
                 {
                     b.Navigation("EncryptedEnvelopes");
+
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

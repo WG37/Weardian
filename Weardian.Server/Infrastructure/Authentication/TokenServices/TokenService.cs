@@ -3,7 +3,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Weardian.Server.Application.DTOs.Authentication;
 using Weardian.Server.Application.Interfaces;
+using Weardian.Server.Domain.Authentication;
 using Weardian.Server.Domain.Users;
 
 namespace Weardian.Server.Infrastructure.Authentication.TokenServices
@@ -11,11 +13,13 @@ namespace Weardian.Server.Infrastructure.Authentication.TokenServices
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _config;
-        public TokenService(IConfiguration config)
+        private readonly IRefreshTokenRepository _refreshToken;
+
+        public TokenService(IConfiguration config, IRefreshTokenRepository refreshToken)
         {
             _config = config;
+            _refreshToken = refreshToken;
         }
-
         public string GenerateAccessToken(ApplicationUser user)
         {
             var jwt = _config.GetSection("Jwt");
@@ -55,6 +59,46 @@ namespace Weardian.Server.Infrastructure.Authentication.TokenServices
             var hashedToken = Convert.ToHexString(hashTokenBytes).ToLowerInvariant();
 
             return hashedToken;
+        }
+
+        public async Task CreateRefreshTokenAsync(ApplicationUser user, string hashedToken)
+        {
+            var hashedRefreshedToken = new RefreshToken
+            {
+                UserId = user.Id,
+                HashedToken = hashedToken,
+                Expiry = DateTime.UtcNow.AddDays(28)
+            };
+
+            await _refreshToken.AddAsync(hashedRefreshedToken);
+        }
+
+        public async Task<RefreshTokenResponseDto> ValidateRefreshTokenAsync(string hashedToken)
+        {
+            var token = await _refreshToken.GetRefreshTokenByHashAsync(hashedToken);
+
+            if (token == null)
+                return new RefreshTokenResponseDto(
+                    UserId: null,
+                    IsSuccessful: false,
+                    Error: "Refresh token does not exist");
+
+            if (token.Expiry <= DateTime.UtcNow)
+                return new RefreshTokenResponseDto(
+                    UserId: null,
+                    IsSuccessful: false,
+                    Error: "Refresh token has expired");
+
+            if (token.RevokedAt != null)
+                return new RefreshTokenResponseDto(
+                    UserId: null,
+                    IsSuccessful: false,
+                    Error: "Refresh token revoked");
+
+            return new RefreshTokenResponseDto(
+                UserId: token.UserId,
+                IsSuccessful: true,
+                Error: null);
         }
     }
 }

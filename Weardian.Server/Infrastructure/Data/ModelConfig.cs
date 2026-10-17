@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Weardian.Server.Domain.Authentication;
 using Weardian.Server.Domain.EncryptedEnvelopes.Symmetric;
 using Weardian.Server.Domain.KeyRecords.Symmetric;
 
@@ -13,6 +14,18 @@ namespace Weardian.Server.Infrastructure.Data
 
         public static void ConfigureSymmetricKeys(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<RefreshToken>(t =>
+            {
+                t.ToTable("RefreshTokens");
+
+                t.HasKey(token => token.Id);
+
+                t.HasOne(token => token.User)
+                 .WithMany(user => user.RefreshTokens)
+                 .HasForeignKey(token => token.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });
+
             modelBuilder.Entity<SymmetricEncryptedEnvelope>(e =>
             {
                 e.ToTable("SymmetricEncryptedEnvelopes");
