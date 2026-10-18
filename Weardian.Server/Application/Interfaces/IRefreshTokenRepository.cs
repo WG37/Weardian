@@ -6,6 +6,7 @@ namespace Weardian.Server.Application.Interfaces
     public interface IRefreshTokenRepository
     {
         public Task AddAsync(RefreshToken token);
-        public Task<RefreshToken?> GetRefreshTokenByHashAsync(string hashedToken);
+        public Task<RefreshToken?> GetByHashAsync(string hashedToken);
+        public Task RotateTokensAsync(RefreshToken oldtoken, RefreshToken newToken);
     }
 }

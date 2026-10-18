@@ -102,7 +102,22 @@ namespace Weardian.Server.API.Controllers
                     IsSuccessful: false,
                     Error: "User does not exist"));
 
+            var newRefreshToken = await _tokenService.UpdateRefreshTokenAsync(hashedToken);
 
+            if (!newRefreshToken.IsSuccessful)
+                return Unauthorized(new AuthTokenResponseDto(
+                    Token: null,
+                    RefreshToken: null,
+                    IsSuccessful: false,
+                    Error: newRefreshToken.Error));
+
+            var token = _tokenService.GenerateAccessToken(user);
+
+            return Ok(new AuthTokenResponseDto(
+                Token: token,
+                RefreshToken: newRefreshToken.Token,
+                IsSuccessful: true,
+                Error: null));
         }
     }
 }

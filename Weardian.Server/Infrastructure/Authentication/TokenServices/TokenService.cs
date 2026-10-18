@@ -61,7 +61,7 @@ namespace Weardian.Server.Infrastructure.Authentication.TokenServices
             return hashedToken;
         }
 
-        public async Task CreateRefreshTokenAsync(ApplicationUser user, string hashedToken)
+        public async Task<RefreshTokenResponseDto> CreateRefreshTokenAsync(ApplicationUser user, string hashedToken)
         {
             var hashedRefreshedToken = new RefreshToken
             {
@@ -71,32 +71,83 @@ namespace Weardian.Server.Infrastructure.Authentication.TokenServices
             };
 
             await _refreshToken.AddAsync(hashedRefreshedToken);
+
+            return new RefreshTokenResponseDto(
+                UserId: null,
+                Token: null,
+                IsSuccessful: true,
+                Error: null);
         }
 
         public async Task<RefreshTokenResponseDto> ValidateRefreshTokenAsync(string hashedToken)
         {
-            var token = await _refreshToken.GetRefreshTokenByHashAsync(hashedToken);
+            var token = await _refreshToken.GetByHashAsync(hashedToken);
 
             if (token == null)
                 return new RefreshTokenResponseDto(
                     UserId: null,
+                    Token: null,
                     IsSuccessful: false,
                     Error: "Refresh token does not exist");
 
             if (token.Expiry <= DateTime.UtcNow)
                 return new RefreshTokenResponseDto(
                     UserId: null,
+                    Token: null,
                     IsSuccessful: false,
                     Error: "Refresh token has expired");
 
             if (token.RevokedAt != null)
                 return new RefreshTokenResponseDto(
                     UserId: null,
+                    Token: null,
                     IsSuccessful: false,
                     Error: "Refresh token revoked");
 
             return new RefreshTokenResponseDto(
                 UserId: token.UserId,
+                Token: null,
+                IsSuccessful: true,
+                Error: null);
+        }
+
+        public async Task<RefreshTokenResponseDto> UpdateRefreshTokenAsync(string hashedToken)
+        {
+            // duplicate query with auth controller refactor later
+            var oldToken = await _refreshToken.GetByHashAsync(hashedToken);
+
+            if (oldToken == null)
+                return new RefreshTokenResponseDto(
+                    UserId: null,
+                    Token: null,
+                    IsSuccessful: false,
+                    Error: "Refresh token does not exist");
+
+            if (oldToken.RevokedAt != null)
+                return new RefreshTokenResponseDto(
+                    UserId: null,
+                    Token: null,
+                    IsSuccessful: false,
+                    Error: "Refresh token revoked");
+
+            var rawToken = GenerateRefreshToken();
+            var newHashedToken = GenerateHashForRefreshToken(rawToken);
+
+            oldToken.RevokedAt = DateTime.UtcNow;
+
+            var newToken = new RefreshToken
+            {
+                UserId = oldToken.UserId,
+                HashedToken = newHashedToken,
+                Expiry = DateTime.UtcNow.AddDays(28)
+            };
+
+
+            await _refreshToken.RotateTokensAsync(oldToken, newToken);
+
+            return new RefreshTokenResponseDto(
+                UserId: oldToken.UserId,
+                Token: rawToken,
                 IsSuccessful: true,
                 Error: null);
         }

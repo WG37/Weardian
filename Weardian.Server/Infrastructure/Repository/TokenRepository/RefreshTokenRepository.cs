@@ -21,13 +21,21 @@ namespace Weardian.Server.Infrastructure.Repository.TokenRepository
             await _db.SaveChangesAsync();
         }
 
-        public async Task<RefreshToken?> GetRefreshTokenByHashAsync(string hashedToken)
+        public async Task<RefreshToken?> GetByHashAsync(string hashedToken)
         {
             var tokenMatch = await _db.RefreshTokens
                 .Include(rt => rt.User)
                 .SingleOrDefaultAsync(rt => rt.HashedToken == hashedToken);
 
             return tokenMatch;
+        }
+
+        public async Task RotateTokensAsync(RefreshToken oldToken, RefreshToken newToken)
+        {
+            await _db.RefreshTokens.AddAsync(newToken);
+            _db.RefreshTokens.Update(oldToken);
+
+            await _db.SaveChangesAsync();
         }
     }
 }

@@ -8,7 +8,8 @@ namespace Weardian.Server.Application.Interfaces
         public string GenerateAccessToken(ApplicationUser user);
         public string GenerateRefreshToken();
         public string GenerateHashForRefreshToken(string rawToken);
-        public Task CreateRefreshTokenAsync(ApplicationUser user, string hashedToken);
+        public Task<RefreshTokenResponseDto> CreateRefreshTokenAsync(ApplicationUser user, string hashedToken);
         public Task<RefreshTokenResponseDto> ValidateRefreshTokenAsync(string hashedToken);
+        public Task<RefreshTokenResponseDto> UpdateRefreshTokenAsync(string hashedToken);
     }
 }
