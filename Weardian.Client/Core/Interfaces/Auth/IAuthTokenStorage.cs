@@ -2,8 +2,12 @@
 {
     public interface IAuthTokenStorage
     {
-        public Task<string?> GetAccessTokenAsync();
-        public Task SetAccessTokenAsync(string accessToken);
-        public Task ClearAccessTokenAsync();
+        public string? GetAccessToken();
+        public void SetAccessToken(string accessToken);
+        public void ClearAccessToken();
+
+        public string? GetRefreshToken();
+        public void SetRefreshToken(string refreshToken);
+        public void ClearRefreshToken();
     }
 }

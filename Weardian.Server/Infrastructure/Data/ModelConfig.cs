@@ -14,16 +14,20 @@ namespace Weardian.Server.Infrastructure.Data
 
         public static void ConfigureSymmetricKeys(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<RefreshToken>(t =>
+            modelBuilder.Entity<RefreshToken>(token =>
             {
-                t.ToTable("RefreshTokens");
+                token.ToTable("RefreshTokens");
 
-                t.HasKey(token => token.Id);
+                token.HasKey(t => t.Id);
 
-                t.HasOne(token => token.User)
-                 .WithMany(user => user.RefreshTokens)
-                 .HasForeignKey(token => token.UserId)
+                token.HasOne(t => t.User)
+                 .WithMany(u => u.RefreshTokens)
+                 .HasForeignKey(t => t.UserId)
                  .OnDelete(DeleteBehavior.Cascade);
+
+                token.Property(t => t.HashedToken).HasMaxLength(64);
+                token.Property(t => t.RevokedAt).IsConcurrencyToken();
+
             });
 
             modelBuilder.Entity<SymmetricEncryptedEnvelope>(e =>

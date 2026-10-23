@@ -50,7 +50,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                 {
                     "register" => await HandleRegistrationRequestAsync(request),
                     "login" => await HandleLoginRequestAsync(request),
-                    "logout" => await HandleLogoutRequestAsync(),
+                    "logout" => HandleLogoutRequest(),
                     "encryption" => await HandleEncryptionRequestAsync(request),
                     "decryption" => await HandleDecryptionRequestAsync(request),
                     "retrieveAllKeys" => await HandleRetrieveAllKeysRequestAsync(),
@@ -85,7 +85,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                 if (string.IsNullOrWhiteSpace(dto.Password))
                     throw new ArgumentException("Password cannot be null, empty or whitespace", nameof(dto.Password));
 
-                var result = await _authService.RegisterUserAsync(dto.Email, dto.Password);
+                var result = await _authService.RegisterUser(dto.Email, dto.Password);
 
                 return JsonSerializer.Serialize(
                     new WebViewResponseDto<RegistrationResponseDto>(
@@ -123,7 +123,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                 if (string.IsNullOrWhiteSpace(dto.Password))
                     throw new ArgumentException("Password cannot be null, empty or whitespace", nameof(dto.Password));
 
-                var loginResponse = await _authService.LoginAsync(dto.Email, dto.Password);
+                var loginResponse = await _authService.LoginUser(dto.Email, dto.Password);
 
                 return JsonSerializer.Serialize(
                     new WebViewResponseDto<LoginResponseDto>(
@@ -147,9 +147,9 @@ namespace Weardian.Client.Core.Services.Symmetric
             }
         }
 
-        public async Task<string> HandleLogoutRequestAsync()
+        public string HandleLogoutRequest()
         {
-            var logoutResponse = await _authService.LogoutAsync();
+            var logoutResponse = _authService.LogoutUser();
 
             return JsonSerializer.Serialize(
                 new WebViewResponseDto<LogoutResponseDto>(
@@ -226,7 +226,7 @@ namespace Weardian.Client.Core.Services.Symmetric
 
         public async Task<string> HandleRetrieveAllKeysRequestAsync()
         {
-            var token = await _authToken.GetAccessTokenAsync();
+            var token = _authToken.GetAccessToken();
 
             if (!string.IsNullOrWhiteSpace(token))
             {
@@ -247,7 +247,7 @@ namespace Weardian.Client.Core.Services.Symmetric
 
         public async Task<string> HandleDeleteKeysRequest(string request)
         {
-            var token = await _authToken.GetAccessTokenAsync();
+            var token = _authToken.GetAccessToken();
 
             var dto = JsonSerializer.Deserialize<DeleteKeysRequestDto>(request,
                 JsonSerializeCaseHelper.CaseInsensitiveOptions);

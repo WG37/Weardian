@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
+using System.Windows.Navigation;
 using Weardian.Client.Core.DTOs.Auth.Requests;
 using Weardian.Client.Core.DTOs.Auth.Responses;
 using Weardian.Client.Core.Interfaces.Auth;
@@ -24,7 +25,7 @@ namespace Weardian.Client.Core.Services.Auth
             _validationService = validationService;
         }
 
-        public async Task<RegistrationResponseDto> RegisterUserAsync(string email, string password)
+        public async Task<RegistrationResponseDto> RegisterUser(string email, string password)
         {
             var validationResults = _validationService.ValidateRegisterUser(email, password);
             
@@ -52,7 +53,7 @@ namespace Weardian.Client.Core.Services.Auth
             return result;
         }
 
-        public async Task<LoginResponseDto> LoginAsync(string email, string password)
+        public async Task<LoginResponseDto> LoginUser(string email, string password)
         {
             var validationResults = _validationService.ValidateLogin(email, password);
 
@@ -88,7 +89,7 @@ namespace Weardian.Client.Core.Services.Auth
             {
                 return new LoginResponseDto(
                     IsSuccessful: false,
-                    authResponse.Error
+                    Error: authResponse.Error
                     );
             }
 
@@ -99,16 +100,84 @@ namespace Weardian.Client.Core.Services.Auth
                     Error: "Token is invalid");
             }
 
-            await _authStorage.SetAccessTokenAsync(authResponse.Token);
+
+            if (string.IsNullOrEmpty(authResponse.RefreshToken))
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: "Refresh token is invalid");
+            }
+
+                _authStorage.SetAccessToken(authResponse.Token);
+                _authStorage.SetRefreshToken(authResponse.RefreshToken);
 
             return new LoginResponseDto(
                 IsSuccessful: true,
                 Error: null);
         }
 
-        public async Task<LogoutResponseDto> LogoutAsync()
+        public async Task<LoginResponseDto> RefreshUserToken()
         {
-            await _authStorage.ClearAccessTokenAsync();
+            var refreshToken = _authStorage.GetRefreshToken();
+
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: "Refresh token is invalid");
+            }
+
+            var response = await _httpClient.PostAsJsonAsync("/api/auth/refresh", refreshToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: "Server refuted the request");
+            }
+
+            var authResponse = await response.Content.ReadFromJsonAsync<AuthTokenResponseDto>();
+            
+            if (authResponse == null)
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: "Authentication response is null");
+            }
+
+            if (!authResponse.IsSuccessful)
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: authResponse.Error);
+            }
+
+            if (string.IsNullOrEmpty(authResponse.Token))
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: "Invalid token");
+            }
+
+            if (string.IsNullOrEmpty(authResponse.RefreshToken))
+            {
+                return new LoginResponseDto(
+                    IsSuccessful: false,
+                    Error: "Invalid refresh token");
+            }
+
+            _authStorage.SetAccessToken(authResponse.Token);
+            _authStorage.SetRefreshToken(authResponse.RefreshToken);
+
+            return new LoginResponseDto(
+                IsSuccessful: true,
+                Error: null);
+        }
+
+        public LogoutResponseDto LogoutUser()
+        {
+            _authStorage.ClearAccessToken();
+            _authStorage.ClearRefreshToken();
 
             return new LogoutResponseDto(
                 IsSuccessful: true);

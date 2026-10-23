@@ -5,24 +5,35 @@ namespace Weardian.Client.Core.Services.Auth
     public class AuthTokenStorage : IAuthTokenStorage
     {
         private string? _accessToken;
-
-        public Task<string?> GetAccessTokenAsync()
+        private string? _refreshToken;
+        public string? GetAccessToken()
         {
-            return Task.FromResult(_accessToken);
+            return _accessToken;
         }
 
-        public Task SetAccessTokenAsync(string accessToken)
+        public void SetAccessToken(string accessToken)
         {
             _accessToken = accessToken;
-
-            return Task.CompletedTask;
         }
 
-        public Task ClearAccessTokenAsync()
+        public void ClearAccessToken()
         {
             _accessToken = null;
+        }
 
-            return Task.CompletedTask;
+        public string? GetRefreshToken()
+        {
+            return _refreshToken;
+        }
+
+        public void SetRefreshToken(string refreshToken)
+        {
+            _refreshToken = refreshToken;
+        }
+
+        public void ClearRefreshToken()
+        {
+            _refreshToken = null;
         }
     }
 }

@@ -11,6 +11,7 @@ using Weardian.Server.Domain.Users;
 using Weardian.Server.Infrastructure.Authentication.TokenServices;
 using Weardian.Server.Infrastructure.Data;
 using Weardian.Server.Infrastructure.Repository.SymmetricRepository;
+using Weardian.Server.Infrastructure.Repository.TokenRepository;
 
 namespace Weardian.Server
 {
@@ -55,6 +56,7 @@ namespace Weardian.Server
 
             builder.Services.AddScoped<ISymmetricEnvelopeRepository, SymmetricEnvelopeRepository>();
             builder.Services.AddScoped<ISymmetricEnvelopeService, SymmetricEnvelopeService>();
+            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
             builder.Services.AddTransient<IEnvelopeValidationService, EnvelopeValidationService>();
 
