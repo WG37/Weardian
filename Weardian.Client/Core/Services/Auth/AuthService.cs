@@ -133,7 +133,7 @@ namespace Weardian.Client.Core.Services.Auth
             {
                 return new LoginResponseDto(
                     IsSuccessful: false,
-                    Error: "Server refuted the request");
+                    Error: "Login authentication failed");
             }
 
             var authResponse = await response.Content.ReadFromJsonAsync<AuthTokenResponseDto>();

@@ -36,11 +36,11 @@ function Encrypt() {
   return (
     <div className="p-8">
       <Card>
-        <h2 className="mb-2 pb-10 text-2xl font-semibold text-slate-800">Encrypt Password</h2>
+        <h2 className="mb-2 pb-10 text-2xl font-semibold">Encrypt Password</h2>
         <form onSubmit={handleSubmit} className="flex flex-col items-center gap-5">
           <div className="flex flex-col gap-5 pb-10 w-full max-w-xs">
             <input
-              className="w-full rounded-lg border border-gray-300 p-3 focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 p-3 focus:border-white focus:outline-none"
               type="text"
               placeholder="Enter a name for your key"
               value={keyName}
@@ -48,25 +48,29 @@ function Encrypt() {
             />
 
             <input
-              className="w-full rounded-lg border border-gray-300 p-3 focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 p-3 focus:border-white focus:outline-none"
               type="password"
               placeholder="Enter a password to encrypt"
               value={password}
               onChange={(e) => setPassword(e.currentTarget.value)}
             />
 
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={sync}
                 onChange={(e) => setSync(e.currentTarget.checked)}
+                className="appearance-none w-5 h-5 rounded-full border-2 border-white
+               checked:bg-green-600
+               hover:scale-110 transition-transform duration-200
+               cursor-pointer"
               />
               Sync
             </label>
           </div>
 
           <button
-            className="w-full max-w-48 rounded-lg bg-blue-900 px-4 py-3 font-medium text-white hover:bg-blue-700 disabled:bg-gray-400"
+            className="w-full max-w-48 rounded-lg bg-[#f0f0f0] px-4 py-3 font-medium text-black hover:bg-white disabled:bg-gray-400 cursor-pointer"
             type="submit"
             disabled={loading}
           >
@@ -74,7 +78,7 @@ function Encrypt() {
           </button>
 
           {result && (
-            <div className="rounded-lg border border-slate-700 bg-slate-800 p-4 text-slate-500">
+            <div className="rounded-lg border border-white bg-[3d3d3d] p-4 text-white">
               <p>
                 <strong>Key Name:</strong> {result.keyName}
               </p>
@@ -88,7 +92,7 @@ function Encrypt() {
           )}
 
           {error && (
-            <div className="rounded-lg border border-red-200 bg-slate-800 p-4 text-red-700">
+            <div className="rounded-lg border  border-white bg-[3d3d3d] p-4 text-white">
               {error}
             </div>
           )}

@@ -7,7 +7,7 @@ function Navbar() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <nav className="sticky top-0 z-10 h-20 w-full border-b border-slate-700 bg-slate-900">
+    <nav className="sticky top-0 z-10 h-20 w-full bg-[#1b1b1b] border-b border-white">
       <div className="flex h-full items-center justify-end px-6">
         {isAuthenticated ? (
           <LogoutButton />

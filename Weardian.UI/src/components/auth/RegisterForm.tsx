@@ -36,7 +36,7 @@ function RegisterForm({ onSuccess, onClose }: RegisterFormProps) {
           <label className="flex flex-col items-start gap-1">
             <span className="text-white hover:text-gray-300">Email</span>
             <input
-              className="rounded-md border border-slate-400 bg-slate-700 px-2 py-0.5 text-white  hover:bg-slate-800"
+              className="rounded-md border bg-[#1b1b1b] px-2 text-white"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.currentTarget.value)}
@@ -45,7 +45,7 @@ function RegisterForm({ onSuccess, onClose }: RegisterFormProps) {
           <label className="flex flex-col items-start gap-1">
             <span className="text-white hover:text-gray-300">Password</span>
             <input
-              className="rounded-md border border-slate-400 bg-slate-700 px-2 py-0.5 text-white hover:bg-slate-800"
+              className="rounded-md border bg-[#1b1b1b] px-2 text-white"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.currentTarget.value)}
@@ -54,13 +54,13 @@ function RegisterForm({ onSuccess, onClose }: RegisterFormProps) {
         </div>
         <div className="flex justify-between pr-4 pl-4 pb-4">
           <button
-            className="rounded-md border border-slate-400 bg-slate-800 px-4 py-0.5 text-white hover:border-white hover:text-white"
+            className="rounded-md bg-[#1b1b1b] px-2 text-white hover:bg-white hover:text-black active:bg-white active:text-black"
             type="submit"
           >
             Register
           </button>
           <button
-            className="rounded-md border border-slate-400 bg-slate-800 px-4 py-0.5 text-white hover:border-white hover:text-white"
+            className="rounded-md bg-[#1b1b1b] px-2 text-white hover:bg-white hover:text-black active:bg-white active:text-black"
             onClick={onClose}
           >
             Cancel

@@ -15,7 +15,7 @@ function MainLayout({ children, setDisplay }: MainLayoutProps) {
       <div className="flex flex-1 flex-col">
         <Navbar />
 
-        <main className="flex-1 overflow-auto p-6">{children}</main>
+        <main className="flex-1 overflow-auto p-6 bg-[#171717] ">{children}</main>
       </div>
     </div>
   );

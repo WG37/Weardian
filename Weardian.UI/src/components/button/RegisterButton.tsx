@@ -7,7 +7,7 @@ function RegisterButton() {
   return (
     <>
       <button
-        className="rounded-lg border border-slate-500 px-2 text-white hover:border-slate-300 active:border-slate-700"
+        className="rounded-lg border bg-[#1b1b1b] px-2 text-white hover:bg-white hover:text-black active:bg-white active:text-black"
         onClick={() => setOpen(true)}
       >
         Register

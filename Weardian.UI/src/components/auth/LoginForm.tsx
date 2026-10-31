@@ -36,11 +36,11 @@ function LoginForm({ onSuccess, onClose }: LoginFormProps) {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-6 p-6">
+        <div className="flex flex-col gap-6 p-6 bg-[#202020] rounded-2xl">
           <label className="flex flex-col items-start gap-1">
             <span className="text-white hover:text-gray-300">Email</span>
             <input
-              className="rounded-md border border-slate-400 bg-slate-700 px-2 py-0.5 text-white  hover:bg-slate-800"
+              className="rounded-md border bg-[#1b1b1b] px-2 text-white"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.currentTarget.value)}
@@ -49,22 +49,22 @@ function LoginForm({ onSuccess, onClose }: LoginFormProps) {
           <label className="flex flex-col items-start gap-1">
             <span className="text-white hover:text-gray-300">Password</span>
             <input
-              className="rounded-md border border-slate-400 bg-slate-700 px-2 py-0.5 text-white hover:bg-slate-800"
+              className="rounded-md border bg-[#1b1b1b] px-2 text-white"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.currentTarget.value)}
             />
           </label>
         </div>
-        <div className="flex justify-between pr-6 pl-6 pb-4">
+        <div className="flex justify-between pr-6 pl-6 pb-4 bg-[#202020] rounded-2xl">
           <button
-            className="rounded-md border border-slate-400 bg-slate-800 px-4 py-0.5 text-white hover:border-white hover:text-white"
+            className="rounded-md bg-[#1b1b1b] p-2 text-white hover:bg-white hover:text-black active:bg-white active:text-black"
             type="submit"
           >
             Login
           </button>
           <button
-            className="rounded-md border border-slate-400 bg-slate-800 px-4 py-0.5 text-white hover:border-white hover:text-white"
+            className="rounded-md bg-[#1b1b1b] p-2 text-white hover:bg-white hover:text-black active:bg-white active:text-black"
             onClick={onClose}
           >
             Cancel
