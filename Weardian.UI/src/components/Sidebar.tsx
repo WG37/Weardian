@@ -1,12 +1,14 @@
+import MainTitle from "./MainTitle";
+
 interface SidebarProps {
   setDisplay: (display: string) => void;
 }
 
 function Sidebar({ setDisplay }: SidebarProps) {
   return (
-    <aside className="flex h-screen w-64 flex-col bg-[#1b1b1b] text-white border-r rounded-4xl rounded-tr-none">
-      <div className="flex h-20 border-b border-white p-6">
-        <h2 className="text-2xl font-bold">Weardian</h2>
+    <aside className="flex h-screen w-64 flex-col bg-[#1b1b1b] text-white border-r border-gray-600 rounded-4xl rounded-tr-none">
+      <div className="flex h-20 border-b border-gray-600 p-6">
+        <MainTitle text="Weardian" />
       </div>
 
       <nav className="flex flex-1 flex-col gap-2 p-4">
