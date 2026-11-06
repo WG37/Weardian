@@ -103,7 +103,7 @@ namespace Weardian.Client.Core.Services.Sync
            // upload local envelope to server if envelope does not exist on server
            foreach (var localEnvelope in localEnvelopes)
             {
-                var existsOnServer = serverEnvelopes
+                bool existsOnServer = serverEnvelopes
                     .Any(serverEnvelope => serverEnvelope.EnvelopeId == localEnvelope.EnvelopeId);
 
                 if (!existsOnServer) 
@@ -112,10 +112,10 @@ namespace Weardian.Client.Core.Services.Sync
                 }
             }
 
-           // downloads server envelope if local envelope does not exist
+           // downloads server envelope if local envelope does not exist and stores locally
            foreach (var serverEnvelope in serverEnvelopes)
             {
-                var existsLocal = localEnvelopes
+                bool existsLocal = localEnvelopes
                     .Any(localEnvelope => localEnvelope.EnvelopeId == serverEnvelope.EnvelopeId);
 
                 if (!existsLocal)
