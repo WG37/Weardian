@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Weardian.Client.Core.Interfaces.Symmetric;
+using Weardian.Client.Core.Interfaces.Handler;
 
 namespace Weardian.Client.Presentation
 {
@@ -8,10 +8,10 @@ namespace Weardian.Client.Presentation
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ISymmetricMessageHandlerService _symmetricHandlerService;
+        private readonly IMessageHandlerService _symmetricHandlerService;
 
         public MainWindow(
-            ISymmetricMessageHandlerService symmetricHandlerService)
+            IMessageHandlerService symmetricHandlerService)
         {
             _symmetricHandlerService = symmetricHandlerService;
 

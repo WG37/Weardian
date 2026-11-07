@@ -4,11 +4,13 @@ using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.Cryptography.Encryption;
 using Weardian.Client.Core.Interfaces.Cryptography.KeyWrapping;
+using Weardian.Client.Core.Interfaces.Handler;
 using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 using Weardian.Client.Core.Interfaces.Sync;
 using Weardian.Client.Core.Services.Auth;
+using Weardian.Client.Core.Services.Handler;
 using Weardian.Client.Core.Services.InputValidation;
 using Weardian.Client.Core.Services.Shared;
 using Weardian.Client.Core.Services.Symmetric;
@@ -57,7 +59,7 @@ namespace Weardian.Client.Presentation
 
 
             services.AddTransient<IInputValidationService, InputValidationService>();
-            services.AddTransient<ISymmetricMessageHandlerService, SymmetricMessageHandlerService>();
+            services.AddTransient<IMessageHandlerService, MessageHandlerService>();
 
             services.AddTransient<AuthHandler>();
 

@@ -1,6 +1,6 @@
-﻿namespace Weardian.Client.Core.Interfaces.Symmetric
+﻿namespace Weardian.Client.Core.Interfaces.Handler
 {
-    public interface ISymmetricMessageHandlerService
+    public interface IMessageHandlerService
     {
         public Task<string> HandleAsync(string request);
         public Task<string> HandleRegistrationRequestAsync(string request);

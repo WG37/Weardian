@@ -7,13 +7,14 @@ using Weardian.Client.Core.DTOs.MessageHandler.HandleEncryption;
 using Weardian.Client.Core.DTOs.MessageHandler.HandleRetrieval;
 using Weardian.Client.Core.DTOs.WebView;
 using Weardian.Client.Core.Interfaces.Auth;
+using Weardian.Client.Core.Interfaces.Handler;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Interfaces.Sync;
 using Weardian.Client.Core.Serialization;
 
-namespace Weardian.Client.Core.Services.Symmetric
+namespace Weardian.Client.Core.Services.Handler
 {
-    public class SymmetricMessageHandlerService : ISymmetricMessageHandlerService
+    public class MessageHandlerService : IMessageHandlerService
     {
         private readonly IKeyManagementService _keyManagementService;
         private readonly IPayloadService _payloadService;
@@ -21,7 +22,7 @@ namespace Weardian.Client.Core.Services.Symmetric
         private readonly IEnvelopeTransferService _envelopeTransferService;
         private readonly IAuthTokenStorage _authToken;
 
-        public SymmetricMessageHandlerService(
+        public MessageHandlerService(
             IKeyManagementService keyManagementService,
             IPayloadService payloadService,
             IAuthService authService,
