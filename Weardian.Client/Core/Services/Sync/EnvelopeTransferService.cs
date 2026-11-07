@@ -32,10 +32,7 @@ namespace Weardian.Client.Core.Services.Sync
 
         public async Task<EncryptedEnvelopeSyncResponseDto> SyncEncryptedEnvelopeAsync(EncryptedEnvelopeSyncDto envelopeRequest)
         {
-            var token = _authToken.GetAccessToken();
-
             using var request = new HttpRequestMessage(HttpMethod.Post, "/api/keys/symmetric");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             request.Content = JsonContent.Create(envelopeRequest);
 
             using var response = await _httpClient.SendAsync(request);
@@ -52,10 +49,7 @@ namespace Weardian.Client.Core.Services.Sync
 
         private async Task<IReadOnlyList<EncryptedEnvelopeResponseDto>> GetSymmetricServerEnvelopesAsync()
         {
-            var token = _authToken.GetAccessToken();
-
             using var request = new HttpRequestMessage(HttpMethod.Get, "/api/keys/symmetric");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             using var response = await _httpClient.SendAsync(request);
 
@@ -128,10 +122,7 @@ namespace Weardian.Client.Core.Services.Sync
 
         public async Task DeleteSyncedEnvelopeAsync(Guid envelopeId)
         {
-            var token = _authToken.GetAccessToken();
-
             using var request = new HttpRequestMessage(HttpMethod.Delete, $"/api/keys/symmetric/{envelopeId}");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             using var response = await _httpClient.SendAsync(request);
 
