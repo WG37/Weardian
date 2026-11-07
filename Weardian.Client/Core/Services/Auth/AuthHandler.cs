@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using static System.Net.HttpStatusCode;
 using Weardian.Client.Core.Interfaces.Auth;
 using System.Net.Http.Headers;
+using Weardian.Client.Core.Services.Shared;
 
 namespace Weardian.Client.Core.Services.Auth
 {
@@ -14,13 +15,16 @@ namespace Weardian.Client.Core.Services.Auth
     {
         private readonly IAuthTokenStorage _authTokenStorage;
         private readonly IAuthService _authService;
+        private readonly SharedSemaphore _semaphore;
 
         public AuthHandler(
             IAuthTokenStorage authTokenStorage,
-            IAuthService authService)
+            IAuthService authService,
+            SharedSemaphore semaphore)
         {
             _authTokenStorage = authTokenStorage;
             _authService = authService;
+            _semaphore = semaphore;
         }
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
         {
@@ -28,15 +32,31 @@ namespace Weardian.Client.Core.Services.Auth
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+            if (request.Content != null)
+            {
+                await request.Content.LoadIntoBufferAsync();
+            }
+
             var response = await base.SendAsync(request, ct);
 
             if (response.StatusCode == Unauthorized)
             {
-                var refreshResponse = await _authService.RefreshUserToken();
-
-                if (!refreshResponse.IsSuccessful)
+                await _semaphore.RefreshLock.WaitAsync(ct);
+                try
                 {
-                    return response;
+                    var storedToken = _authTokenStorage.GetAccessToken();
+
+                    if (storedToken == token)
+                    {
+                        var refreshResponse = await _authService.RefreshUserToken();
+
+                        if (!refreshResponse.IsSuccessful)
+                            return response;
+                    }
+                }
+                finally
+                {
+                    _semaphore.RefreshLock.Release();
                 }
 
                 var newToken = _authTokenStorage.GetAccessToken();
@@ -53,7 +73,7 @@ namespace Weardian.Client.Core.Services.Auth
                 }
 
                 retryRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newToken);
-
+                // read original request body as bytes to preserve its content regardless of format
                 if (request.Content != null)
                 {
                     var body = await request.Content.ReadAsByteArrayAsync(ct);
@@ -70,8 +90,8 @@ namespace Weardian.Client.Core.Services.Auth
 
                 response.Dispose();
                 return await base.SendAsync(retryRequest, ct);
-
             }
+            
             return response;
         }
     }
