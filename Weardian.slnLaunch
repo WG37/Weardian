@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Client+Server",
+    "Projects": [
+      {
+        "Path": "Weardian.Server\\Weardian.Server.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Weardian.Client\\Weardian.Client.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
