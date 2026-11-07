@@ -10,6 +10,7 @@ using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 using Weardian.Client.Core.Interfaces.Sync;
 using Weardian.Client.Core.Services.Auth;
 using Weardian.Client.Core.Services.InputValidation;
+using Weardian.Client.Core.Services.Shared;
 using Weardian.Client.Core.Services.Symmetric;
 using Weardian.Client.Core.Services.Sync;
 using Weardian.Client.Infrastructure.Cryptography;
@@ -45,7 +46,7 @@ namespace Weardian.Client.Presentation
 
             services.AddScoped<IPayloadService, PayloadService>();
 
-            services.AddScoped<IAuthTokenStorage, AuthTokenStorage>();
+            services.AddSingleton<IAuthTokenStorage, AuthTokenStorage>();
 
             services.AddTransient<ISymmetricCryptoService, SymmetricCryptoService>();
             services.AddTransient<IKeyGeneration, KeyGeneration>();
@@ -57,7 +58,10 @@ namespace Weardian.Client.Presentation
 
             services.AddTransient<IInputValidationService, InputValidationService>();
             services.AddTransient<ISymmetricMessageHandlerService, SymmetricMessageHandlerService>();
-            
+
+            services.AddTransient<AuthHandler>();
+
+            services.AddSingleton<SharedSemaphore>();
 
             services.AddHttpClient<IAuthService, AuthService>(client =>
             {
@@ -67,7 +71,7 @@ namespace Weardian.Client.Presentation
             services.AddHttpClient<IEnvelopeTransferService, EnvelopeTransferService>(client =>
             {
                 client.BaseAddress = apiBaseUrl;
-            });
+            }).AddHttpMessageHandler<AuthHandler>();
 
             services.AddScoped<MainWindow>();
 
