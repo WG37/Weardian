@@ -13,23 +13,19 @@ namespace Weardian.Server.API.Controllers
     [Route("api/accounts/user/{Id}")]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _user;
         private readonly IAccountService _AccService;
 
         public AccountController(
-            UserManager<ApplicationUser> user, 
             IAccountService accService)
         {
-            _user = user;
             _AccService = accService;
         }
         [HttpPatch]
         public async Task<IActionResult> UpdateUserPasswordAsync([FromBody] UpdateUserPasswordRequestDto passwordReqDto)
         {
             if (passwordReqDto == null)
-                return BadRequest();
+                return NoContent();
 
-            var result = await _AccService.UpdateUserPasswordAsync(passwordReqDto);
         }
     }
 }
