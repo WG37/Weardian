@@ -10,7 +10,7 @@ namespace Weardian.Server.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/accounts/user/{Id}")]
+    [Route("api/accounts/user")]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _AccService;
@@ -20,7 +20,7 @@ namespace Weardian.Server.API.Controllers
         {
             _AccService = accService;
         }
-        [HttpPatch]
+        [HttpPatch("password")]
         public async Task<IActionResult> UpdateUserPasswordAsync([FromBody] UpdateUserPasswordRequestDto passwordReqDto)
         {
             if (passwordReqDto == null)
