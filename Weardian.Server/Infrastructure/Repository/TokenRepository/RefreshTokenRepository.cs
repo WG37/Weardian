@@ -2,6 +2,7 @@
 using Weardian.Server.Application.DTOs.Authentication;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Domain.Authentication;
+using Weardian.Server.Domain.Users;
 using Weardian.Server.Infrastructure.Data;
 
 namespace Weardian.Server.Infrastructure.Repository.TokenRepository
@@ -30,11 +31,21 @@ namespace Weardian.Server.Infrastructure.Repository.TokenRepository
             return tokenMatch;
         }
 
+        public async Task<IReadOnlyList<RefreshToken>> GetAllUserTokensAsync(ApplicationUser user)
+        {
+            return await _db.RefreshTokens.Where(r => r.UserId == user.Id).ToListAsync();
+        }
+
         public async Task RotateTokensAsync(RefreshToken oldToken, RefreshToken newToken)
         {
             await _db.RefreshTokens.AddAsync(newToken);
             _db.RefreshTokens.Update(oldToken);
 
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
             await _db.SaveChangesAsync();
         }
     }

@@ -151,5 +151,17 @@ namespace Weardian.Server.Infrastructure.Authentication.TokenServices
                 IsSuccessful: true,
                 Error: null);
         }
+
+        public async Task RevokeUserTokensAsync(ApplicationUser user)
+        {
+            var tokens = await _refreshToken.GetAllUserTokensAsync(user);
+
+            foreach (var token in tokens)
+            {
+                token.RevokedAt = DateTime.UtcNow;
+            }
+
+            await _refreshToken.SaveChangesAsync();
+        }
     }
 }

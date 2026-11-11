@@ -11,5 +11,6 @@ namespace Weardian.Server.Application.Interfaces
         public Task<RefreshTokenResponseDto> CreateRefreshTokenAsync(ApplicationUser user, string hashedToken);
         public Task<RefreshTokenResponseDto> ValidateRefreshTokenAsync(string hashedToken);
         public Task<RefreshTokenResponseDto> UpdateRefreshTokenAsync(string hashedToken);
+        public Task RevokeUserTokensAsync(ApplicationUser user);
     }
 }

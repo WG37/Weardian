@@ -7,20 +7,47 @@ namespace Weardian.Server.Application.Services.AccountService
 {
     public class AccountService : IAccountService
     {
-        private readonly IAccountRepository _accountRepository;
         private readonly UserManager<ApplicationUser> _user;
-
+        private readonly ITokenService _tokenService;
         public AccountService(
-            IAccountRepository accRepository,
-            UserManager<ApplicationUser> user)
+            UserManager<ApplicationUser> user, 
+            ITokenService tokenService)
         {
-            _accountRepository = accRepository;
             _user = user;
+            _tokenService = tokenService;
         }
 
-        public async Task<AccountStatusResponseDto> UpdateUserPasswordAsync(UpdateUserPasswordRequestDto passwordReqDto)
+        public async Task<AccountStatusResponseDto> UpdateUserPasswordAsync(
+            string userId, 
+            UpdateUserPasswordRequestDto passwordReqDto)
         {
-            
+            if (passwordReqDto == null)
+                return new AccountStatusResponseDto(
+                    IsSuccessful: false,
+                    Error: "UpdatePassword request cannot be null",
+                    ChangedOn: null);
+
+            var user = await _user.FindByIdAsync(userId);
+            if (user == null)
+                return new AccountStatusResponseDto(
+                    IsSuccessful: false,
+                    Error: "User does not exist",
+                    ChangedOn: null);
+
+            var result = await _user.ChangePasswordAsync(user, passwordReqDto.CurrentPassword, passwordReqDto.NewPassword);
+            if (!result.Succeeded)
+                return new AccountStatusResponseDto(
+                    IsSuccessful: false,
+                    Error: string.Join('\n', result.Errors.Select(e => e.Description)),
+                    ChangedOn: null);
+
+            // need to handle if revoke method fails
+            await _tokenService.RevokeUserTokensAsync(user);
+
+            return new AccountStatusResponseDto(
+                IsSuccessful: true,
+                Error: null,
+                ChangedOn: DateTime.UtcNow);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Weardian.Server.Application.DTOs.Account;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Domain.Users;
@@ -23,8 +24,15 @@ namespace Weardian.Server.API.Controllers
         [HttpPatch("password")]
         public async Task<IActionResult> UpdateUserPasswordAsync([FromBody] UpdateUserPasswordRequestDto passwordReqDto)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
             if (passwordReqDto == null)
-                return NoContent();
+                return BadRequest();
+
+            var response = await _AccService.UpdateUserPasswordAsync(userId, passwordReqDto);
 
         }
     }

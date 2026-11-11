@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Weardian.Server.Application.DTOs.Authentication;
 using Weardian.Server.Application.DTOs.Login;
@@ -8,6 +9,7 @@ using Weardian.Server.Domain.Users;
 
 namespace Weardian.Server.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/auth")]
     public class AuthController : ControllerBase

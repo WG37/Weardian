@@ -5,6 +5,6 @@ namespace Weardian.Server.Application.Interfaces
 {
     public interface IAccountService
     {
-        public Task<AccountStatusResponseDto> UpdateUserPasswordAsync(UpdateUserPasswordRequestDto passwordReqDto);
+        public Task<AccountStatusResponseDto> UpdateUserPasswordAsync(string userId, UpdateUserPasswordRequestDto passwordReqDto);
     }
 }
