@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Server.Application.DTOs.Account
 {
-    public sealed record AccountStatusResponseDto(
+    public sealed record UserAccountStatusResponseDto(
         bool IsSuccessful,
         string? Error,
         DateTime? ChangedOn);
