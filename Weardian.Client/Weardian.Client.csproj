@@ -22,4 +22,8 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3912.50" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Core\Services\UserAccount\" />
+  </ItemGroup>
+
 </Project>

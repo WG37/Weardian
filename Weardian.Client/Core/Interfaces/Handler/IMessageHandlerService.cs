@@ -6,6 +6,7 @@
         public Task<string> HandleRegistrationRequestAsync(string request);
         public Task<string> HandleLoginRequestAsync(string request);
         public string HandleLogoutRequest();
+        public Task<string> HandleUpdateUserPasswordAsync(string request);
         public Task<string> HandleEncryptionRequestAsync(string request);
         public Task<string> HandleDecryptionRequestAsync(string request);
         public Task<string> HandleRetrieveAllKeysRequestAsync();

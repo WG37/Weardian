@@ -5,6 +5,7 @@ using Weardian.Client.Core.DTOs.MessageHandler.HandleDecryption;
 using Weardian.Client.Core.DTOs.MessageHandler.HandleDelete;
 using Weardian.Client.Core.DTOs.MessageHandler.HandleEncryption;
 using Weardian.Client.Core.DTOs.MessageHandler.HandleRetrieval;
+using Weardian.Client.Core.DTOs.MessageHandler.HandleUserAccount;
 using Weardian.Client.Core.DTOs.WebView;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Handler;
@@ -162,6 +163,27 @@ namespace Weardian.Client.Core.Services.Handler
                 JsonSerializeCaseHelper.CamelCaseOptions);
         }
 
+        public async Task<string> HandleUpdateUserPasswordAsync(string request)
+        {
+            try
+            {
+                var dto = JsonSerializer.Deserialize<UpdateUserPasswordRequest>(request,
+                    JsonSerializeCaseHelper.CaseInsensitiveOptions)
+                    ?? throw new InvalidOperationException("Deserialization Failed: Request cannot be null.");
+
+                if (string.IsNullOrWhiteSpace(dto.CurrentPassword))
+                    throw new ArgumentException("Current Password cannot be null, empty or whitespace", nameof(dto.CurrentPassword));
+
+                if (string.IsNullOrWhiteSpace(dto.NewPassword))
+                    throw new ArgumentException("New password cannot be null, empty or whitespace", nameof(dto.NewPassword));
+
+                // call accountservice
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
         public async Task<string> HandleEncryptionRequestAsync(string request)
         {
             try
