@@ -7,11 +7,12 @@ using Weardian.Client.Core.DTOs.MessageHandler.HandleEncryption;
 using Weardian.Client.Core.DTOs.MessageHandler.HandleRetrieval;
 using Weardian.Client.Core.DTOs.MessageHandler.HandleUserAccount;
 using Weardian.Client.Core.DTOs.WebView;
+using Weardian.Client.Core.Interfaces.APIClient.Sync;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Handler;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Interfaces.Sync;
-using Weardian.Client.Core.Serialization;
+using Weardian.Client.Infrastructure.Serialization;
 
 namespace Weardian.Client.Core.Services.Handler
 {
@@ -20,6 +21,7 @@ namespace Weardian.Client.Core.Services.Handler
         private readonly IKeyManagementService _keyManagementService;
         private readonly IPayloadService _payloadService;
         private readonly IAuthService _authService;
+        private readonly IEnvelopeAPIClient _envelopeAPIClient;
         private readonly IEnvelopeTransferService _envelopeTransferService;
         private readonly IAuthTokenStorage _authToken;
 
@@ -27,12 +29,14 @@ namespace Weardian.Client.Core.Services.Handler
             IKeyManagementService keyManagementService,
             IPayloadService payloadService,
             IAuthService authService,
+            IEnvelopeAPIClient envelopeAPIClient,
             IEnvelopeTransferService envelopeTransferService,
             IAuthTokenStorage authToken)
         {
             _keyManagementService = keyManagementService;
             _payloadService = payloadService;
             _authService = authService;
+            _envelopeAPIClient = envelopeAPIClient;
             _envelopeTransferService = envelopeTransferService;
             _authToken = authToken;
         }
@@ -228,6 +232,7 @@ namespace Weardian.Client.Core.Services.Handler
 
         public async Task<string> HandleDecryptionRequestAsync(string request)
         {
+            // add try catch
             var dto = JsonSerializer.Deserialize<DecryptionRequestDto>(request, 
                 JsonSerializeCaseHelper.CaseInsensitiveOptions);
 
@@ -270,6 +275,7 @@ namespace Weardian.Client.Core.Services.Handler
 
         public async Task<string> HandleDeleteKeysRequest(string request)
         {
+            // add try catch
             var token = _authToken.GetAccessToken();
 
             var dto = JsonSerializer.Deserialize<DeleteKeysRequestDto>(request,
@@ -289,7 +295,7 @@ namespace Weardian.Client.Core.Services.Handler
             {
                 if (isAuthenticated)
                 {
-                    await _envelopeTransferService.DeleteSyncedEnvelopeAsync(keyId);
+                    await _envelopeAPIClient.DeleteSyncedEnvelopeAsync(keyId);
                 }
                 
                 _payloadService.RemoveRecordsById(keyId);

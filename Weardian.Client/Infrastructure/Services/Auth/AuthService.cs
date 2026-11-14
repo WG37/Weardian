@@ -1,13 +1,12 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
-using System.Windows.Navigation;
 using Weardian.Client.Core.DTOs.Auth.Requests;
 using Weardian.Client.Core.DTOs.Auth.Responses;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.InputValidation;
-using Weardian.Client.Core.Serialization;
+using Weardian.Client.Infrastructure.Serialization;
 
-namespace Weardian.Client.Core.Services.Auth
+namespace Weardian.Client.Infrastructure.Services.Auth
 {
     public class AuthService : IAuthService
     {
@@ -72,7 +71,7 @@ namespace Weardian.Client.Core.Services.Auth
             {
                 return new LoginResponseDto(
                     IsSuccessful: false,
-                    Error: "Invalid Credentials."
+                    Error: "Invalid Credentials"
                     );
             }
 

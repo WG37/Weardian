@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.HttpStatusCode;
-using Weardian.Client.Core.Interfaces.Auth;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
-using Weardian.Client.Core.Services.Shared;
+using Weardian.Client.Core.Interfaces.Auth;
+using Weardian.Client.Infrastructure.Services.Shared;
+using static System.Net.HttpStatusCode;
 
-namespace Weardian.Client.Core.Services.Auth
+namespace Weardian.Client.Infrastructure.Services.Auth
 {
     public class AuthHandler : DelegatingHandler
     {
@@ -45,7 +40,8 @@ namespace Weardian.Client.Core.Services.Auth
                 try
                 {
                     var storedToken = _authTokenStorage.GetAccessToken();
-
+                    // if the stored token does not match the request token,
+                    // another operation has likely already refreshed it, so skip refreshing
                     if (storedToken == token)
                     {
                         var refreshResponse = await _authService.RefreshUserToken();

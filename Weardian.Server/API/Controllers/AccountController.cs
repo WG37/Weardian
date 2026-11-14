@@ -21,6 +21,7 @@ namespace Weardian.Server.API.Controllers
         {
             _accService = accService;
         }
+
         [HttpPatch("password")]
         public async Task<IActionResult> UpdateUserPasswordAsync([FromBody] UpdateUserPasswordRequestDto passwordReqDto)
         {

@@ -3,7 +3,7 @@ using Weardian.Client.Core.Services.InputValidation.Rules;
 
 namespace Weardian.Client.Core.Services.InputValidation
 {
-    public class InputValidationService : IInputValidationService
+    public sealed class InputValidationService : IInputValidationService
     {
         public InputValidationResult ValidateEncryptedPassword(string keyName, string password)
         {

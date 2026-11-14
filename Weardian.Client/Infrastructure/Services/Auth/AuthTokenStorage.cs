@@ -1,6 +1,6 @@
 ﻿using Weardian.Client.Core.Interfaces.Auth;
 
-namespace Weardian.Client.Core.Services.Auth
+namespace Weardian.Client.Infrastructure.Services.Auth
 {
     public class AuthTokenStorage : IAuthTokenStorage
     {

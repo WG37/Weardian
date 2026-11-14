@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
 
-namespace Weardian.Client.Core.Serialization
+namespace Weardian.Client.Infrastructure.Serialization
 {
+    // add interface later for SoC
     public static class JsonSerializeCaseHelper
     {
         public static readonly JsonSerializerOptions CamelCaseOptions = new()

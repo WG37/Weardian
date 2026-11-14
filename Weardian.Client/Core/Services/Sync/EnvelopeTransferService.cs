@@ -5,64 +5,29 @@ using System.Text.Json;
 using Weardian.Client.Core.DTOs.Sync.Response.Get;
 using Weardian.Client.Core.DTOs.Sync.Response.Post;
 using Weardian.Client.Core.DTOs.Sync.Transfers;
+using Weardian.Client.Core.Interfaces.APIClient.Sync;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Sync;
-using Weardian.Client.Core.Serialization;
+using Weardian.Client.Infrastructure.Serialization;
 
-namespace Weardian.Client.Core.Services.Sync
+namespace Weardian.Client.Infrastructure.Services.Sync
 {
     public class EnvelopeTransferService : IEnvelopeTransferService
     {
-        private readonly HttpClient _httpClient;
-        private readonly IAuthTokenStorage _authToken;
+        private readonly IEnvelopeAPIClient _envelopeAPIClient;
         private readonly IKeyRecordSyncService _keyRecordSyncService;
         private readonly IPayloadRecordSyncService _payloadRecordSyncService;
 
         public EnvelopeTransferService(
-            HttpClient httpClient,
-            IAuthTokenStorage authToken,
+
+            IEnvelopeAPIClient envelopeAPIClient,
             IKeyRecordSyncService keyRecordSyncService,
             IPayloadRecordSyncService payloadRecordSyncService)
         {
-            _httpClient = httpClient;
-            _authToken = authToken;
+            _envelopeAPIClient = envelopeAPIClient;
             _keyRecordSyncService = keyRecordSyncService;
             _payloadRecordSyncService = payloadRecordSyncService;
         }
-
-        public async Task<EncryptedEnvelopeSyncResponseDto> SyncEncryptedEnvelopeAsync(EncryptedEnvelopeSyncDto envelopeRequest)
-        {
-            using var request = new HttpRequestMessage(HttpMethod.Post, "/api/keys/symmetric");
-            request.Content = JsonContent.Create(envelopeRequest);
-
-            using var response = await _httpClient.SendAsync(request);
-
-            response.EnsureSuccessStatusCode();
-
-            var syncResponse = await response.Content.ReadFromJsonAsync<EncryptedEnvelopeSyncResponseDto>();
-
-            if (syncResponse == null)
-                throw new InvalidOperationException("Invalid envelope sync response");
-
-            return syncResponse;
-        }
-
-        private async Task<IReadOnlyList<EncryptedEnvelopeResponseDto>> GetSymmetricServerEnvelopesAsync()
-        {
-            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/keys/symmetric");
-
-            using var response = await _httpClient.SendAsync(request);
-
-            response.EnsureSuccessStatusCode();
-
-            var envelopes = await response.Content.ReadFromJsonAsync<List<EncryptedEnvelopeResponseDto>>();
-
-            if (envelopes == null)
-                throw new InvalidOperationException("Invalid envelope response from server");
-
-            return envelopes;
-        }
-
         private async Task<IReadOnlyList<EncryptedEnvelopeSyncDto>> GetSymmetricLocalEnvelopesAsync()
         {
             var payloadRecords = await _payloadRecordSyncService.GetAllPayloadRecordsAsync();
@@ -91,7 +56,7 @@ namespace Weardian.Client.Core.Services.Sync
 
         public async Task SyncAllEnvelopesAsync()
         {
-            var serverEnvelopes = await GetSymmetricServerEnvelopesAsync();
+            var serverEnvelopes = await _envelopeAPIClient.GetSymmetricServerEnvelopesAsync();
             var localEnvelopes = await GetSymmetricLocalEnvelopesAsync();
 
            // upload local envelope to server if envelope does not exist on server
@@ -102,7 +67,7 @@ namespace Weardian.Client.Core.Services.Sync
 
                 if (!existsOnServer) 
                 { 
-                    await SyncEncryptedEnvelopeAsync(localEnvelope);
+                    await _envelopeAPIClient.SyncEncryptedEnvelopeAsync(localEnvelope);
                 }
             }
 
@@ -118,15 +83,6 @@ namespace Weardian.Client.Core.Services.Sync
                     await _keyRecordSyncService.AddKeyRecordAsync(serverEnvelope.KeyRecord!);
                 }
             }
-        }
-
-        public async Task DeleteSyncedEnvelopeAsync(Guid envelopeId)
-        {
-            using var request = new HttpRequestMessage(HttpMethod.Delete, $"/api/keys/symmetric/{envelopeId}");
-
-            using var response = await _httpClient.SendAsync(request);
-
-            response.EnsureSuccessStatusCode();
         }
     }
 }

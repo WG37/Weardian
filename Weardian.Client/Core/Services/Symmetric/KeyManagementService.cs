@@ -1,5 +1,6 @@
 ﻿using Weardian.Client.Core.DTOs.MessageHandler.HandleEncryption;
 using Weardian.Client.Core.DTOs.Sync.Transfers;
+using Weardian.Client.Core.Interfaces.APIClient.Sync;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;
@@ -15,19 +16,21 @@ namespace Weardian.Client.Core.Services.Symmetric
         private readonly ISymmetricCryptoService _symmetricCryptoService;
         private readonly IPayloadRecordRepository _payloadRecordRepo;
         private readonly IKeyRecordRepository _keyRecordRepo;
-        private readonly IEnvelopeTransferService _envelopeSyncService;
+        private readonly IEnvelopeAPIClient _envelopeAPIClient;
         private readonly IInputValidationService _validationService;
         public KeyManagementService(
             ISymmetricCryptoService symmetricCryptoService,
             IPayloadRecordRepository payloadRecordRepo,
             IKeyRecordRepository keyRecordRepo,
-            IEnvelopeTransferService envelopeSyncService,
+
+            IEnvelopeAPIClient envelopeAPIClient,
             IInputValidationService validationService)
         {
             _symmetricCryptoService = symmetricCryptoService;
             _payloadRecordRepo = payloadRecordRepo;
-            _keyRecordRepo = keyRecordRepo; 
-            _envelopeSyncService = envelopeSyncService;
+            _keyRecordRepo = keyRecordRepo;
+
+            _envelopeAPIClient = envelopeAPIClient;
             _validationService = validationService;
         }
 
@@ -114,7 +117,7 @@ namespace Weardian.Client.Core.Services.Symmetric
                             Tag: payloadRecord.Tag)
                         );
 
-                    var envelopeSyncResult = await _envelopeSyncService.SyncEncryptedEnvelopeAsync(envelopeSyncRequest);
+                    var envelopeSyncResult = await _envelopeAPIClient.SyncEncryptedEnvelopeAsync(envelopeSyncRequest);
 
                     keyRecord.IsSynced = true;
                     keyRecord.SyncedOn = envelopeSyncResult.SyncedOn;

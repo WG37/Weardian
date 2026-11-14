@@ -4,7 +4,7 @@ using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 
 namespace Weardian.Client.Core.Services.Symmetric
 {
-    internal class PayloadService : IPayloadService
+    public class PayloadService : IPayloadService
     {
         private readonly IPayloadRecordRepository _symmetricPayloadRepo;
         private readonly IKeyRecordRepository _symmetricKeyRepo;
