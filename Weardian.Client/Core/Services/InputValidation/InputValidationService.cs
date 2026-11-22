@@ -35,6 +35,14 @@ namespace Weardian.Client.Core.Services.InputValidation
             return result;
         }
 
-        
+        public InputValidationResult ValidatePasswordChange(string oldPassword, string newPassword)
+        {
+            var result = new InputValidationResult();
+
+            StrongPasswordRules.ValidatePassword(newPassword, result);
+            PasswordsMustDifferRule.ValidatePasswords(oldPassword, newPassword, result);
+
+            return result;
+        }
     }
 }

@@ -12,6 +12,7 @@ using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Handler;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Interfaces.Sync;
+using Weardian.Client.Core.Interfaces.UserAccount;
 using Weardian.Client.Infrastructure.Serialization;
 
 namespace Weardian.Client.Core.Services.Handler
@@ -20,6 +21,7 @@ namespace Weardian.Client.Core.Services.Handler
     {
         private readonly IKeyManagementService _keyManagementService;
         private readonly IPayloadService _payloadService;
+        private readonly IUserAccountService _userAccountService;
         private readonly IAuthService _authService;
         private readonly IEnvelopeAPIClient _envelopeAPIClient;
         private readonly IEnvelopeTransferService _envelopeTransferService;
@@ -28,6 +30,7 @@ namespace Weardian.Client.Core.Services.Handler
         public MessageHandlerService(
             IKeyManagementService keyManagementService,
             IPayloadService payloadService,
+            IUserAccountService userAccountService,
             IAuthService authService,
             IEnvelopeAPIClient envelopeAPIClient,
             IEnvelopeTransferService envelopeTransferService,
@@ -35,6 +38,7 @@ namespace Weardian.Client.Core.Services.Handler
         {
             _keyManagementService = keyManagementService;
             _payloadService = payloadService;
+            _userAccountService = userAccountService;
             _authService = authService;
             _envelopeAPIClient = envelopeAPIClient;
             _envelopeTransferService = envelopeTransferService;
@@ -57,6 +61,7 @@ namespace Weardian.Client.Core.Services.Handler
                     "register" => await HandleRegistrationRequestAsync(request),
                     "login" => await HandleLoginRequestAsync(request),
                     "logout" => HandleLogoutRequest(),
+                    "updatePassword" => await HandleUpdateUserPasswordAsync(request),
                     "encryption" => await HandleEncryptionRequestAsync(request),
                     "decryption" => await HandleDecryptionRequestAsync(request),
                     "retrieveAllKeys" => await HandleRetrieveAllKeysRequestAsync(),
@@ -152,7 +157,6 @@ namespace Weardian.Client.Core.Services.Handler
                     JsonSerializeCaseHelper.CamelCaseOptions);
             }
         }
-
         public string HandleLogoutRequest()
         {
             var logoutResponse = _authService.LogoutUser();
@@ -175,17 +179,37 @@ namespace Weardian.Client.Core.Services.Handler
                     JsonSerializeCaseHelper.CaseInsensitiveOptions)
                     ?? throw new InvalidOperationException("Deserialization Failed: Request cannot be null.");
 
-                if (string.IsNullOrWhiteSpace(dto.CurrentPassword))
-                    throw new ArgumentException("Current Password cannot be null, empty or whitespace", nameof(dto.CurrentPassword));
+                if (string.IsNullOrWhiteSpace(dto.OldPassword))
+                    throw new ArgumentException("Current Password cannot be null, empty or whitespace", nameof(dto.OldPassword));
 
                 if (string.IsNullOrWhiteSpace(dto.NewPassword))
                     throw new ArgumentException("New password cannot be null, empty or whitespace", nameof(dto.NewPassword));
 
                 // call accountservice
+                var updateResponse = await _userAccountService
+                    .UpdateUserAccountPasswordAsync(dto.OldPassword, dto.NewPassword);
+
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<UpdatePasswordResponseDto>(
+                        Type: "updatePassword",
+                        Success: updateResponse.IsSuccessful,
+                        Data: updateResponse,
+                        Error: updateResponse.IsSuccessful == true 
+                            ? null 
+                            : updateResponse.Error
+                            ), 
+                    JsonSerializeCaseHelper.CamelCaseOptions);
             }
             catch (Exception ex)
             {
-
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<UpdatePasswordResponseDto>(
+                        Type: "updatePassword",
+                        Success: false,
+                        Data: null,
+                        Error: ex.Message
+                        ), 
+                    JsonSerializeCaseHelper.CamelCaseOptions);
             }
         }
         public async Task<string> HandleEncryptionRequestAsync(string request)
@@ -231,86 +255,127 @@ namespace Weardian.Client.Core.Services.Handler
         }
 
         public async Task<string> HandleDecryptionRequestAsync(string request)
-        {
-            // add try catch
-            var dto = JsonSerializer.Deserialize<DecryptionRequestDto>(request, 
-                JsonSerializeCaseHelper.CaseInsensitiveOptions);
+        { 
+            try
+            {
+                var dto = JsonSerializer.Deserialize<DecryptionRequestDto>(request, 
+                    JsonSerializeCaseHelper.CaseInsensitiveOptions);
 
-            if (dto == null || dto.KeyId == Guid.Empty)
-                throw new InvalidOperationException("Deserialization Failed: null result or GUID is invalid.");
+                if (dto == null || dto.KeyId == Guid.Empty)
+                    throw new InvalidOperationException("Deserialization Failed: null result or GUID is invalid.");
 
-            var decryptionResult = await _keyManagementService
-                .RetrieveDecryptedPasswordAsync(dto.KeyId);
+                var decryptionResult = await _keyManagementService
+                    .RetrieveDecryptedPasswordAsync(dto.KeyId);
 
-            return JsonSerializer.Serialize(
-                new WebViewResponseDto<string>(
-                    Type: "decryption",
-                    Success: true,
-                    Data: decryptionResult,
-                    Error: null
-                    ), 
-                JsonSerializeCaseHelper.CamelCaseOptions);
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<string>(
+                        Type: "decryption",
+                        Success: true,
+                        Data: decryptionResult,
+                        Error: null
+                        ), 
+                    JsonSerializeCaseHelper.CamelCaseOptions);
+            }
+            catch (Exception ex)
+            {
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<DecryptionResponseDto>(
+                        Type: "decryption",
+                        Success: false,
+                        Data: null,
+                        Error: ex.Message
+                        ), 
+                    JsonSerializeCaseHelper.CamelCaseOptions);
+            }
         }
 
         public async Task<string> HandleRetrieveAllKeysRequestAsync()
         {
-            var token = _authToken.GetAccessToken();
-
-            if (!string.IsNullOrWhiteSpace(token))
+            try
             {
-                await _envelopeTransferService.SyncAllEnvelopesAsync();
+                var token = _authToken.GetAccessToken();
+
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    await _envelopeTransferService.SyncAllEnvelopesAsync();
+                }
+
+                var keysResult = await _payloadService.GetPayloadRecordsAsync();
+
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<IReadOnlyList<RetrievePayloadResponseDto>>(
+                        Type: "retrieveAllKeys",
+                        Success: true,
+                        Data: keysResult,
+                        Error: null
+                        ),
+                    JsonSerializeCaseHelper.CamelCaseOptions); 
             }
-
-            var keysResult = await _payloadService.GetPayloadRecordsAsync();
-
-            return JsonSerializer.Serialize(
-                new WebViewResponseDto<IReadOnlyList<RetrievePayloadResponseDto>>(
-                    Type: "retrieveAllKeys",
-                    Success: true,
-                    Data: keysResult,
-                    Error: null
-                    ),
-                JsonSerializeCaseHelper.CamelCaseOptions); 
+            catch (Exception ex)
+            {
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<RetrievePayloadResponseDto>(
+                        Type: "retrieveAllKeys",
+                        Success: false,
+                        Data: null,
+                        Error: ex.Message
+                        ), 
+                    JsonSerializeCaseHelper.CamelCaseOptions);
+            }
         }
 
         public async Task<string> HandleDeleteKeysRequest(string request)
         {
-            // add try catch
-            var token = _authToken.GetAccessToken();
+            int deletedKeys = 0;
 
-            var dto = JsonSerializer.Deserialize<DeleteKeysRequestDto>(request,
-                JsonSerializeCaseHelper.CaseInsensitiveOptions);
-
-            if (dto == null || dto.KeyIds.Count == 0)
-                throw new InvalidOperationException("Deserialization failed: no key IDs provided.");
-
-            if (dto.KeyIds.Any(id => id == Guid.Empty))
-                throw new InvalidOperationException("One or more keyIds are invalid.");
-
-            var isAuthenticated = !string.IsNullOrWhiteSpace(token);
-
-            var deletedKeys = 0;
-            
-            foreach (var keyId in dto.KeyIds)
+            try
             {
-                if (isAuthenticated)
+                // add try catch
+                var token = _authToken.GetAccessToken();
+
+                var dto = JsonSerializer.Deserialize<DeleteKeysRequestDto>(request,
+                    JsonSerializeCaseHelper.CaseInsensitiveOptions);
+
+                if (dto == null || dto.KeyIds.Count == 0)
+                    throw new InvalidOperationException("Deserialization failed: no key IDs provided.");
+
+                if (dto.KeyIds.Any(id => id == Guid.Empty))
+                    throw new InvalidOperationException("One or more keyIds are invalid.");
+
+                var isAuthenticated = !string.IsNullOrWhiteSpace(token);
+
+                foreach (var keyId in dto.KeyIds)
                 {
-                    await _envelopeAPIClient.DeleteSyncedEnvelopeAsync(keyId);
+                    if (isAuthenticated)
+                    {
+                        await _envelopeAPIClient.DeleteSyncedEnvelopeAsync(keyId);
+                    }
+
+                    _payloadService.RemoveRecordsById(keyId);
+
+                    deletedKeys++;
                 }
-                
-                _payloadService.RemoveRecordsById(keyId);
 
-                deletedKeys++;
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<int>(
+                        Type: "deleteKeys",
+                        Success: true,
+                        Data: deletedKeys,
+                        Error: null
+                        ),
+                    JsonSerializeCaseHelper.CamelCaseOptions);
             }
-
-            return JsonSerializer.Serialize(
-                new WebViewResponseDto<int>(
-                    Type: "deleteKeys",
-                    Success: true,
-                    Data: deletedKeys,
-                    Error: null
-                    ),
-                JsonSerializeCaseHelper.CamelCaseOptions);
+            catch (Exception ex)
+            {
+                return JsonSerializer.Serialize(
+                    new WebViewResponseDto<int>(
+                        Type: "deleteKeys",
+                        Success: false,
+                        Data: deletedKeys,
+                        Error: ex.Message
+                        ),
+                    JsonSerializeCaseHelper.CamelCaseOptions);
+            }            
         }
     }
 }

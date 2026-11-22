@@ -27,6 +27,7 @@ namespace Weardian.Server.API.Controllers
             _signInManager = signInManager;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterDto req)
         {
@@ -46,7 +47,7 @@ namespace Weardian.Server.API.Controllers
                 IsSuccessful: true,
                 Error: null));
         }
-
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginDto req)
         {
@@ -78,7 +79,7 @@ namespace Weardian.Server.API.Controllers
                 IsSuccessful: true,
                 Error: null));
         }
-
+        [AllowAnonymous]
         [HttpPost("refresh")]
         public async Task<ActionResult> RefreshTokenAsync(RefreshTokenDto refreshToken)
         {

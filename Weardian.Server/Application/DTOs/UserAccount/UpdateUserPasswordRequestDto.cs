@@ -1,6 +1,6 @@
 ﻿namespace Weardian.Server.Application.DTOs.Account
 {
     public sealed record UpdateUserPasswordRequestDto(
-        string CurrentPassword,
+        string OldPassword,
         string NewPassword);
 }

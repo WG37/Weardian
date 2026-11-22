@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace Weardian.Client.Core.DTOs.MessageHandler.HandleUserAccount
 {
     public sealed record UpdateUserPasswordRequest(
-        string CurrentPassword,
+        string OldPassword,
         string NewPassword);
 }

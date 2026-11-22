@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Weardian.Client.Core.DTOs.Auth.Responses;
 
 namespace Weardian.Client.Core.Interfaces.UserAccount
 {
-    internal interface IUserAccountService
+    public interface IUserAccountService
     {
+        public Task<UpdatePasswordResponseDto> UpdateUserAccountPasswordAsync(string oldPassword, string newPassword);
     }
 }

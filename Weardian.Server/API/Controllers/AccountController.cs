@@ -14,12 +14,12 @@ namespace Weardian.Server.API.Controllers
     [Route("api/accounts/user")]
     public class AccountController : ControllerBase
     {
-        private readonly IUserAccountService _accService;
+        private readonly IUserAccountService _accountService;
 
         public AccountController(
-            IUserAccountService accService)
+            IUserAccountService accountService)
         {
-            _accService = accService;
+            _accountService = accountService;
         }
 
         [HttpPatch("password")]
@@ -33,7 +33,7 @@ namespace Weardian.Server.API.Controllers
             if (passwordReqDto == null)
                 return BadRequest("Request cannot be null");
 
-            var response = await _accService.UpdateUserPasswordAsync(userId, passwordReqDto);
+            var response = await _accountService.UpdateUserPasswordAsync(userId, passwordReqDto);
 
             if (!response.IsSuccessful)
                 return Unauthorized(new UserAccountResponseDto(

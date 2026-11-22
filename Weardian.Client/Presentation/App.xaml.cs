@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using Weardian.Client.Core.Interfaces.APIClient.Sync;
+using Weardian.Client.Core.Interfaces.APIClient.UserAccount;
 using Weardian.Client.Core.Interfaces.Auth;
 using Weardian.Client.Core.Interfaces.Cryptography;
 using Weardian.Client.Core.Interfaces.Cryptography.Encryption;
@@ -10,16 +11,19 @@ using Weardian.Client.Core.Interfaces.InputValidation;
 using Weardian.Client.Core.Interfaces.Symmetric;
 using Weardian.Client.Core.Interfaces.Symmetric.Repositories;
 using Weardian.Client.Core.Interfaces.Sync;
+using Weardian.Client.Core.Interfaces.UserAccount;
 using Weardian.Client.Core.Services.Handler;
 using Weardian.Client.Core.Services.InputValidation;
 using Weardian.Client.Core.Services.Symmetric;
 using Weardian.Client.Core.Services.Sync;
+using Weardian.Client.Core.Services.UserAccount;
 using Weardian.Client.Infrastructure.Cryptography;
 using Weardian.Client.Infrastructure.Cryptography.Encryption;
 using Weardian.Client.Infrastructure.Cryptography.KeyWrapping;
 using Weardian.Client.Infrastructure.Native.Bootstrapper;
 using Weardian.Client.Infrastructure.Repositories.Symmetric;
 using Weardian.Client.Infrastructure.Services.APIClient.Sync;
+using Weardian.Client.Infrastructure.Services.APIClient.UserAccount;
 using Weardian.Client.Infrastructure.Services.Auth;
 using Weardian.Client.Infrastructure.Services.Shared;
 using Weardian.Client.Infrastructure.Services.Sync;
@@ -57,6 +61,9 @@ namespace Weardian.Client.Presentation
             // local
             services.AddScoped<IPayloadService, PayloadService>();
 
+            // user accounts
+            services.AddScoped<IUserAccountService, UserAccountService>();
+
             // cryptography
             services.AddTransient<ISymmetricCryptoService, SymmetricCryptoService>();
             services.AddTransient<IKeyGeneration, KeyGeneration>();
@@ -77,6 +84,12 @@ namespace Weardian.Client.Presentation
             {
                 client.BaseAddress = apiBaseUrl;
             });
+
+            // userAccount API client
+            services.AddHttpClient<IUserAccountAPIClient, UserAccountAPIClient>(client =>
+            {
+                client.BaseAddress = apiBaseUrl;
+            }).AddHttpMessageHandler<AuthHandler>();
 
             // envelopes API client
             services.AddHttpClient<IEnvelopeAPIClient, EnvelopeAPIClient>(client =>

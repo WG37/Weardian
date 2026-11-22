@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Weardian.Server.Application.Interfaces;
+using Weardian.Server.Application.Services.AccountService;
 using Weardian.Server.Application.Services.EnvelopeValidation;
 using Weardian.Server.Application.Services.SymmetricServices;
 using Weardian.Server.Domain.Users;
@@ -53,15 +54,16 @@ namespace Weardian.Server
                     };
                 });
 
-
+            // repo services
             builder.Services.AddScoped<ISymmetricEnvelopeRepository, SymmetricEnvelopeRepository>();
             builder.Services.AddScoped<ISymmetricEnvelopeService, SymmetricEnvelopeService>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-
+            // validation
             builder.Services.AddTransient<IEnvelopeValidationService, EnvelopeValidationService>();
-
+            // auth token
             builder.Services.AddScoped<ITokenService, TokenService>();
-
+            // account service
+            builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -71,7 +73,7 @@ namespace Weardian.Server
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Weardian API",
-                    Version = "v1"
+                    Version = "v1",
                 });
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

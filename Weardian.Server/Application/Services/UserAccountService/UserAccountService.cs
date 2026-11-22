@@ -34,7 +34,7 @@ namespace Weardian.Server.Application.Services.AccountService
                     Error: "User does not exist",
                     ChangedOn: null);
 
-            var result = await _user.ChangePasswordAsync(user, passwordReqDto.CurrentPassword, passwordReqDto.NewPassword);
+            var result = await _user.ChangePasswordAsync(user, passwordReqDto.OldPassword, passwordReqDto.NewPassword);
             if (!result.Succeeded)
                 return new UserAccountStatusResponseDto(
                     IsSuccessful: false,
