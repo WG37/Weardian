@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
-namespace Weardian.Client.Infrastructure.Storage.KeyFile
+namespace Weardian.Client.Infrastructure.Storage.KeyFile.Read
 {
-    internal class KeyFile
+    internal class KeyFileReader
     {
         private const int TagSize = 16;
 
@@ -17,7 +11,20 @@ namespace Weardian.Client.Infrastructure.Storage.KeyFile
             using var stream = File.OpenRead(path);
             using var reader = new BinaryReader(stream);
 
-            
+            byte[] headerBytes = ReadExactBytes(reader, KeyFileHeader.Size);
+            KeyFileHeader header = ReadKeyFileHeader(headerBytes);
+
+            uint expectedLength = KeyFileHeader.Size
+                + header.CipherTextLength
+                + TagSize;
+
+            if (stream.Length != expectedLength)
+                throw new InvalidDataException("File size does not match the expected header");
+
+            byte[] cipherText = ReadExactBytes(reader, (int)header.CipherTextLength);
+            byte[] tag = ReadExactBytes(reader, TagSize);
+
+            return new ParsedKeyFile(header, headerBytes, cipherText, tag);
         }
 
         private static KeyFileHeader ReadKeyFileHeader(byte[] headerBytes)
@@ -59,12 +66,12 @@ namespace Weardian.Client.Infrastructure.Storage.KeyFile
 
         private static byte[] ReadExactBytes(BinaryReader reader, int count)
         {
-            byte[] bytes = reader.ReadBytes(count);
+            byte[] bytesToRead = reader.ReadBytes(count);
 
-            if (bytes.Length != count)
+            if (bytesToRead.Length != count)
                 throw new EndOfStreamException("The byte length does not match the intended count");
 
-            return bytes;
+            return bytesToRead;
         }
     }
 }

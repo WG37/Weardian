@@ -3,7 +3,7 @@ using Weardian.Server.Application.DTOs.Account;
 using Weardian.Server.Application.Interfaces;
 using Weardian.Server.Domain.Users;
 
-namespace Weardian.Server.Application.Services.AccountService
+namespace Weardian.Server.Application.Services.UserAccountService
 {
     public class UserAccountService : IUserAccountService
     {

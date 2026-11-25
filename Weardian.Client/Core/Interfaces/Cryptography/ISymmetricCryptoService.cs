@@ -8,5 +8,6 @@ namespace Weardian.Client.Core.Interfaces.Cryptography
     {
         public Task<EncryptedEnvelopeDto> CreateEncryptedEnvelopeAsync(string plaintext);
         public Task<string> DecryptEncryptedEnvelopeAsync(KeyRecord keyRecord, PayloadRecord payloadRecord);
+        public Task<byte[]> DecryptEncryptedEnvelopeBytesAsync(KeyRecord keyRecord, PayloadRecord payloadRecord);
     }
 }
