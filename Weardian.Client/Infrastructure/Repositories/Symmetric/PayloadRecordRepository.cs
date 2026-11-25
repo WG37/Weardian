@@ -9,7 +9,6 @@ namespace Weardian.Client.Infrastructure.Repositories.Symmetric
 {
     public class PayloadRecordRepository : IPayloadRecordRepository
     {
-        // split key & payload records
         public async Task AddLocalPayloadRecordAsync(PayloadRecord payloadRecord)
         {
             var payloadPath = AppDataPaths.BlobPath(payloadRecord.EnvelopeId);
